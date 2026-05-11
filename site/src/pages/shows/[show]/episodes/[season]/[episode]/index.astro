@@ -1,0 +1,61 @@
+---
+import BaseLayout from "../../../../../../layouts/BaseLayout.astro";
+import EpisodeNav from "../../../../../../components/EpisodeNav.astro";
+import SpoilerNotice from "../../../../../../components/SpoilerNotice.astro";
+import { getCollection, render } from "astro:content";
+
+export async function getStaticPaths() {
+  function flattenEpisodes(show) {
+    return show.data.seasons.flatMap((season) => season.episodes);
+  }
+
+  const shows = await getCollection("shows");
+  const metadataEntries = await getCollection("episodeMetadata");
+  const articles = await getCollection("episodeArticles");
+
+  return articles.map((article) => {
+    const [showSlug, , season, episode] = article.id.split("/");
+    const show = shows.find((entry) => entry.id === showSlug);
+    const metadata = metadataEntries.find((entry) => entry.id === article.id);
+
+    if (!show || !metadata) {
+      throw new Error(`Missing show or episode metadata for ${article.id}`);
+    }
+
+    const episodes = flattenEpisodes(show);
+    const currentIndex = episodes.findIndex((item) => item.path === `episodes/${season}/${episode}`);
+
+    return {
+      params: { show: showSlug, season, episode },
+      props: {
+        article,
+        metadata,
+        show,
+        previous: currentIndex > 0 ? episodes[currentIndex - 1] : null,
+        next: currentIndex >= 0 && currentIndex < episodes.length - 1 ? episodes[currentIndex + 1] : null
+      }
+    };
+  });
+}
+
+const { article, metadata, show, previous, next } = Astro.props;
+const { Content } = await render(article);
+const title = metadata.data.seo.title;
+const description = metadata.data.seo.description;
+---
+
+<BaseLayout title={title} description={description}>
+  <article class="episode">
+    <p class="eyebrow">{show.data.title} {metadata.data.code}</p>
+    <h1>{article.data.title ?? metadata.data.title}</h1>
+    {article.data.dek && <p class="dek">{article.data.dek}</p>}
+
+    <SpoilerNotice />
+
+    <div class="article-body">
+      <Content />
+    </div>
+
+    <EpisodeNav previous={previous} next={next} showSlug={show.data.slug} />
+  </article>
+</BaseLayout>

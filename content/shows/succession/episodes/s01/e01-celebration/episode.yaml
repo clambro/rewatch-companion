@@ -1,0 +1,21 @@
+show: succession
+season: 1
+episode: 1
+code: "S01E01"
+title: "Celebration"
+slug: "e01-celebration"
+air_date: "2018-06-03"
+
+writer:
+  - Jesse Armstrong
+
+director:
+  - Adam McKay
+
+status: published
+
+seo:
+  title: "Succession S01E01 Analysis: Celebration"
+  description: "A full-series rewatch analysis of Succession's pilot: Logan's body, Kendall's false coronation, and the family business of humiliation."
+
+screenshots: []

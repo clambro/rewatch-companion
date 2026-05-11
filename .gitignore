@@ -17,16 +17,16 @@ Thumbs.db
 
 # Node / Astro
 node_modules/
-frontend/node_modules/
+site/node_modules/
 
 .astro/
-frontend/.astro/
+site/.astro/
 
 dist/
-frontend/dist/
+site/dist/
 
 .vite/
-frontend/.vite/
+site/.vite/
 
 npm-debug.log*
 yarn-debug.log*
@@ -35,9 +35,9 @@ pnpm-debug.log*
 
 # Deployment tool output
 .netlify/
-frontend/.netlify/
+site/.netlify/
 .vercel/
-frontend/.vercel/
+site/.vercel/
 
 # Python bytecode and caches
 __pycache__/

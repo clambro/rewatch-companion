@@ -1,0 +1,9 @@
+title: "Succession"
+slug: "succession"
+
+seasons:
+  - season: 1
+    episodes:
+      - code: "S01E01"
+        title: "Celebration"
+        path: "episodes/s01/e01-celebration"

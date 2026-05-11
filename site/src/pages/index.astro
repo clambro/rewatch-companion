@@ -1,0 +1,23 @@
+---
+import BaseLayout from "../layouts/BaseLayout.astro";
+import { getCollection } from "astro:content";
+
+const shows = await getCollection("shows");
+---
+
+<BaseLayout>
+  <section class="page-intro">
+    <p class="eyebrow">Full-series rewatch essays</p>
+    <h1>Serious companions for shows that reward close attention.</h1>
+    <p>
+      Episode-by-episode analysis written for viewers who already know the ending.
+    </p>
+  </section>
+
+  <section class="listing">
+    <h2>Shows</h2>
+    <ul>
+      {shows.map((show) => <li><a href={`/shows/${show.data.slug}/`}>{show.data.title}</a></li>)}
+    </ul>
+  </section>
+</BaseLayout>

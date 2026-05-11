@@ -1,0 +1,36 @@
+---
+import BaseLayout from "../../../layouts/BaseLayout.astro";
+import { getCollection } from "astro:content";
+
+export async function getStaticPaths() {
+  const shows = await getCollection("shows");
+  return shows.map((show) => ({ params: { show: show.data.slug }, props: { show } }));
+}
+
+const { show } = Astro.props;
+const episodes = show.data.seasons.flatMap((season) => season.episodes);
+---
+
+<BaseLayout title={`${show.data.title} | Rewatch Companion`} description={`Full-series rewatch essays for ${show.data.title}.`}>
+  <section class="page-intro">
+    <p class="eyebrow">Show guide</p>
+    <h1>{show.data.title}</h1>
+    <p>Full-series rewatch essays written for viewers who already know the ending.</p>
+  </section>
+
+  <section class="listing">
+    <h2>Episodes</h2>
+    <ol>
+      {
+        episodes.map((episode) => (
+          <li>
+            <a href={`/shows/${show.data.slug}/${episode.path}/`}>
+              <span>{episode.code}</span>
+              {episode.title}
+            </a>
+          </li>
+        ))
+      }
+    </ol>
+  </section>
+</BaseLayout>
