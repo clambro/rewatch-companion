@@ -1,0 +1,56 @@
+# AGENTS.md
+
+## Scope
+
+These instructions apply to files under `pipeline/`. The root `AGENTS.md` also applies.
+
+## Purpose
+
+`pipeline/` is reserved for the offline Python content-generation pipeline. It should create reviewed static output for the repo-root `content/` directory. It must not power the public site at runtime.
+
+Expected responsibilities once implemented:
+
+- clean SRT/VTT subtitles into an internal transcript format
+- collect or load web research blobs
+- generate episode draft essays
+- run review/rewrite loops
+- create screenshot candidates from local media
+- select and export final screenshots
+- write final `index.mdx` and `episode.yaml` files into `content/`
+
+## Commands
+
+This project uses `uv` for package management, ruff for linting, and ty for type checking:
+
+```bash
+uv run python -m path.to.module          # run code
+uv run python -m pytest path/to/test     # run specific tests
+uv run python -m pytest .                # run all tests
+uv run ruff check --fix                  # linter (must pass)
+uv run ty check                          # type checker (must pass)
+```
+
+**Suppression rules**:
+
+- Do NOT `# noqa` unless you have an excellent reason (e.g., complexity warnings in routing code)
+- Do NOT ignore type errors except for unfixable external package issues
+- When in doubt, fix the issue rather than suppress the warning
+
+## Artifact Rules
+
+Keep raw and intermediate artifacts out of version control. Use `.local/` for:
+
+- raw subtitles
+- web research blobs
+- draft essays
+- review notes
+- run logs
+- local video/media references
+- scene-detection outputs
+- screenshot candidate images
+
+Only write reviewed, publishable static output into `content/`.
+
+## Runtime Boundary
+
+The public site must not import pipeline code, call the pipeline, or expose pipeline artifacts.
