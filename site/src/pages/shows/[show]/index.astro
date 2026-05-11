@@ -12,6 +12,11 @@ export async function getStaticPaths() {
 
 const { show } = Astro.props;
 const episodes = show.data.seasons.flatMap((season) => season.episodes);
+const articleSections = [
+  { heading: "About", entries: show.data.about ?? [] },
+  { heading: "Themes", entries: show.data.themes ?? [] },
+  { heading: "Characters", entries: show.data.characters ?? [] },
+];
 ---
 
 <BaseLayout
@@ -27,19 +32,41 @@ const episodes = show.data.seasons.flatMap((season) => season.episodes);
     </p>
   </section>
 
-  <section class="listing">
-    <h2>Episodes</h2>
-    <ol>
-      {
-        episodes.map((episode) => (
-          <li>
-            <a href={`/shows/${show.data.slug}/${episode.path}/`}>
-              <span>{episode.code}</span>
-              {episode.title}
-            </a>
-          </li>
-        ))
-      }
-    </ol>
-  </section>
+  {
+    articleSections.map(
+      (section) =>
+        section.entries.length > 0 && (
+          <section class="listing">
+            <h2>{section.heading}</h2>
+            <ul>
+              {section.entries.map((entry) => (
+                <li>
+                  <a href={`/shows/${show.data.slug}/${entry.path}/`}>
+                    {entry.title}
+                  </a>
+                </li>
+              ))}
+            </ul>
+          </section>
+        ),
+    )
+  }
+
+  {
+    episodes.length > 0 && (
+      <section class="listing">
+        <h2>Episodes</h2>
+        <ol>
+          {episodes.map((episode) => (
+            <li>
+              <a href={`/shows/${show.data.slug}/${episode.path}/`}>
+                <span>{episode.code}</span>
+                {episode.title}
+              </a>
+            </li>
+          ))}
+        </ol>
+      </section>
+    )
+  }
 </BaseLayout>

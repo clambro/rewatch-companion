@@ -1,0 +1,12 @@
+show: succession
+type: theme
+title: "Humiliation as Organizational Culture"
+slug: "humiliation-as-organizational-culture"
+
+seo:
+  title: "Succession Theme Analysis: Humiliation as Organizational Culture"
+  description: "A full-series theme essay about humiliation as a Roy family and Waystar management system."
+
+context:
+  depends_on:
+    - "about/what-succession-is-about"

@@ -1,0 +1,13 @@
+show: succession
+type: character
+title: "Kendall Roy"
+slug: "kendall-roy"
+
+seo:
+  title: "Succession Character Analysis: Kendall Roy"
+  description: "A full-series character essay about Kendall Roy as a case study in failed self-authorship."
+
+context:
+  depends_on:
+    - "about/what-succession-is-about"
+    - "themes/humiliation-as-organizational-culture"
