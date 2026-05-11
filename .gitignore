@@ -1,0 +1,73 @@
+# Project-local generated inputs and artifacts
+/.local/
+
+# Environment and secrets
+.env
+.env.*
+!.env.example
+!.env.*.example
+
+# OS and editor noise
+.DS_Store
+Thumbs.db
+*.swp
+*.swo
+.idea/
+
+# Node / Astro
+node_modules/
+site/node_modules/
+
+.astro/
+site/.astro/
+
+dist/
+site/dist/
+
+.vite/
+site/.vite/
+
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+
+# Deployment tool output
+.netlify/
+site/.netlify/
+.vercel/
+site/.vercel/
+
+# Python bytecode and caches
+__pycache__/
+*.py[cod]
+*$py.class
+
+.pytest_cache/
+.ruff_cache/
+.mypy_cache/
+.pyre/
+.tox/
+.nox/
+.coverage
+.coverage.*
+coverage.xml
+htmlcov/
+
+# Python packaging/build output
+build/
+pipeline/build/
+dist/
+pipeline/dist/
+*.egg-info/
+pipeline/*.egg-info/
+
+# Python virtual environments
+.venv/
+venv/
+env/
+ENV/
+pipeline/.venv/
+
+# Jupyter checkpoints, useful during pipeline experimentation
+.ipynb_checkpoints/

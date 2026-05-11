@@ -1,0 +1,60 @@
+repos:
+  # Format repo-level content and config with Prettier.
+  - repo: local
+    hooks:
+      - id: prettier
+        name: prettier (repo)
+        entry: prettier --write --ignore-unknown
+        language: node
+        files: ^(?!site/).*\.(css|html|js|jsx|json|md|mdx|scss|ts|tsx|ya?ml)$
+        additional_dependencies:
+          - prettier@3.8.3
+
+      - id: prettier-site
+        name: prettier (site)
+        entry: bash -c 'cd site && npx prettier --write --ignore-unknown "${@/#site\//}"' --
+        language: system
+        files: ^site/.*\.(astro|css|html|js|jsx|json|md|mdx|scss|ts|tsx|ya?ml)$
+
+  # Generic hooks
+  - repo: https://github.com/pre-commit/pre-commit-hooks
+    rev: v6.0.0
+    hooks:
+      - id: trailing-whitespace
+      - id: end-of-file-fixer
+      - id: check-merge-conflict
+      - id: check-yaml
+      - id: check-toml
+      - id: check-json
+      - id: check-added-large-files
+      - id: check-ast
+      - id: check-case-conflict
+      - id: debug-statements
+      - id: detect-private-key
+      - id: mixed-line-ending
+        args: ["--fix=lf"]
+      - id: no-commit-to-branch
+        args: ["--branch", "main", "--branch", "master"]
+
+  # TODO(site): Add Astro/TypeScript checking after installing @astrojs/check
+  # and typescript in site/. Prefer an npm script such as `npm run check`
+  # from site/ that runs `astro check`. Keep full site builds out of
+  # pre-commit unless explicitly requested; use CI for build verification.
+  #
+  # TODO(content): Add a content validation hook once the content contract
+  # stabilizes. It should check show/episode YAML shape, episode path
+  # resolution, published article presence, screenshot references, and
+  # internal links between generated static routes.
+  #
+  # TODO(site): Add broken-link checking in CI after routes and content volume
+  # justify it. Prefer checking the built static output there rather than
+  # running a server from pre-commit.
+
+  # Python formatting
+  - repo: https://github.com/astral-sh/ruff-pre-commit
+    rev: v0.15.12
+    hooks:
+      - id: ruff
+        args: [--fix, --exit-non-zero-on-fix]
+      - id: ruff-format
+        args: [--exit-non-zero-on-fix]
