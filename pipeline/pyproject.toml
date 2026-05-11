@@ -1,0 +1,76 @@
+[project]
+name = "rewatch-pipeline"
+version = "0.1.0"
+description = "Offline content generation pipeline for Rewatch Companion."
+requires-python = ">=3.14"
+dependencies = []
+
+[project.scripts]
+generate-episode = "episode_generation.cli:main"
+
+[dependency-groups]
+dev = [
+  "poethepoet>=0.44.0,<0.45",
+  "pytest>=9.0.3,<10",
+  "ruff>=0.15.12,<0.16",
+  "ty>=0.0.35,<0.0.36",
+]
+
+[build-system]
+requires = ["hatchling>=1.29.0"]
+build-backend = "hatchling.build"
+
+[tool.hatch.build.targets.wheel]
+packages = ["episode_generation"]
+
+[tool.poe.tasks]
+unit_tests = "python -m pytest -k unit"
+integration_tests = "python -m pytest -k integration"
+node_tests = "python -m pytest -k node"
+
+[tool.ruff]
+target-version = "py314"
+line-length = 100
+
+[tool.ruff.lint]
+select = ["ALL"]
+ignore = [
+    "D203",  # 1 blank line required before class docstring
+    "D205",  # 1 blank line required between summary line and description
+    "D212",  # Multi-line docstring summary should start at the first line
+    "D401",  # First line of docstring should be in imperative mood: "{first_line}"
+    "INP001",  # File {filename} is part of an implicit namespace package. Add an __init__.py.
+    "COM812",  # Enforce trailing commas (handled by the formatter).
+    "EM101",  # Raw string in exception.
+    "EM102",  # f-string in exception.
+    "TRY003",  # Avoid specifying long messages outside the exception class
+    "FIX002",  # Line contains TODO
+    "TD002",   # Missing author in TODO `# TODO(<author_name>): ...`
+    "TD003",   # Missing TODO link
+]
+
+[tool.ruff.lint.flake8-quotes]
+inline-quotes = "double"
+
+[tool.ruff.lint.mccabe]
+max-complexity = 10
+
+[tool.ruff.lint.pep8-naming]
+classmethod-decorators = ["validator"]
+
+[tool.ruff.lint.per-file-ignores]
+"__init__.py" = ["F401", "F403"]  # Ignore unused imports in inits.
+"test_*.py" = [
+    "S101",  # Asserts.
+    "SLF001",  # Private member access.
+]
+
+[tool.pytest.ini_options]
+python_files = "**/tests/**test_*.py"
+addopts = [
+    "--import-mode=importlib"
+]
+markers =[
+    "unit: mark a test as a unit test.",
+    "integration: mark a test as an integration test",
+]
