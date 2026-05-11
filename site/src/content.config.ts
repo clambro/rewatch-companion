@@ -7,7 +7,7 @@ const shows = defineCollection({
   loader: glob({
     base: contentBase,
     pattern: "*/show.yaml",
-    generateId: ({ entry }) => entry.replace(/\/show\.ya?ml$/, "")
+    generateId: ({ entry }) => entry.replace(/\/show\.ya?ml$/, ""),
   }),
   schema: z.object({
     title: z.string(),
@@ -19,19 +19,19 @@ const shows = defineCollection({
           z.object({
             code: z.string(),
             title: z.string(),
-            path: z.string()
-          })
-        )
-      })
-    )
-  })
+            path: z.string(),
+          }),
+        ),
+      }),
+    ),
+  }),
 });
 
 const episodeMetadata = defineCollection({
   loader: glob({
     base: contentBase,
     pattern: "*/episodes/*/*/episode.yaml",
-    generateId: ({ entry }) => entry.replace(/\/episode\.ya?ml$/, "")
+    generateId: ({ entry }) => entry.replace(/\/episode\.ya?ml$/, ""),
   }),
   schema: z.object({
     show: z.string(),
@@ -46,7 +46,7 @@ const episodeMetadata = defineCollection({
     status: z.enum(["draft", "published"]),
     seo: z.object({
       title: z.string(),
-      description: z.string()
+      description: z.string(),
     }),
     screenshots: z
       .array(
@@ -54,27 +54,27 @@ const episodeMetadata = defineCollection({
           id: z.string(),
           file: z.string(),
           alt: z.string(),
-          caption: z.string()
-        })
+          caption: z.string(),
+        }),
       )
-      .default([])
-  })
+      .default([]),
+  }),
 });
 
 const episodeArticles = defineCollection({
   loader: glob({
     base: contentBase,
     pattern: "*/episodes/*/*/index.mdx",
-    generateId: ({ entry }) => entry.replace(/\/index\.mdx$/, "")
+    generateId: ({ entry }) => entry.replace(/\/index\.mdx$/, ""),
   }),
   schema: z.object({
     title: z.string(),
-    dek: z.string().optional()
-  })
+    dek: z.string().optional(),
+  }),
 });
 
 export const collections = {
   shows,
   episodeMetadata,
-  episodeArticles
+  episodeArticles,
 };

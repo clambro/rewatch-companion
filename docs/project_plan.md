@@ -99,7 +99,7 @@ The first target episode path should be:
 
 ```txt
 /shows/succession/episodes/s01/e01-celebration/
-````
+```
 
 The first content milestone should be three polished essays:
 
@@ -223,13 +223,13 @@ The front end should do only the following:
 
 The front end should not:
 
-* query a database
-* call the generation pipeline
-* fetch external sources at runtime
-* expose research blobs
-* expose review artifacts
-* expose citations
-* dynamically generate content
+- query a database
+- call the generation pipeline
+- fetch external sources at runtime
+- expose research blobs
+- expose review artifacts
+- expose citations
+- dynamically generate content
 
 ### Front-End Directory
 
@@ -403,10 +403,10 @@ There is no first-watch-safe mode.
 
 However, avoid putting major finale spoilers in:
 
-* page titles
-* meta descriptions
-* social sharing previews
-* Open Graph descriptions
+- page titles
+- meta descriptions
+- social sharing previews
+- Open Graph descriptions
 
 The article body can spoil freely.
 
@@ -422,10 +422,10 @@ Do not include public citations unless unavoidable.
 
 External links should be rare and intentional. Examples of acceptable external links:
 
-* an official source
-* an essential interview
-* a major source directly relevant to a claim
-* a legally necessary attribution link
+- an official source
+- an essential interview
+- a major source directly relevant to a claim
+- a legally necessary attribution link
 
 The research blob used internally may contain URLs and source references, but those should not normally be surfaced in the final article.
 
@@ -505,14 +505,14 @@ Good:
 
 The voice should be:
 
-* specific
-* declarative
-* analytical
-* occasionally sharp
-* readable
-* non-academic
-* non-fannish
-* non-clickbaity
+- specific
+- declarative
+- analytical
+- occasionally sharp
+- readable
+- non-academic
+- non-fannish
+- non-clickbaity
 
 ### Avoid
 
@@ -732,21 +732,21 @@ This is preferable to scraping scripts from the internet, which may be unavailab
 
 Subtitles provide:
 
-* aired dialogue
-* timestamps
-* searchable text
-* approximate scene structure
-* anchors for line-level analysis
-* anchors for screenshot timing
+- aired dialogue
+- timestamps
+- searchable text
+- approximate scene structure
+- anchors for line-level analysis
+- anchors for screenshot timing
 
 Subtitles do not provide:
 
-* action lines
-* blocking
-* scene descriptions
-* tone notes
-* deleted lines
-* alternate script versions
+- action lines
+- blocking
+- scene descriptions
+- tone notes
+- deleted lines
+- alternate script versions
 
 That is acceptable. The site analyzes the aired episode, not the screenplay.
 
@@ -798,17 +798,17 @@ The goal is to collect useful context, not to write the essay.
 
 The research blob may include:
 
-* serious criticism
-* creator interviews
-* cast interviews
-* composer interviews
-* music/sound discussion
-* production context
-* notable interpretations
-* consensus readings
-* dissenting readings
-* warnings about unreliable sources
-* useful facts to verify manually
+- serious criticism
+- creator interviews
+- cast interviews
+- composer interviews
+- music/sound discussion
+- production context
+- notable interpretations
+- consensus readings
+- dissenting readings
+- warnings about unreliable sources
+- useful facts to verify manually
 
 The blob should be stored outside version control:
 
@@ -926,20 +926,20 @@ The reviewer should be mechanical and style-focused. It is not there to produce 
 
 The reviewer should catch:
 
-* obvious LLM slop
-* generic thesis
-* too much recap
-* banned phrases
-* weak episode specificity
-* invented dialogue
-* unsupported factual claims
-* excessive quotation
-* public citations or source clutter leaking into the article
-* first-watch framing
-* lack of full-series retrospective value
-* bad or missing discussion of craft/form/music when relevant
-* repetitious sentence structures
-* empty abstractions
+- obvious LLM slop
+- generic thesis
+- too much recap
+- banned phrases
+- weak episode specificity
+- invented dialogue
+- unsupported factual claims
+- excessive quotation
+- public citations or source clutter leaking into the article
+- first-watch framing
+- lack of full-series retrospective value
+- bad or missing discussion of craft/form/music when relevant
+- repetitious sentence structures
+- empty abstractions
 
 ### Review Output Format
 
@@ -949,13 +949,14 @@ The reviewer should catch:
 ## Blocking issues
 
 1. Generic thesis
-The opening says the episode "explores power, family, and betrayal." Replace this with a concrete claim about the birthday ritual becoming a succession test.
+   The opening says the episode "explores power, family, and betrayal." Replace this with a concrete claim about the birthday ritual becoming a succession test.
 
 2. Too much recap
-The Vaulter section summarizes what happens without explaining what the negotiation reveals about Kendall's borrowed model of authority.
+   The Vaulter section summarizes what happens without explaining what the negotiation reveals about Kendall's borrowed model of authority.
 
 3. Banned phrases
-Remove:
+   Remove:
+
 - "sets the stage"
 - "serves as a reminder"
 - "power dynamics"
@@ -963,7 +964,7 @@ Remove:
 ## Non-blocking issues
 
 1. Music section is thin.
-Add one paragraph on how the score frames the Roys as mock-dynastic.
+   Add one paragraph on how the score frames the Roys as mock-dynastic.
 
 ## Required revisions
 
@@ -1058,15 +1059,15 @@ It should return:
 
 ### Screenshot Rules
 
-* Use screenshots only when they support analysis.
-* No decorative screenshots.
-* No galleries.
-* Avoid near-duplicates.
-* Prefer visually clear frames.
-* Prefer moments the article directly discusses.
-* Use 3–6 screenshots for a long article.
-* Compress images.
-* Store only final selected screenshots in `content/`.
+- Use screenshots only when they support analysis.
+- No decorative screenshots.
+- No galleries.
+- Avoid near-duplicates.
+- Prefer visually clear frames.
+- Prefer moments the article directly discusses.
+- Use 3–6 screenshots for a long article.
+- Compress images.
+- Store only final selected screenshots in `content/`.
 
 ### Final Screenshot File Structure
 
@@ -1100,24 +1101,24 @@ Recommended ad placements:
 
 ### Desktop
 
-* one right-rail ad after the table of contents
-* one in-article ad after 35–45% scroll
-* one footer ad
+- one right-rail ad after the table of contents
+- one in-article ad after 35–45% scroll
+- one footer ad
 
 ### Mobile
 
-* one in-article ad after section 3 or 4
-* one footer ad
+- one in-article ad after section 3 or 4
+- one footer ad
 
 ### Never Use
 
-* pop-ups
-* interstitials
-* sticky video
-* autoplay video
-* ads above the title
-* ads between title and intro
-* ads between spoiler warning and first paragraph
+- pop-ups
+- interstitials
+- sticky video
+- autoplay video
+- ads above the title
+- ads between title and intro
+- ads between spoiler warning and first paragraph
 
 Build an `AdSlot.astro` component but allow ads to be disabled globally or per episode.
 
@@ -1141,13 +1142,13 @@ Do not let SEO drive the writing.
 
 Each episode page should have:
 
-* title
-* meta description
-* canonical URL
-* Open Graph metadata
-* sitemap inclusion
-* previous/next links
-* structured episode metadata where appropriate
+- title
+- meta description
+- canonical URL
+- Open Graph metadata
+- sitemap inclusion
+- previous/next links
+- structured episode metadata where appropriate
 
 Example title:
 
@@ -1214,21 +1215,21 @@ on pull request:
 
 Minimum content validation:
 
-* every published episode has `index.mdx`
-* every published episode has `episode.yaml`
-* every screenshot referenced in `episode.yaml` exists
-* every screenshot has alt text
-* every screenshot has a caption
-* every episode has SEO title and description
-* every episode has spoiler policy
-* no draft episodes are published accidentally
+- every published episode has `index.mdx`
+- every published episode has `episode.yaml`
+- every screenshot referenced in `episode.yaml` exists
+- every screenshot has alt text
+- every screenshot has a caption
+- every episode has SEO title and description
+- every episode has spoiler policy
+- no draft episodes are published accidentally
 
 Pipeline smoke tests can be minimal:
 
-* subtitle parser works on sample SRT
-* review parser handles PASS/FAIL
-* export function writes expected files
-* screenshot metadata validation works
+- subtitle parser works on sample SRT
+- review parser handles PASS/FAIL
+- export function writes expected files
+- screenshot metadata validation works
 
 ---
 
@@ -1238,13 +1239,13 @@ The system should assist writing, not fully automate publication.
 
 Human review remains necessary for:
 
-* final editorial judgment
-* verifying the article is not generic
-* checking that claims sound right
-* checking screenshot choices
-* checking image captions
-* checking that the article does not overquote
-* checking that the piece is actually worth reading
+- final editorial judgment
+- verifying the article is not generic
+- checking that claims sound right
+- checking screenshot choices
+- checking image captions
+- checking that the article does not overquote
+- checking that the piece is actually worth reading
 
 The final publishing step should be deliberate.
 
@@ -1256,10 +1257,10 @@ This project should avoid functioning as a substitute for watching the show.
 
 ### Dialogue
 
-* Use short quotes only.
-* Do not reproduce long stretches of dialogue.
-* Do not publish transcript-like passages.
-* Treat subtitles as internal source material, not public content.
+- Use short quotes only.
+- Do not reproduce long stretches of dialogue.
+- Do not publish transcript-like passages.
+- Treat subtitles as internal source material, not public content.
 
 ### Screenshots
 
@@ -1267,11 +1268,11 @@ Screenshots should be used for criticism and commentary.
 
 Rules:
 
-* screenshots must support specific analysis
-* no decorative galleries
-* no excessive frame extraction
-* captions should be analytical
-* avoid using screenshots as mere visual filler
+- screenshots must support specific analysis
+- no decorative galleries
+- no excessive frame extraction
+- captions should be analytical
+- avoid using screenshots as mere visual filler
 
 ### Scripts
 
@@ -1299,14 +1300,14 @@ Do not turn the public site into a source archive.
 
 Build:
 
-* Astro app
-* show page
-* episode page
-* previous/next nav
-* spoiler notice
-* screenshot component
-* basic styles
-* content validation script
+- Astro app
+- show page
+- episode page
+- previous/next nav
+- spoiler notice
+- screenshot component
+- basic styles
+- content validation script
 
 Create one hand-authored or manually pasted `index.mdx` to validate rendering.
 
@@ -1314,13 +1315,13 @@ Create one hand-authored or manually pasted `index.mdx` to validate rendering.
 
 Build Python pipeline support for:
 
-* loading SRT
-* cleaning subtitles
-* generating web research blob with web-enabled LLM
-* generating draft article
-* running review
-* running rewrite
-* exporting final MDX
+- loading SRT
+- cleaning subtitles
+- generating web research blob with web-enabled LLM
+- generating draft article
+- running review
+- running rewrite
+- exporting final MDX
 
 Run on `Succession S01E01`.
 
@@ -1328,12 +1329,12 @@ Run on `Succession S01E01`.
 
 Build support for:
 
-* PySceneDetect candidate generation
-* candidate manifest
-* LLM screenshot selection
-* copying selected screenshots into `content/`
-* generating screenshot metadata
-* inserting `<Screenshot id="...">` tags into MDX
+- PySceneDetect candidate generation
+- candidate manifest
+- LLM screenshot selection
+- copying selected screenshots into `content/`
+- generating screenshot metadata
+- inserting `<Screenshot id="...">` tags into MDX
 
 ### Phase 3: First Three Essays
 
@@ -1349,12 +1350,12 @@ Manually review each.
 
 Use these to assess:
 
-* quality
-* pipeline reliability
-* article structure
-* screenshot usefulness
-* front-end readability
-* production time per episode
+- quality
+- pipeline reliability
+- article structure
+- screenshot usefulness
+- front-end readability
+- production time per episode
 
 ### Phase 4: Complete Season 1
 
@@ -1415,14 +1416,15 @@ The pipeline is intentionally disposable and offline.
 
 The editorial quality comes from:
 
-* subtitle-grounded dialogue
-* web research blob
-* strong house style
-* mechanical anti-slop review
-* screenshot discipline
-* human final review
+- subtitle-grounded dialogue
+- web research blob
+- strong house style
+- mechanical anti-slop review
+- screenshot discipline
+- human final review
 
 The project succeeds if each episode essay feels like a serious retrospective companion: specific, rewatch-aware, visually attentive, and worth reading after the viewer has already seen the show.
 
 ```
+
 ```

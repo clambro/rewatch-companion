@@ -23,7 +23,9 @@ export async function getStaticPaths() {
     }
 
     const episodes = flattenEpisodes(show);
-    const currentIndex = episodes.findIndex((item) => item.path === `episodes/${season}/${episode}`);
+    const currentIndex = episodes.findIndex(
+      (item) => item.path === `episodes/${season}/${episode}`,
+    );
 
     return {
       params: { show: showSlug, season, episode },
@@ -32,8 +34,11 @@ export async function getStaticPaths() {
         metadata,
         show,
         previous: currentIndex > 0 ? episodes[currentIndex - 1] : null,
-        next: currentIndex >= 0 && currentIndex < episodes.length - 1 ? episodes[currentIndex + 1] : null
-      }
+        next:
+          currentIndex >= 0 && currentIndex < episodes.length - 1
+            ? episodes[currentIndex + 1]
+            : null,
+      },
     };
   });
 }

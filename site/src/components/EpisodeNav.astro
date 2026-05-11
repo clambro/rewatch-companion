@@ -8,9 +8,21 @@ function hrefFor(episode) {
 
 <nav class="episode-nav" aria-label="Episode navigation">
   <div>
-    {previous && <a href={hrefFor(previous)}>Previous: {previous.code} {previous.title}</a>}
+    {
+      previous && (
+        <a href={hrefFor(previous)}>
+          Previous: {previous.code} {previous.title}
+        </a>
+      )
+    }
   </div>
   <div>
-    {next && <a href={hrefFor(next)}>Next: {next.code} {next.title}</a>}
+    {
+      next && (
+        <a href={hrefFor(next)}>
+          Next: {next.code} {next.title}
+        </a>
+      )
+    }
   </div>
 </nav>
