@@ -25,11 +25,12 @@ class ManifestSluggedArticle(ManifestArticle):
     slug: str
 
 
-class ManifestSeason(BaseModel):
-    """A manifest entry for one season."""
+class ManifestEpisode(BaseModel):
+    """A manifest entry for one episode."""
 
     season: int
-    episodes: int
+    episode: int
+    title: str
 
 
 class ShowManifest(BaseModel):
@@ -39,7 +40,7 @@ class ShowManifest(BaseModel):
     about: ManifestArticle
     themes: list[ManifestSluggedArticle]
     characters: list[ManifestSluggedArticle]
-    seasons: list[ManifestSeason]
+    episodes: list[ManifestEpisode]
 
 
 def load_manifest(*, show: Show) -> ShowManifest:
@@ -63,11 +64,18 @@ def manifest_content_paths(*, manifest: ShowManifest) -> set[str]:
     for character in manifest.characters:
         paths.add(f"characters/{character.slug}")
 
-    for season in manifest.seasons:
-        for episode in range(1, season.episodes + 1):
-            paths.add(f"episodes/s{season.season:02}/e{episode:02}")
+    for episode in manifest.episodes:
+        paths.add(f"episodes/s{episode.season:02}/e{episode.episode:02}")
 
     return paths
+
+
+def manifest_episode_titles(*, manifest: ShowManifest) -> dict[str, str]:
+    """Return episode titles expected for a manifest."""
+    return {
+        f"episodes/s{episode.season:02}/e{episode.episode:02}": episode.title
+        for episode in manifest.episodes
+    }
 
 
 def content_paths(*, show: Show, content_root: Path) -> set[str]:
@@ -82,6 +90,22 @@ def content_paths(*, show: Show, content_root: Path) -> set[str]:
     paths.update(slugged_article_paths(show_root=show_root, section="characters"))
     paths.update(episode_paths(show_root=show_root))
     return paths
+
+
+def content_episode_titles(*, show: Show, content_root: Path) -> dict[str, str]:
+    """Return episode titles present for a show."""
+    show_root = content_root / "shows" / show.value
+    episodes_root = show_root / "episodes"
+    if not episodes_root.exists():
+        return {}
+
+    titles: dict[str, str] = {}
+    for path in episodes_root.glob("s*/e*/episode.yaml"):
+        episode = yaml.safe_load(path.read_text(encoding="utf-8"))
+        key = f"episodes/s{episode['season']:02}/e{episode['episode']:02}"
+        titles[key] = episode["title"]
+
+    return titles
 
 
 def slugged_article_paths(*, show_root: Path, section: str) -> set[str]:

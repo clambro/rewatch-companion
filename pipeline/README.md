@@ -9,7 +9,7 @@ The first pipeline feature is essay generation. It takes a manifest-defined arti
 - `generate_essay.py` - CLI entrypoint and thin orchestration.
 - `agent.py` - Pydantic AI agent definition.
 - `manifest.py` - generation manifest loading and content-tree checks.
-- `manifests/` - fixed article titles, prompts, slugs, and season episode counts.
+- `manifests/` - fixed article titles, prompts, slugs, and episode titles.
 - `prompt.py` - essay agent prompt string.
 - `schemas.py` - target and generated essay schemas.
 
@@ -21,8 +21,10 @@ Copy `.env.example` to `.env` and set `OPENAI_API_KEY` before running
 generation.
 
 ```bash
-uv run generate-essay --help
-uv run generate-essay about --show succession
+uv run python generate_about.py --show succession
+uv run python generate_theme.py --show succession --slug logan-fractured-inheritance
+uv run python generate_character.py --show succession --slug kendall-roy
+uv run python generate_episode.py --show succession --season 1 --episode 1
 uv run python -m pytest tests/unit/test_manifest_content.py
 uv run ruff check
 uv run ty check

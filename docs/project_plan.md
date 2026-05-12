@@ -441,11 +441,9 @@ content/
           e01-celebration/
             index.mdx
             episode.yaml
-            screenshots/
           e02-shit-show-at-the-fuck-factory/
             index.mdx
             episode.yaml
-            screenshots/
 ```
 
 ### Show Metadata
@@ -511,33 +509,10 @@ episode: 1
 code: "S01E01"
 title: "Celebration"
 slug: "e01-celebration"
-air_date: "2018-06-03"
-
-writer:
-  - Jesse Armstrong
-
-director:
-  - Adam McKay
-
-status: published
 
 seo:
   title: "Succession S01E01 Analysis: Celebration"
   description: "A full-series rewatch analysis of Succession's pilot: Logan's body, Kendall's false coronation, and the family business of humiliation."
-
-context:
-  series_thesis: "about/what-succession-is-about"
-  themes:
-    - "themes/logan-fractured-inheritance"
-  characters:
-    - "characters/logan-roy"
-    - "characters/kendall-roy"
-
-screenshots:
-  - id: "baseball"
-    file: "screenshots/001-baseball.webp"
-    alt: "Roman Roy stands near the child at the family baseball game."
-    caption: "The baseball sequence turns wealth into a private cruelty machine."
 ```
 
 ## 11. Spoiler Policy

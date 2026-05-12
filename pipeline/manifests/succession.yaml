@@ -14,6 +14,7 @@ characters:
     title: "Kendall Roy"
     prompt: "A full-series character essay about Kendall Roy."
 
-seasons:
+episodes:
   - season: 1
-    episodes: 1
+    episode: 1
+    title: "Celebration"

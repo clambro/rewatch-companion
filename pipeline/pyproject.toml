@@ -10,9 +10,6 @@ dependencies = [
   "pyyaml>=6.0.3,<7",
 ]
 
-[project.scripts]
-generate-essay = "generate_essay:main"
-
 [dependency-groups]
 dev = [
   "poethepoet>=0.44.0,<0.45",

@@ -28,6 +28,8 @@ class EssayTarget(BaseModel):
     title: str
     prompt: str
     slug: str | None = None
+    season: int | None = None
+    episode: int | None = None
 
 
 class GeneratedEssay(BaseModel):

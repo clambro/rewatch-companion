@@ -4,16 +4,7 @@ episode: 1
 code: "S01E01"
 title: "Celebration"
 slug: "e01-celebration"
-air_date: "2018-06-03"
-
-writer:
-  - Jesse Armstrong
-
-director:
-  - Adam McKay
 
 seo:
-  title: "Succession S01E01 Analysis: Celebration"
-  description: "A full-series rewatch analysis of Succession's pilot: Logan's body, Kendall's false coronation, and the family business of humiliation."
-
-screenshots: []
+  title: "Celebration"
+  description: "In \u201cCelebration,\u201d Succession stages succession as a family ritual that immediately becomes corporate procedure, then detonates the premise of heirship."
