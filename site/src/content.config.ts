@@ -2,7 +2,7 @@ import { defineCollection, z } from "astro:content";
 import { glob } from "astro/loaders";
 
 const contentBase = "../content/shows";
-const articleSections = ["about", "themes", "characters"] as const;
+const articleSections = ["themes", "characters"] as const;
 
 const listedArticle = z.object({
   title: z.string(),
@@ -23,7 +23,7 @@ const shows = defineCollection({
   schema: z.object({
     title: z.string(),
     slug: z.string(),
-    about: z.array(listedArticle).optional(),
+    about: listedArticle.optional(),
     themes: z.array(listedArticle).optional(),
     characters: z.array(listedArticle).optional(),
     seasons: z.array(
@@ -91,27 +91,27 @@ const episodeArticles = defineCollection({
 const articleMetadata = defineCollection({
   loader: glob({
     base: contentBase,
-    pattern: `*/{${articleSections.join(",")}}/*/article.yaml`,
+    pattern: [
+      "*/about/article.yaml",
+      `*/{${articleSections.join(",")}}/*/article.yaml`,
+    ],
     generateId: ({ entry }) => entry.replace(/\/article\.ya?ml$/, ""),
   }),
   schema: z.object({
     show: z.string(),
-    type: z.enum(["about", "theme", "character"]),
     title: z.string(),
-    slug: z.string(),
+    slug: z.string().optional(),
     seo,
-    context: z
-      .object({
-        depends_on: z.array(z.string()).default([]),
-      })
-      .optional(),
   }),
 });
 
 const articleArticles = defineCollection({
   loader: glob({
     base: contentBase,
-    pattern: `*/{${articleSections.join(",")}}/*/index.mdx`,
+    pattern: [
+      "*/about/index.mdx",
+      `*/{${articleSections.join(",")}}/*/index.mdx`,
+    ],
     generateId: ({ entry }) => entry.replace(/\/index\.mdx$/, ""),
   }),
   schema: z.object({

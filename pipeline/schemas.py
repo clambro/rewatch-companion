@@ -5,13 +5,19 @@ from enum import StrEnum
 from pydantic import BaseModel
 
 
+class Show(StrEnum):
+    """Supported show slugs."""
+
+    SUCCESSION = "succession"
+
+
 class EssayKind(StrEnum):
     """Supported generated essay kinds."""
 
     ABOUT = "about"
-    THEME = "theme"
-    CHARACTER = "character"
-    EPISODE = "episode"
+    THEMES = "themes"
+    CHARACTERS = "characters"
+    EPISODES = "episodes"
 
 
 class EssayTarget(BaseModel):
@@ -27,9 +33,3 @@ class GeneratedEssay(BaseModel):
     title: str
     subtitle: str
     body_mdx: str
-
-
-class EssayDraft(GeneratedEssay):
-    """Generated essay plus orchestration-owned metadata."""
-
-    slug: str

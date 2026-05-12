@@ -14,7 +14,7 @@ from prompt import ESSAY_AGENT_INSTRUCTIONS
 from schemas import EssayTarget, GeneratedEssay
 from settings import settings
 
-MODEL = "gpt-5.5"
+MODEL = "gpt-5.4-nano"
 
 
 def run_essay_agent(*, target: EssayTarget) -> GeneratedEssay:

@@ -13,7 +13,7 @@ export async function getStaticPaths() {
 const { show } = Astro.props;
 const episodes = show.data.seasons.flatMap((season) => season.episodes);
 const articleSections = [
-  { heading: "About", entries: show.data.about ?? [] },
+  { heading: "About", entries: show.data.about ? [show.data.about] : [] },
   { heading: "Themes", entries: show.data.themes ?? [] },
   { heading: "Characters", entries: show.data.characters ?? [] },
 ];
