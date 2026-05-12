@@ -1,6 +1,18 @@
 title: "Succession"
 slug: "succession"
 
+about:
+  title: "What Succession Is Fundamentally About: Power, Trauma, and the Lie of Inheritance"
+  path: "about"
+
+themes:
+  - title: "Humiliation as Organizational Culture"
+    path: "themes/humiliation-as-organizational-culture"
+
+characters:
+  - title: "Kendall Roy"
+    path: "characters/kendall-roy"
+
 seasons:
   - season: 1
     episodes:

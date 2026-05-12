@@ -36,6 +36,16 @@ uv run ty check                          # type checker (must pass)
 - Do NOT ignore type errors except for unfixable external package issues
 - When in doubt, fix the issue rather than suppress the warning
 
+## Code Organization
+
+Read Python modules from top to bottom:
+
+- public entrypoints first
+- private/helper functions after the functions they support
+- no C-style forward-declaration ordering
+- no one-line, one-use helper functions
+- keep prompt strings in Python modules, not Markdown files, unless explicitly requested
+
 ## Artifact Rules
 
 Keep raw and intermediate artifacts out of version control. Use `.local/` for:
