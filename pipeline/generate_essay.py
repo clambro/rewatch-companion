@@ -37,6 +37,7 @@ def main() -> None:
     show = Show(args.show)
     manifest = load_manifest(show=show)
     target = EssayTarget(
+        show=show,
         kind=EssayKind.ABOUT,
         title=manifest.about.title,
         prompt=manifest.about.prompt,

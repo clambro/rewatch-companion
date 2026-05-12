@@ -10,7 +10,7 @@ from pydantic_ai.common_tools.web_fetch import web_fetch_tool
 from pydantic_ai.models.openai import OpenAIResponsesModel
 from pydantic_ai.providers.openai import OpenAIProvider
 
-from prompt import ESSAY_AGENT_INSTRUCTIONS
+from prompt import AGENT_INSTRUCTIONS, build_essay_prompt
 from schemas import EssayTarget, GeneratedEssay
 from settings import settings
 
@@ -25,14 +25,9 @@ def run_essay_agent(*, target: EssayTarget) -> GeneratedEssay:
 async def _run_essay_agent_iteratively(*, target: EssayTarget) -> GeneratedEssay:
     """Generate an essay while logging intermediate agent graph nodes."""
     agent = build_essay_agent()
-    prompt = (
-        "Generate the requested essay.\n\n"
-        f"Kind: {target.kind.value}\n"
-        f"Title: {target.title}\n"
-        f"Prompt: {target.prompt}"
-    )
+    prompt = build_essay_prompt(target=target)
 
-    logger.info(f"Starting essay agent run for kind={target.kind.value}")
+    logger.info(f"Starting essay agent run for show={target.show.value} kind={target.kind.value}")
     async with agent.iter(prompt, deps=target) as agent_run:
         async for node in agent_run:
             logger.info(f"Agent step: {node.__class__.__name__}")
@@ -58,6 +53,6 @@ def build_essay_agent() -> Agent[EssayTarget, GeneratedEssay]:
                 duckduckgo_search_tool(),
                 web_fetch_tool(),
             ],
-            instructions=ESSAY_AGENT_INSTRUCTIONS,
+            instructions=AGENT_INSTRUCTIONS,
         ),
     )

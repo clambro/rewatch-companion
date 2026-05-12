@@ -23,6 +23,7 @@ class EssayKind(StrEnum):
 class EssayTarget(BaseModel):
     """Minimal user-provided target for an essay run."""
 
+    show: Show
     kind: EssayKind
     title: str
     prompt: str
