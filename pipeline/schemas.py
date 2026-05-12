@@ -24,12 +24,12 @@ class EssayTarget(BaseModel):
     """Minimal user-provided target for an essay run."""
 
     kind: EssayKind
-    description: str
+    title: str
+    prompt: str
 
 
 class GeneratedEssay(BaseModel):
     """Structured output returned by the LLM."""
 
-    title: str
     subtitle: str
     body_mdx: str

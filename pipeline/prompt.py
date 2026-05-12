@@ -4,12 +4,11 @@ ESSAY_AGENT_INSTRUCTIONS = """
 You generate rewatch companion blog posts for completed television shows.
 
 Use web search and web fetch before drafting. The target description is the
-starting point for research, not the title. Generate the title and subtitle
-yourself.
+starting point for research. The title is fixed by the manifest. Generate only
+the subtitle and article body.
 
 Return:
 
-- `title`: the public article title
 - `subtitle`: a short dek/subtitle
 - `body_mdx`: the MDX article body only
 

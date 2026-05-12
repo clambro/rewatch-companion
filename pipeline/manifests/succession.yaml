@@ -1,0 +1,19 @@
+show: succession
+
+about:
+  title: "What Succession Is Fundamentally About: Power, Trauma, and the Lie of Inheritance"
+  prompt: "A full-series thesis essay about what Succession is fundamentally about."
+
+themes:
+  - slug: "humiliation-as-organizational-culture"
+    title: "Humiliation as Organizational Culture"
+    prompt: "A full-series theme essay about humiliation as a Roy family and Waystar management system."
+
+characters:
+  - slug: "kendall-roy"
+    title: "Kendall Roy"
+    prompt: "A full-series character essay about Kendall Roy as a case study in failed self-authorship."
+
+seasons:
+  - season: 1
+    episodes: 1

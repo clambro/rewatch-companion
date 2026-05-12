@@ -28,7 +28,8 @@ async def _run_essay_agent_iteratively(*, target: EssayTarget) -> GeneratedEssay
     prompt = (
         "Generate the requested essay.\n\n"
         f"Kind: {target.kind.value}\n"
-        f"Description: {target.description}"
+        f"Title: {target.title}\n"
+        f"Prompt: {target.prompt}"
     )
 
     logger.info(f"Starting essay agent run for kind={target.kind.value}")

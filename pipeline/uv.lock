@@ -676,11 +676,12 @@ wheels = [
 [[package]]
 name = "rewatch-pipeline"
 version = "0.1.0"
-source = { editable = "." }
+source = { virtual = "." }
 dependencies = [
     { name = "loguru" },
     { name = "pydantic-ai-slim", extra = ["duckduckgo", "openai", "web-fetch"] },
     { name = "pydantic-settings" },
+    { name = "pyyaml" },
 ]
 
 [package.dev-dependencies]
@@ -696,6 +697,7 @@ requires-dist = [
     { name = "loguru", specifier = ">=0.7.3,<0.8" },
     { name = "pydantic-ai-slim", extras = ["duckduckgo", "openai", "web-fetch"], specifier = ">=1.93.0,<2" },
     { name = "pydantic-settings", specifier = ">=2.12.0,<3" },
+    { name = "pyyaml", specifier = ">=6.0.3,<7" },
 ]
 
 [package.metadata.requires-dev]
