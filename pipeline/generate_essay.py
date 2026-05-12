@@ -27,13 +27,13 @@ def main() -> None:
     themes_parser.add_argument("--show", choices=[show.value for show in Show], required=True)
     themes_parser.add_argument("--slug", required=True)
 
-    subparsers.add_parser("characters")
+    characters_parser = subparsers.add_parser("characters")
+    characters_parser.add_argument("--show", choices=[show.value for show in Show], required=True)
+    characters_parser.add_argument("--slug", required=True)
 
     subparsers.add_parser("episodes")
 
     command = GenerateEssayCommand.model_validate(vars(parser.parse_args()))
-    if command.kind == EssayKind.CHARACTERS:
-        parser.error("Character generation is not implemented yet.")
     if command.kind == EssayKind.EPISODES:
         parser.error("Episode generation is not implemented yet.")
 
@@ -88,6 +88,16 @@ def build_target(
             slug=theme.slug,
         )
 
+    if command.kind == EssayKind.CHARACTERS:
+        character = find_slugged_article(entries=manifest.characters, slug=command.slug)
+        return EssayTarget(
+            show=command.show,
+            kind=EssayKind.CHARACTERS,
+            title=character.title,
+            prompt=character.prompt,
+            slug=character.slug,
+        )
+
     raise ValueError(f"Unsupported essay command: {command.kind.value}")
 
 
@@ -100,6 +110,11 @@ def output_path(*, target: EssayTarget) -> Path:
         if target.slug is None:
             raise ValueError("Theme generation requires a slug.")
         return CONTENT_ROOT / target.show.value / EssayKind.THEMES.value / target.slug
+
+    if target.kind == EssayKind.CHARACTERS:
+        if target.slug is None:
+            raise ValueError("Character generation requires a slug.")
+        return CONTENT_ROOT / target.show.value / EssayKind.CHARACTERS.value / target.slug
 
     raise ValueError(f"Unsupported essay kind: {target.kind.value}")
 

@@ -12,7 +12,7 @@ themes:
 characters:
   - slug: "kendall-roy"
     title: "Kendall Roy"
-    prompt: "A full-series character essay about Kendall Roy as a case study in failed self-authorship."
+    prompt: "A full-series character essay about Kendall Roy."
 
 seasons:
   - season: 1
