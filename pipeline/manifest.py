@@ -48,8 +48,7 @@ def load_manifest(*, show: Show) -> ShowManifest:
     data = yaml.safe_load(path.read_text(encoding="utf-8"))
     manifest = ShowManifest.model_validate(data)
     if manifest.show != show.value:
-        msg = f"Manifest {path} declares show {manifest.show}, expected {show.value}."
-        raise ValueError(msg)
+        raise ValueError(f"Manifest {path} declares show {manifest.show}, expected {show.value}.")
 
     return manifest
 

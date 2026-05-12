@@ -5,9 +5,9 @@ about:
   prompt: "A full-series thesis essay about what Succession is fundamentally about."
 
 themes:
-  - slug: "humiliation-as-organizational-culture"
-    title: "Humiliation as Organizational Culture"
-    prompt: "A full-series theme essay about humiliation as a Roy family and Waystar management system."
+  - slug: "logan-fractured-inheritance"
+    title: "Logan's Fractured Inheritance"
+    prompt: "A full-series theme essay about the Roy children as partial, flawed expressions of Logan: each has some aspect of his greatness, each is marred by a fatal weakness, and together they might be stronger than Logan if those weaknesses did not make sustained unity impossible."
 
 characters:
   - slug: "kendall-roy"

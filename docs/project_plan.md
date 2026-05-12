@@ -73,7 +73,7 @@ For **Succession**, possible theme essays include:
 ```txt
 Family as Corporation, Corporation as Family
 Love as Leverage
-Humiliation as Organizational Culture
+Logan's Fractured Inheritance
 Reality-Making and Media Power
 Inheritance as Damage
 Language, Evasion, and Corporate Nonsense
@@ -95,7 +95,7 @@ They should answer:
 - How does the finale clarify or revise the theme?
 - What should later character and episode essays remember about this theme?
 
-The point is to prevent every episode essay from saying vague things like “this episode explores power and family.” The theme essays define exactly how power, family, money, language, media, humiliation, and inheritance work in this specific show.
+The point is to prevent every episode essay from saying vague things like “this episode explores power and family.” The theme essays define exactly how power, family, money, language, media, inheritance, and the Roy children's relationship to Logan work in this specific show.
 
 ### Layer 3: Major Character Essays
 
@@ -174,16 +174,16 @@ Each episode essay should answer:
 Weak episode analysis:
 
 ```txt
-The baseball scene shows Roman’s cruelty.
+The vote fails because the siblings cannot work together.
 ```
 
 Better episode analysis:
 
 ```txt
-The baseball scene is the pilot’s first full demonstration of humiliation as a Roy family technology: Roman turns another person’s economic reality into a game, then lets the family’s administrative apparatus convert the damage into silence.
+The failed alliance shows the central inheritance problem in miniature: Kendall, Shiv, and Roman each carry a usable fragment of Logan's force, but each fragment is damaged in a way that makes durable coalition impossible.
 ```
 
-The second version is possible because “humiliation as organizational culture” has already been defined upstream.
+The second version is possible because “Logan's Fractured Inheritance” has already been defined upstream.
 
 ## 4. Why This Order Matters
 
@@ -293,7 +293,7 @@ The first content milestone should be the interpretive foundation:
 ```txt
 content/shows/succession/about/what-succession-is-about/
 content/shows/succession/themes/family-as-corporation/
-content/shows/succession/themes/humiliation-as-organizational-culture/
+content/shows/succession/themes/logan-fractured-inheritance/
 content/shows/succession/characters/logan-roy/
 content/shows/succession/characters/kendall-roy/
 ```
@@ -394,7 +394,7 @@ Public URLs should be organized by show and artifact type:
 ```txt
 /shows/succession/
 /shows/succession/about/what-succession-is-about/
-/shows/succession/themes/humiliation-as-organizational-culture/
+/shows/succession/themes/logan-fractured-inheritance/
 /shows/succession/characters/kendall-roy/
 /shows/succession/episodes/s01/e01-celebration/
 ```
@@ -424,7 +424,7 @@ content/
         family-as-corporation/
           index.mdx
           article.yaml
-        humiliation-as-organizational-culture/
+        logan-fractured-inheritance/
           index.mdx
           article.yaml
 
@@ -461,8 +461,8 @@ about:
     path: "about/what-succession-is-about"
 
 themes:
-  - title: "Humiliation as Organizational Culture"
-    path: "themes/humiliation-as-organizational-culture"
+  - title: "Logan's Fractured Inheritance"
+    path: "themes/logan-fractured-inheritance"
 
 characters:
   - name: "Kendall Roy"
@@ -485,13 +485,13 @@ Example:
 ```yaml
 show: succession
 type: theme
-title: "Humiliation as Organizational Culture"
-slug: "humiliation-as-organizational-culture"
+title: "Logan's Fractured Inheritance"
+slug: "logan-fractured-inheritance"
 status: published
 
 seo:
-  title: "Succession Theme Analysis: Humiliation as Organizational Culture"
-  description: "A full-series analysis of humiliation as a Roy family technology and Waystar management system."
+  title: "Succession Theme Analysis: Logan's Fractured Inheritance"
+  description: "A full-series analysis of the Roy children as partial, flawed expressions of Logan's power."
 
 context:
   depends_on:
@@ -528,7 +528,7 @@ seo:
 context:
   series_thesis: "about/what-succession-is-about"
   themes:
-    - "themes/humiliation-as-organizational-culture"
+    - "themes/logan-fractured-inheritance"
   characters:
     - "characters/logan-roy"
     - "characters/kendall-roy"

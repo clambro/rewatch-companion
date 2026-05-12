@@ -27,6 +27,7 @@ class EssayTarget(BaseModel):
     kind: EssayKind
     title: str
     prompt: str
+    slug: str | None = None
 
 
 class GeneratedEssay(BaseModel):
