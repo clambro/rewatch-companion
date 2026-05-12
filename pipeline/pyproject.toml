@@ -3,10 +3,14 @@ name = "rewatch-pipeline"
 version = "0.1.0"
 description = "Offline content generation pipeline for Rewatch Companion."
 requires-python = ">=3.14"
-dependencies = []
+dependencies = [
+  "loguru>=0.7.3,<0.8",
+  "pydantic-ai-slim[duckduckgo,openai,web-fetch]>=1.93.0,<2",
+  "pydantic-settings>=2.12.0,<3",
+]
 
 [project.scripts]
-generate-episode = "episode_generation.cli:main"
+generate-essay = "generate_essay:main"
 
 [dependency-groups]
 dev = [
@@ -21,7 +25,7 @@ requires = ["hatchling>=1.29.0"]
 build-backend = "hatchling.build"
 
 [tool.hatch.build.targets.wheel]
-packages = ["episode_generation"]
+only-include = ["agent.py", "generate_essay.py", "prompt.py", "schemas.py", "settings.py"]
 
 [tool.poe.tasks]
 unit_tests = "python -m pytest -k unit"

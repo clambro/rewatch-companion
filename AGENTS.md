@@ -36,3 +36,4 @@ Do not commit raw subtitles, research blobs, intermediate drafts, scene-detectio
 - Keep changes scoped to the directory and task at hand.
 - Respect `.pre-commit-config.yaml` and run it as part of your self-review.
 - Prefer updating these instructions when workflow rules change instead of relying on chat history.
+- Order code for top-to-bottom reading. Put public entrypoints before private helpers, and place helper functions below the functions they support.
