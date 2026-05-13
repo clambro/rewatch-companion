@@ -5,7 +5,7 @@ import argparse
 from pydantic import BaseModel
 
 from agent import run_essay_agent
-from generate_essay import episode_slug, find_episode, write_article
+from generate_essay import episode_slug, find_episode, load_article_sources, write_article
 from manifest import load_manifest
 from schemas import EssayKind, EssayTarget, Show
 
@@ -42,7 +42,11 @@ def generate_episode() -> None:
         episode=episode.episode,
     )
 
-    write_article(target=target, draft=run_essay_agent(target=target))
+    sources = load_article_sources(
+        show=target.show,
+        sections=[EssayKind.ABOUT, EssayKind.THEMES, EssayKind.CHARACTERS],
+    )
+    write_article(target=target, draft=run_essay_agent(target=target, sources=sources))
 
 
 if __name__ == "__main__":
