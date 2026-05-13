@@ -1,9 +1,8 @@
 """Pydantic AI essay agent."""
 
-import asyncio
 from typing import cast
 
-from loguru import logger
+import logfire
 from pydantic_ai import Agent
 from pydantic_ai.common_tools.duckduckgo import duckduckgo_search_tool
 from pydantic_ai.common_tools.web_fetch import web_fetch_tool
@@ -16,25 +15,22 @@ from settings import settings
 
 MODEL = "gpt-5.4-nano"
 
+logfire.configure(
+    service_name="rewatch-pipeline",
+    token=settings.logfire_token,
+    metrics=logfire.MetricsOptions(collect_in_spans=True),
+    scrubbing=False,
+)
+logfire.instrument_pydantic_ai(use_aggregated_usage_attribute_names=True)
+logfire.instrument_openai(version="latest")
+logfire.instrument_httpx(capture_all=True)
+
 
 def run_essay_agent(*, target: EssayTarget) -> GeneratedEssay:
     """Generate an essay for a target."""
-    return asyncio.run(_run_essay_agent_iteratively(target=target))
-
-
-async def _run_essay_agent_iteratively(*, target: EssayTarget) -> GeneratedEssay:
-    """Generate an essay while logging intermediate agent graph nodes."""
     agent = build_essay_agent()
     prompt = build_essay_prompt(target=target)
-
-    logger.info(f"Starting essay agent run for show={target.show.value} kind={target.kind.value}")
-    async with agent.iter(prompt, deps=target) as agent_run:
-        async for node in agent_run:
-            logger.info(f"Agent step: {node.__class__.__name__}")
-            logger.debug(f"Agent step detail: {node!r}")
-
-    logger.info("Essay agent run completed")
-    return agent_run.result.output
+    return agent.run_sync(prompt, deps=target).output
 
 
 def build_essay_agent() -> Agent[EssayTarget, GeneratedEssay]:

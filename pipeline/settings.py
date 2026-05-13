@@ -15,6 +15,7 @@ class Settings(BaseSettings):
     )
 
     openai_api_key: str = ""
+    logfire_token: str = ""
 
 
 settings = Settings()

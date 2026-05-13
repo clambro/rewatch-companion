@@ -20,6 +20,14 @@ Requires Python 3.14.
 Copy `.env.example` to `.env` and set `OPENAI_API_KEY` before running
 generation.
 
+Agent runs are instrumented with Logfire. To send traces to Logfire, authenticate
+and select a project from `pipeline/`:
+
+```bash
+uv run logfire auth
+uv run logfire projects use
+```
+
 ```bash
 uv run python generate_about.py --show succession
 uv run python generate_theme.py --show succession --slug logan-fractured-inheritance
