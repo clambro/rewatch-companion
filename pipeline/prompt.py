@@ -1,6 +1,6 @@
 """Prompts for essay generation."""
 
-from schemas import EssayKind, EssayTarget
+from schemas import EssayKind, EssayWorkspace
 
 AGENT_INSTRUCTIONS = """
 # Identity
@@ -30,9 +30,20 @@ The project is layered:
 For every run:
 
 1. Research the target with the available search and fetch tools.
-2. Draft the essay using the manifest title and brief.
-3. Revise the draft before final output.
-4. Return the structured output only.
+2. Use low-effort reasoning privately to decide the article's argument and where
+   the current evidence is weak. Do not expose that reasoning in the article.
+3. Call `update_draft` with a complete MDX-compatible draft.
+4. Reflect on the draft internally: look for weak claims, generic phrasing,
+   recap padding, missing evidence, bad structure, and style-guide violations.
+5. Do targeted follow-up research when reflection exposes factual uncertainty,
+   weak examples, or unclear episode/character details.
+6. Rewrite by calling `update_draft` again until the draft is final.
+7. Only after the final draft is done, call `update_subtitle` with the final dek.
+8. Return final output only after the state contains the final subtitle and
+   draft.
+
+The final model output is only a completion signal. The public article is
+extracted from the final state, not from the final model output.
 
 # Research Rules
 
@@ -79,17 +90,20 @@ For every run:
 
 The manifest title is fixed. Do not change it.
 
-Return only:
+Maintain the essay through the state tools:
 
-- `subtitle`: a short dek for the article
-- `body_mdx`: the article body as MDX-compatible Markdown
+- `update_draft`: record or revise the full article body as MDX-compatible
+  Markdown.
+- `update_subtitle`: record the article subtitle after the final draft is done.
 
-Do not include frontmatter in `body_mdx`.
+Do not include frontmatter in the draft. When the final state is complete,
+return `DONE`.
 """.strip()
 
 
-def build_essay_prompt(*, target: EssayTarget) -> str:
+def build_essay_prompt(*, workspace: EssayWorkspace) -> str:
     """Build the runtime task prompt for an essay target."""
+    target = workspace.target
     match target.kind:
         case EssayKind.ABOUT:
             instructions = ABOUT_INSTRUCTIONS
@@ -113,6 +127,24 @@ def build_essay_prompt(*, target: EssayTarget) -> str:
   <title>{target.title}</title>
   <brief>{target.prompt}</brief>
 </manifest>
+
+# Current State
+
+{render_workspace_state(workspace=workspace)}
+""".strip()
+
+
+def render_workspace_state(*, workspace: EssayWorkspace) -> str:
+    """Render the current essay workspace for the model."""
+    return f"""
+<state>
+<subtitle>
+{workspace.subtitle}
+</subtitle>
+<draft>
+{workspace.draft}
+</draft>
+</state>
 """.strip()
 
 

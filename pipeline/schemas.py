@@ -32,6 +32,14 @@ class EssayTarget(BaseModel):
     episode: int | None = None
 
 
+class EssayWorkspace(BaseModel):
+    """Mutable state for an essay run."""
+
+    target: EssayTarget
+    subtitle: str = ""
+    draft: str = ""
+
+
 class GeneratedEssay(BaseModel):
     """Structured output returned by the LLM."""
 
