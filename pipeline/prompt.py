@@ -58,8 +58,7 @@ extracted from the final state, not from the final model output.
 - Make specific interpretive claims.
 - Prefer concrete nouns and active verbs.
 - Write with controlled critical authority, not fan enthusiasm.
-- Keep the tone sober, precise, and academically serious without becoming
-  jargon-heavy.
+- Keep the tone sober, precise, and intellectual without becoming jargon-heavy.
 - Prefer close reading, dramatic analysis, formal analysis, and argument over
   emotional emphasis.
 - Avoid melodrama, grand pronouncements, overstatement, and language that treats
@@ -133,9 +132,9 @@ WORKSPACE_STATE_TEMPLATE = """
 
 SOURCES_TEMPLATE = """
 <sources>
-These are other Rewatch Companion essays already written for this show. Treat
-them as internal context, not as public citations. Use them to preserve
-continuity with existing essays.
+These are summaries of other Rewatch Companion essays already written for
+this show. Treat them as internal context, not as public citations. Use
+them to preserve continuity with existing essays.
 
 {sources}
 </sources>
@@ -146,8 +145,61 @@ SOURCE_TEMPLATE = """
 Title: {title}
 Subtitle: {subtitle}
 
-{body_mdx}
+Summary:
+{summary_mdx}
 </source>
+""".strip()
+
+SUMMARY_INSTRUCTIONS = """
+You write compact internal reference summaries for Rewatch Companion, a static
+site for serious full-series television criticism.
+
+The reader has already finished the show. The project is built for rewatching,
+so spoilers do not exist. The writing is retrospective criticism for an
+intelligent viewer who wants detailed analysis that only becomes possible with
+full-series context.
+
+The project is layered:
+
+1. Series thesis essays define the master reading of the completed show.
+2. Theme essays define the show's conceptual vocabulary.
+3. Character essays explain how characters embody and complicate that
+   vocabulary.
+4. Episode essays apply the established framework to individual dramatic units.
+
+This summary will be used as source context for later essay-generation runs. It
+needs to preserve the essay's argument in a much smaller form so later runs can
+inherit the thesis, critical vocabulary, and useful interpretive claims without
+carrying the full essay in context.
+
+Return only the summary paragraph.
+""".strip()
+
+SUMMARY_PROMPT_TEMPLATE = """
+# Task
+
+Write a single paragraph summary of this Rewatch Companion essay.
+
+This is internal reference material for later generation runs. Its job is to
+preserve the essay's key thesis and most useful interpretive claims without
+carrying the full essay forward in context.
+
+Requirements:
+
+- Write one paragraph.
+- Do not use headings, bullets, frontmatter, citations, or metadata.
+- Preserve the essay's central argument, not a plot recap.
+- Include the specific critical vocabulary later essays should inherit.
+- Keep it compact enough to use as source context.
+
+# Essay
+
+<essay>
+Title: {title}
+Subtitle: {subtitle}
+
+{body_mdx}
+</essay>
 """.strip()
 
 
@@ -290,7 +342,16 @@ def render_sources(*, sources: list[EssaySource]) -> str:
         SOURCE_TEMPLATE.format(
             title=source.title,
             subtitle=source.subtitle,
-            body_mdx=source.body_mdx,
+            summary_mdx=source.summary_mdx,
         )
         for source in sources
+    )
+
+
+def build_summary_prompt(*, title: str, subtitle: str, body_mdx: str) -> str:
+    """Build the prompt for a compact internal essay summary."""
+    return SUMMARY_PROMPT_TEMPLATE.format(
+        title=title,
+        subtitle=subtitle,
+        body_mdx=body_mdx,
     )

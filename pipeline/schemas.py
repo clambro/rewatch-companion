@@ -37,7 +37,7 @@ class EssaySource(BaseModel):
 
     title: str
     subtitle: str
-    body_mdx: str
+    summary_mdx: str
 
 
 class EssayWorkspace(BaseModel):

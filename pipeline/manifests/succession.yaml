@@ -7,14 +7,38 @@ about:
 themes:
   - slug: "logan-fractured-inheritance"
     title: "Logan's Fractured Inheritance"
-    prompt: "A full-series theme essay about the Roy children as partial, flawed expressions of Logan: each has some aspect of his greatness, each is marred by a fatal weakness, and together they might be stronger than Logan if those weaknesses did not make sustained unity impossible."
+    prompt: "This essay is about the Roy children as partial, damaged reproductions of Logan Roy. Kendall has Logan's appetite for scale and mythic self-belief, Shiv has his tactical cruelty and contempt for weakness, Roman has his instinct for domination and humiliation, and Connor has his fantasy of sovereign importance. Each child contains some fragment of Logan's power, but each fragment is distorted by a fatal weakness and the need for Logan's approval. Taken together, they might form a more complete successor than any one of them alone, yet the same trauma that makes them recognizable as Logan's children also makes lasting unity impossible."
+  - slug: "not-serious-people"
+    title: "Not Serious People"
+    prompt: 'This essay is about the gap between desiring power and being capable of wielding it. Kendall, Shiv, and Roman all want the throne, and each can perform authority in flashes, but the show repeatedly exposes the difference between theatrical ambition and durable competence. Logan''s phrase "not serious people" becomes more than a father''s insult; it becomes a judgment on inherited entitlement. The Roy children have access, vocabulary, and proximity, but they lack the steadiness, discipline, and institutional fluency that real power demands. The essay asks whether the tragedy is that they were denied power, or that they were never fit for it.'
+  - slug: "love-as-leverage"
+    title: "Love as Leverage"
+    prompt: "This essay is about the way Succession treats love as real but almost never safe. The Roys do love one another, but affection arrives tangled with tests, punishments, bargains, and bids for advantage. Logan turns approval into a scarce resource, and his children learn to treat emotional need as weakness. The same pattern repeats in Shiv and Tom's marriage, Kendall's relationships with his siblings, Roman's attachment to Gerri, and Connor's hunger to be acknowledged. The essay's central tension is that love is not absent from the show; it is present, but continually converted into leverage."
 
 characters:
   - slug: "kendall-roy"
     title: "Kendall Roy"
     prompt: "A full-series character essay about Kendall Roy."
+  - slug: "roman-roy"
+    title: "Roman Roy"
+    prompt: "A full-series character essay about Roman Roy."
+  - slug: "shiv-roy"
+    title: "Shiv Roy"
+    prompt: "A full-series character essay about Shiv Roy."
 
 episodes:
   - season: 1
     episode: 1
     title: "Celebration"
+  - season: 1
+    episode: 2
+    title: "Shit Show at the Fuck Factory"
+  - season: 1
+    episode: 3
+    title: "Lifeboats"
+  - season: 2
+    episode: 1
+    title: "The Summer Palace"
+  - season: 2
+    episode: 2
+    title: "Vaulter"

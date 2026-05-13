@@ -4,10 +4,11 @@ import json
 import re
 import sys
 from pathlib import Path
-from typing import TYPE_CHECKING
+from typing import TYPE_CHECKING, Any
 
 import yaml
 
+from agent import summarize_essay
 from schemas import EssayKind, EssaySource, EssayTarget, GeneratedEssay, Show
 
 if TYPE_CHECKING:
@@ -35,7 +36,44 @@ def write_article(*, target: EssayTarget, draft: GeneratedEssay) -> None:
             metadata = render_article_metadata(target=target, draft=draft)
 
     (output_dir / metadata_file).write_text(metadata, encoding="utf-8")
+    (output_dir / "summary.mdx").write_text(
+        f"{summarize_essay(target=target, draft=draft).strip()}\n",
+        encoding="utf-8",
+    )
+    rebuild_show_index(show=target.show)
     sys.stdout.write(f"Wrote {output_dir / 'index.mdx'}\n")
+
+
+def rebuild_show_index(*, show: Show) -> None:
+    """Rebuild the frontend show index from generated content files."""
+    show_root = CONTENT_ROOT / show.value
+    show_index_path = show_root / "show.yaml"
+    current_index = yaml.safe_load(show_index_path.read_text(encoding="utf-8"))
+
+    show_index: dict[str, Any] = {
+        "title": current_index["title"],
+        "slug": current_index["slug"],
+    }
+
+    about_metadata_path = show_root / EssayKind.ABOUT.value / "article.yaml"
+    about_article_path = show_root / EssayKind.ABOUT.value / "index.mdx"
+    if about_metadata_path.is_file() and about_article_path.is_file():
+        about_metadata = yaml.safe_load(about_metadata_path.read_text(encoding="utf-8"))
+        show_index["about"] = {
+            "title": about_metadata["title"],
+            "path": EssayKind.ABOUT.value,
+        }
+
+    themes = load_article_listing(show_root=show_root, section=EssayKind.THEMES)
+    if themes:
+        show_index["themes"] = themes
+
+    characters = load_article_listing(show_root=show_root, section=EssayKind.CHARACTERS)
+    if characters:
+        show_index["characters"] = characters
+
+    show_index["seasons"] = load_episode_listing(show_root=show_root)
+    show_index_path.write_text(render_show_index(show_index=show_index), encoding="utf-8")
 
 
 def load_article_sources(*, show: Show, sections: list[EssayKind]) -> list[EssaySource]:
@@ -45,20 +83,80 @@ def load_article_sources(*, show: Show, sections: list[EssayKind]) -> list[Essay
     for section in sections:
         match section:
             case EssayKind.ABOUT:
-                path = show_root / EssayKind.ABOUT.value / "index.mdx"
-                if path.is_file():
-                    sources.append(load_article_source(path=path))
+                article_path = show_root / EssayKind.ABOUT.value / "index.mdx"
+                summary_path = show_root / EssayKind.ABOUT.value / "summary.mdx"
+                if article_path.is_file():
+                    if not summary_path.is_file():
+                        raise ValueError(f"Missing source summary: {summary_path}")
+                    sources.append(load_article_source(path=summary_path))
             case EssayKind.THEMES | EssayKind.CHARACTERS:
                 section_root = show_root / section.value
-                sources.extend(
-                    load_article_source(path=path)
-                    for path in sorted(section_root.glob("*/index.mdx"))
-                    if path.is_file()
-                )
+                for article_path in sorted(section_root.glob("*/index.mdx")):
+                    summary_path = article_path.with_name("summary.mdx")
+                    if not summary_path.is_file():
+                        raise ValueError(f"Missing source summary: {summary_path}")
+                    sources.append(load_article_source(path=summary_path))
             case EssayKind.EPISODES:
                 raise ValueError("Episode essays are not supported as generation sources yet.")
 
     return sources
+
+
+def load_article_listing(*, show_root: Path, section: EssayKind) -> list[dict[str, str]]:
+    """Load generated article entries for the frontend show index."""
+    article_root = show_root / section.value
+    entries = []
+    for metadata_path in sorted(article_root.glob("*/article.yaml")):
+        article_path = metadata_path.with_name("index.mdx")
+        if not article_path.is_file():
+            continue
+
+        metadata = yaml.safe_load(metadata_path.read_text(encoding="utf-8"))
+        entries.append(
+            {
+                "title": metadata["title"],
+                "path": metadata_path.parent.relative_to(show_root).as_posix(),
+            },
+        )
+
+    return entries
+
+
+def load_episode_listing(*, show_root: Path) -> list[dict[str, Any]]:
+    """Load generated episode entries for the frontend show index."""
+    seasons_by_number: dict[int, list[dict[str, Any]]] = {}
+    for metadata_path in sorted((show_root / EssayKind.EPISODES.value).glob("s*/e*/episode.yaml")):
+        article_path = metadata_path.with_name("index.mdx")
+        if not article_path.is_file():
+            continue
+
+        metadata = yaml.safe_load(metadata_path.read_text(encoding="utf-8"))
+        seasons_by_number.setdefault(metadata["season"], []).append(
+            {
+                "episode": metadata["episode"],
+                "code": metadata["code"],
+                "title": metadata["title"],
+                "path": metadata_path.parent.relative_to(show_root).as_posix(),
+            },
+        )
+
+    seasons = []
+    for season_number, episodes in sorted(seasons_by_number.items()):
+        seasons.append(
+            {
+                "season": season_number,
+                "episodes": [
+                    {
+                        "code": episode["code"],
+                        "title": episode["title"],
+                        "path": episode["path"],
+                    }
+                    for episode in sorted(episodes, key=lambda entry: entry["episode"])
+                ],
+            },
+        )
+
+    return seasons
 
 
 def output_path(*, target: EssayTarget) -> Path:
@@ -126,12 +224,12 @@ def episode_slug(*, episode: ManifestEpisode) -> str:
 
 
 def load_article_source(*, path: Path) -> EssaySource:
-    """Load one committed article essay as source context."""
+    """Load one committed article summary as source context."""
     metadata = yaml.safe_load(path.with_name("article.yaml").read_text(encoding="utf-8"))
     return EssaySource(
         title=metadata["title"],
         subtitle=metadata["seo"]["description"],
-        body_mdx=path.read_text(encoding="utf-8").strip(),
+        summary_mdx=path.read_text(encoding="utf-8").strip(),
     )
 
 
@@ -178,3 +276,59 @@ def render_episode_metadata(*, target: EssayTarget, draft: GeneratedEssay) -> st
         f"  title: {json.dumps(target.title)}\n"
         f"  description: {json.dumps(draft.subtitle)}\n"
     )
+
+
+def render_show_index(*, show_index: dict[str, Any]) -> str:
+    """Render show.yaml for the static site show page."""
+    lines = [
+        f"title: {json.dumps(show_index['title'])}",
+        f"slug: {json.dumps(show_index['slug'])}",
+    ]
+
+    if "about" in show_index:
+        lines.extend(
+            [
+                "",
+                "about:",
+                f"  title: {json.dumps(show_index['about']['title'])}",
+                f"  path: {json.dumps(show_index['about']['path'])}",
+            ],
+        )
+
+    if "themes" in show_index:
+        lines.extend(["", "themes:"])
+        for theme in show_index["themes"]:
+            lines.extend(
+                [
+                    f"  - title: {json.dumps(theme['title'])}",
+                    f"    path: {json.dumps(theme['path'])}",
+                ],
+            )
+
+    if "characters" in show_index:
+        lines.extend(["", "characters:"])
+        for character in show_index["characters"]:
+            lines.extend(
+                [
+                    f"  - title: {json.dumps(character['title'])}",
+                    f"    path: {json.dumps(character['path'])}",
+                ],
+            )
+
+    lines.extend(["", "seasons:"])
+    for season in show_index["seasons"]:
+        lines.append(f"  - season: {season['season']}")
+        lines.append("    episodes:")
+        for episode in season["episodes"]:
+            lines.extend(
+                [
+                    f"      - code: {json.dumps(episode['code'])}",
+                    f"        title: {json.dumps(episode['title'])}",
+                    f"        path: {json.dumps(episode['path'])}",
+                ],
+            )
+
+    if not show_index["seasons"]:
+        lines[-1] = "seasons: []"
+
+    return "\n".join(lines) + "\n"
