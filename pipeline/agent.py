@@ -8,7 +8,7 @@ from pydantic_ai.models.openai import OpenAIResponsesModel, OpenAIResponsesModel
 from pydantic_ai.providers.openai import OpenAIProvider
 
 from prompt import AGENT_INSTRUCTIONS, build_essay_prompt
-from schemas import EssayTarget, EssayWorkspace, GeneratedEssay
+from schemas import EssaySource, EssayTarget, EssayWorkspace, GeneratedEssay
 from settings import settings
 
 MODEL = "gpt-5.4-nano"
@@ -28,10 +28,14 @@ logfire.instrument_openai(version="latest")
 logfire.instrument_httpx(capture_all=True)
 
 
-def run_essay_agent(*, target: EssayTarget) -> GeneratedEssay:
+def run_essay_agent(
+    *,
+    target: EssayTarget,
+    sources: list[EssaySource] | None = None,
+) -> GeneratedEssay:
     """Generate an essay for a target."""
     agent = build_essay_agent()
-    workspace = EssayWorkspace(target=target)
+    workspace = EssayWorkspace(target=target, sources=sources or [])
     prompt = build_essay_prompt(workspace=workspace)
     agent.run_sync(prompt, deps=workspace)
     return generated_essay_from_workspace(workspace=workspace)

@@ -1,6 +1,6 @@
 """Prompts for essay generation."""
 
-from schemas import EssayKind, EssayWorkspace
+from schemas import EssayKind, EssaySource, EssayWorkspace
 
 AGENT_INSTRUCTIONS = """
 # Identity
@@ -100,21 +100,7 @@ Do not include frontmatter in the draft. When the final state is complete,
 return `DONE`.
 """.strip()
 
-
-def build_essay_prompt(*, workspace: EssayWorkspace) -> str:
-    """Build the runtime task prompt for an essay target."""
-    target = workspace.target
-    match target.kind:
-        case EssayKind.ABOUT:
-            instructions = ABOUT_INSTRUCTIONS
-        case EssayKind.THEMES:
-            instructions = THEME_INSTRUCTIONS
-        case EssayKind.CHARACTERS:
-            instructions = CHARACTER_INSTRUCTIONS
-        case EssayKind.EPISODES:
-            instructions = EPISODE_INSTRUCTIONS
-
-    return f"""
+ESSAY_PROMPT_TEMPLATE = """
 # Task
 
 {instructions}
@@ -122,29 +108,46 @@ def build_essay_prompt(*, workspace: EssayWorkspace) -> str:
 # Manifest
 
 <manifest>
-  <show>{target.show.value}</show>
-  <kind>{target.kind.value}</kind>
-  <title>{target.title}</title>
-  <brief>{target.prompt}</brief>
+<show>{show}</show>
+<kind>{kind}</kind>
+<title>{title}</title>
+<brief>{brief}</brief>
 </manifest>
 
 # Current State
 
-{render_workspace_state(workspace=workspace)}
+{state}
 """.strip()
 
-
-def render_workspace_state(*, workspace: EssayWorkspace) -> str:
-    """Render the current essay workspace for the model."""
-    return f"""
+WORKSPACE_STATE_TEMPLATE = """
 <state>
+{sources}
 <subtitle>
-{workspace.subtitle}
+{subtitle}
 </subtitle>
 <draft>
-{workspace.draft}
+{draft}
 </draft>
 </state>
+""".strip()
+
+SOURCES_TEMPLATE = """
+<sources>
+These are other Rewatch Companion essays already written for this show. Treat
+them as internal context, not as public citations. Use them to preserve
+continuity with existing essays.
+
+{sources}
+</sources>
+""".strip()
+
+SOURCE_TEMPLATE = """
+<source>
+Title: {title}
+Subtitle: {subtitle}
+
+{body_mdx}
+</source>
 """.strip()
 
 
@@ -240,4 +243,54 @@ The essay should:
 - Discuss relevant formal choices when they matter: scene structure, blocking,
   editing, music, performance, visual emphasis, pacing, tone, or repeated motifs.
 - Avoid becoming a recap after the opening summary.
+- Be specific to this episode, remembering that there's a separate essay for
+  every single episode in the show and you don't want to be repetitive
 """.strip()
+
+
+def build_essay_prompt(*, workspace: EssayWorkspace) -> str:
+    """Build the runtime task prompt for an essay target."""
+    target = workspace.target
+    match target.kind:
+        case EssayKind.ABOUT:
+            instructions = ABOUT_INSTRUCTIONS
+        case EssayKind.THEMES:
+            instructions = THEME_INSTRUCTIONS
+        case EssayKind.CHARACTERS:
+            instructions = CHARACTER_INSTRUCTIONS
+        case EssayKind.EPISODES:
+            instructions = EPISODE_INSTRUCTIONS
+
+    return ESSAY_PROMPT_TEMPLATE.format(
+        instructions=instructions,
+        show=target.show,
+        kind=target.kind,
+        title=target.title,
+        brief=target.prompt,
+        state=render_workspace_state(workspace=workspace),
+    )
+
+
+def render_workspace_state(*, workspace: EssayWorkspace) -> str:
+    """Render the current essay workspace for the model."""
+    sources = ""
+    if workspace.sources:
+        sources = SOURCES_TEMPLATE.format(sources=render_sources(sources=workspace.sources))
+
+    return WORKSPACE_STATE_TEMPLATE.format(
+        sources=sources,
+        subtitle=workspace.subtitle,
+        draft=workspace.draft,
+    )
+
+
+def render_sources(*, sources: list[EssaySource]) -> str:
+    """Render reference sources for the model."""
+    return "\n\n".join(
+        SOURCE_TEMPLATE.format(
+            title=source.title,
+            subtitle=source.subtitle,
+            body_mdx=source.body_mdx,
+        )
+        for source in sources
+    )

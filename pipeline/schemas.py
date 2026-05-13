@@ -2,7 +2,7 @@
 
 from enum import StrEnum
 
-from pydantic import BaseModel
+from pydantic import BaseModel, Field
 
 
 class Show(StrEnum):
@@ -32,10 +32,19 @@ class EssayTarget(BaseModel):
     episode: int | None = None
 
 
+class EssaySource(BaseModel):
+    """Reference source supplied to an essay run."""
+
+    title: str
+    subtitle: str
+    body_mdx: str
+
+
 class EssayWorkspace(BaseModel):
     """Mutable state for an essay run."""
 
     target: EssayTarget
+    sources: list[EssaySource] = Field(default_factory=list)
     subtitle: str = ""
     draft: str = ""
 
