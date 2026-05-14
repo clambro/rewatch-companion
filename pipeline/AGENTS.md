@@ -11,12 +11,12 @@ These instructions apply to files under `pipeline/`. The root `AGENTS.md` also a
 Expected responsibilities once implemented:
 
 - clean SRT/VTT subtitles into an internal transcript format
-- collect or load web research blobs
-- generate episode draft essays
-- run review/rewrite loops
+- generate series thesis, theme, character, and episode essays
+- generate compact `summary.mdx` files for source context
+- rebuild `show.yaml` from committed content files
 - create screenshot candidates from local media
 - select and export final screenshots
-- write final `index.mdx` and `episode.yaml` files into `content/`
+- write final `index.mdx`, `summary.mdx`, and metadata YAML files into `content/`
 
 ## Commands
 
@@ -29,6 +29,13 @@ uv run python -m pytest .                # run all tests
 uv run ruff check --fix                  # linter (must pass)
 uv run ty check                          # type checker (must pass)
 ```
+
+Before handing work back, run the relevant checks for the files you changed. For
+Python changes, run at least `uv run ruff check <changed files>` and
+`uv run ty check` from `pipeline/`. For generated content, Markdown, MDX, YAML,
+or other repo-level formatted files, run Prettier before committing. Do not rely
+on pre-commit as the first place formatting, lint, or type errors are
+discovered.
 
 **Suppression rules**:
 

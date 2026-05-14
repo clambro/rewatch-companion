@@ -55,11 +55,6 @@ const episodeMetadata = defineCollection({
     title: z.string(),
     slug: z.string(),
     seo,
-    context: z
-      .object({
-        depends_on: z.array(z.string()).default([]),
-      })
-      .optional(),
   }),
 });
 

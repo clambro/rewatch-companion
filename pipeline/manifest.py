@@ -1,5 +1,6 @@
 """Manifest loading for essay generation."""
 
+import re
 from pathlib import Path
 from typing import TYPE_CHECKING
 
@@ -65,7 +66,7 @@ def manifest_content_paths(*, manifest: ShowManifest) -> set[str]:
         paths.add(f"characters/{character.slug}")
 
     for episode in manifest.episodes:
-        paths.add(f"episodes/s{episode.season:02}/e{episode.episode:02}")
+        paths.add(f"episodes/s{episode.season:02}/{episode_slug(episode=episode)}")
 
     return paths
 
@@ -73,7 +74,7 @@ def manifest_content_paths(*, manifest: ShowManifest) -> set[str]:
 def manifest_episode_titles(*, manifest: ShowManifest) -> dict[str, str]:
     """Return episode titles expected for a manifest."""
     return {
-        f"episodes/s{episode.season:02}/e{episode.episode:02}": episode.title
+        f"episodes/s{episode.season:02}/{episode_slug(episode=episode)}": episode.title
         for episode in manifest.episodes
     }
 
@@ -102,7 +103,7 @@ def content_episode_titles(*, show: Show, content_root: Path) -> dict[str, str]:
     titles: dict[str, str] = {}
     for path in episodes_root.glob("s*/e*/episode.yaml"):
         episode = yaml.safe_load(path.read_text(encoding="utf-8"))
-        key = f"episodes/s{episode['season']:02}/e{episode['episode']:02}"
+        key = path.parent.relative_to(show_root).as_posix()
         titles[key] = episode["title"]
 
     return titles
@@ -125,7 +126,12 @@ def episode_paths(*, show_root: Path) -> set[str]:
 
     paths: set[str] = set()
     for path in episodes_root.glob("s*/e*/episode.yaml"):
-        episode = yaml.safe_load(path.read_text(encoding="utf-8"))
-        paths.add(f"episodes/s{episode['season']:02}/e{episode['episode']:02}")
+        paths.add(path.parent.relative_to(show_root).as_posix())
 
     return paths
+
+
+def episode_slug(*, episode: ManifestEpisode) -> str:
+    """Build the content slug for an episode."""
+    title_slug = re.sub(r"[^a-z0-9]+", "-", episode.title.lower().replace("&", "and")).strip("-")
+    return f"e{episode.episode:02}-{title_slug}"

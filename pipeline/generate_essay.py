@@ -1,7 +1,6 @@
 """Shared helpers for essay generation."""
 
 import json
-import re
 import sys
 from pathlib import Path
 from typing import TYPE_CHECKING, Any
@@ -21,6 +20,8 @@ CONTENT_ROOT = REPO_ROOT / "content" / "shows"
 def write_article(*, target: EssayTarget, draft: GeneratedEssay) -> None:
     """Write a generated article to content."""
     output_dir = output_path(target=target)
+    summary = summarize_essay(target=target, draft=draft).strip()
+
     output_dir.mkdir(parents=True, exist_ok=True)
     (output_dir / "index.mdx").write_text(
         render_draft(target=target, draft=draft),
@@ -36,10 +37,7 @@ def write_article(*, target: EssayTarget, draft: GeneratedEssay) -> None:
             metadata = render_article_metadata(target=target, draft=draft)
 
     (output_dir / metadata_file).write_text(metadata, encoding="utf-8")
-    (output_dir / "summary.mdx").write_text(
-        f"{summarize_essay(target=target, draft=draft).strip()}\n",
-        encoding="utf-8",
-    )
+    (output_dir / "summary.mdx").write_text(f"{summary}\n", encoding="utf-8")
     rebuild_show_index(show=target.show)
     sys.stdout.write(f"Wrote {output_dir / 'index.mdx'}\n")
 
@@ -215,12 +213,6 @@ def find_episode(
     raise ValueError(
         f"Unknown episode: S{season:02}E{episode:02}. Available episodes: {available_episodes}",
     )
-
-
-def episode_slug(*, episode: ManifestEpisode) -> str:
-    """Build the content slug for an episode."""
-    title_slug = re.sub(r"[^a-z0-9]+", "-", episode.title.lower().replace("&", "and")).strip("-")
-    return f"e{episode.episode:02}-{title_slug}"
 
 
 def load_article_source(*, path: Path) -> EssaySource:
