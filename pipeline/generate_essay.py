@@ -6,15 +6,18 @@ from pathlib import Path
 from typing import TYPE_CHECKING, Any
 
 import yaml
+from openai import OpenAI
 
-from agent import summarize_essay
+from prompt import SUMMARY_INSTRUCTIONS, build_summary_prompt
 from schemas import EssayKind, EssaySource, EssayTarget, GeneratedEssay, Show
+from settings import settings
 
 if TYPE_CHECKING:
     from manifest import ManifestEpisode, ManifestSluggedArticle
 
 REPO_ROOT = Path(__file__).resolve().parent.parent
 CONTENT_ROOT = REPO_ROOT / "content" / "shows"
+SUMMARY_MODEL = "gpt-5.4-nano"
 
 
 def write_article(*, target: EssayTarget, draft: GeneratedEssay) -> None:
@@ -42,6 +45,21 @@ def write_article(*, target: EssayTarget, draft: GeneratedEssay) -> None:
     sys.stdout.write(f"Wrote {output_dir / 'index.mdx'}\n")
 
 
+def summarize_essay(*, target: EssayTarget, draft: GeneratedEssay) -> str:
+    """Generate the compact internal summary for an essay."""
+    client = OpenAI(api_key=settings.openai_api_key)
+    response = client.responses.create(
+        model=SUMMARY_MODEL,
+        instructions=SUMMARY_INSTRUCTIONS,
+        input=build_summary_prompt(
+            title=target.title,
+            subtitle=draft.subtitle,
+            body_mdx=draft.body_mdx,
+        ),
+    )
+    return response.output_text.strip()
+
+
 def rebuild_show_index(*, show: Show) -> None:
     """Rebuild the frontend show index from generated content files."""
     show_root = CONTENT_ROOT / show.value
@@ -52,15 +70,6 @@ def rebuild_show_index(*, show: Show) -> None:
         "title": current_index["title"],
         "slug": current_index["slug"],
     }
-
-    about_metadata_path = show_root / EssayKind.ABOUT.value / "article.yaml"
-    about_article_path = show_root / EssayKind.ABOUT.value / "index.mdx"
-    if about_metadata_path.is_file() and about_article_path.is_file():
-        about_metadata = yaml.safe_load(about_metadata_path.read_text(encoding="utf-8"))
-        show_index["about"] = {
-            "title": about_metadata["title"],
-            "path": EssayKind.ABOUT.value,
-        }
 
     themes = load_article_listing(show_root=show_root, section=EssayKind.THEMES)
     if themes:
@@ -80,13 +89,6 @@ def load_article_sources(*, show: Show, sections: list[EssayKind]) -> list[Essay
     sources = []
     for section in sections:
         match section:
-            case EssayKind.ABOUT:
-                article_path = show_root / EssayKind.ABOUT.value / "index.mdx"
-                summary_path = show_root / EssayKind.ABOUT.value / "summary.mdx"
-                if article_path.is_file():
-                    if not summary_path.is_file():
-                        raise ValueError(f"Missing source summary: {summary_path}")
-                    sources.append(load_article_source(path=summary_path))
             case EssayKind.THEMES | EssayKind.CHARACTERS:
                 section_root = show_root / section.value
                 for article_path in sorted(section_root.glob("*/index.mdx")):
@@ -160,8 +162,6 @@ def load_episode_listing(*, show_root: Path) -> list[dict[str, Any]]:
 def output_path(*, target: EssayTarget) -> Path:
     """Return the content output path for a generated essay."""
     match target.kind:
-        case EssayKind.ABOUT:
-            return CONTENT_ROOT / target.show.value / EssayKind.ABOUT.value
         case EssayKind.THEMES:
             if target.slug is None:
                 raise ValueError("Theme generation requires a slug.")
@@ -276,16 +276,6 @@ def render_show_index(*, show_index: dict[str, Any]) -> str:
         f"title: {json.dumps(show_index['title'])}",
         f"slug: {json.dumps(show_index['slug'])}",
     ]
-
-    if "about" in show_index:
-        lines.extend(
-            [
-                "",
-                "about:",
-                f"  title: {json.dumps(show_index['about']['title'])}",
-                f"  path: {json.dumps(show_index['about']['path'])}",
-            ],
-        )
 
     if "themes" in show_index:
         lines.extend(["", "themes:"])

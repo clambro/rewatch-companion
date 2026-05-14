@@ -44,7 +44,7 @@ def generate_episode() -> None:
 
     sources = load_article_sources(
         show=target.show,
-        sections=[EssayKind.ABOUT, EssayKind.THEMES, EssayKind.CHARACTERS],
+        sections=[EssayKind.THEMES, EssayKind.CHARACTERS],
     )
     write_article(target=target, draft=run_essay_agent(target=target, sources=sources))
 

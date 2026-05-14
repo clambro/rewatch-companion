@@ -9,26 +9,24 @@ export async function getStaticPaths() {
   const metadataEntries = await getCollection("articleMetadata");
   const articles = await getCollection("articleArticles");
 
-  return articles
-    .filter((article) => !article.id.endsWith("/about"))
-    .map((article) => {
-      const [showSlug, section, articleSlug] = article.id.split("/");
-      const show = shows.find((entry) => entry.id === showSlug);
-      const metadata = metadataEntries.find((entry) => entry.id === article.id);
+  return articles.map((article) => {
+    const [showSlug, section, articleSlug] = article.id.split("/");
+    const show = shows.find((entry) => entry.id === showSlug);
+    const metadata = metadataEntries.find((entry) => entry.id === article.id);
 
-      if (!show || !metadata) {
-        throw new Error(`Missing show or article metadata for ${article.id}`);
-      }
+    if (!show || !metadata) {
+      throw new Error(`Missing show or article metadata for ${article.id}`);
+    }
 
-      if (!section || !articleSlug || !allowedSections.has(section)) {
-        throw new Error(`Unsupported article section for ${article.id}`);
-      }
+    if (!section || !articleSlug || !allowedSections.has(section)) {
+      throw new Error(`Unsupported article section for ${article.id}`);
+    }
 
-      return {
-        params: { show: showSlug, section, article: articleSlug },
-        props: { article, metadata, show, section },
-      };
-    });
+    return {
+      params: { show: showSlug, section, article: articleSlug },
+      props: { article, metadata, show, section },
+    };
+  });
 }
 
 const { article, metadata, show, section } = Astro.props;

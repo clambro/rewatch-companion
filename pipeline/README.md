@@ -29,7 +29,6 @@ uv run logfire projects use
 ```
 
 ```bash
-uv run python generate_about.py --show succession
 uv run python generate_theme.py --show succession --slug logan-fractured-inheritance
 uv run python generate_character.py --show succession --slug kendall-roy
 uv run python generate_episode.py --show succession --season 1 --episode 1

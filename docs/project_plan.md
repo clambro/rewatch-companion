@@ -31,42 +31,23 @@ The problem is not generation speed. Generating more essays is cheap. The proble
 The correct generation order is:
 
 ```txt
-1. Series thesis essay: “What [Show] Is About”
-2. Major theme essays
-3. Major character essays
-4. Episode-by-episode essays
+1. Major theme essays
+2. Major character essays
+3. Episode-by-episode essays
 ```
 
 The earlier essays become grounding context for later essays.
 
-The final episode essays should feel like they were written by a critic who already has a mature theory of the show, its themes, its characters, and its ending.
+The final episode essays should feel like they were written by a critic who
+already has a mature vocabulary for the show, its themes, its characters, and
+its ending. The project should avoid forcing the whole show through a single
+"what it is really about" thesis.
 
 ## 3. Content Layers
 
-### Layer 1: Series Thesis
+### Layer 1: Major Theme Essays
 
-First produce a foundational essay:
-
-```txt
-What Succession Is About
-```
-
-This essay establishes the project’s master interpretation of the series.
-
-It should answer:
-
-- What is the show fundamentally about?
-- What is commonly misunderstood about it?
-- What is the show’s governing dramatic engine?
-- What does the ending reveal about the whole series?
-- What recurring tensions organize the show?
-- What should all later essays assume as the baseline interpretation?
-
-This is the root context document for the whole project.
-
-### Layer 2: Major Theme Essays
-
-Next produce essays on the show’s major themes.
+First produce essays on the show’s major themes.
 
 For **Succession**, possible theme essays include:
 
@@ -97,7 +78,7 @@ They should answer:
 
 The point is to prevent every episode essay from saying vague things like “this episode explores power and family.” The theme essays define exactly how power, family, money, language, media, inheritance, and the Roy children's relationship to Logan work in this specific show.
 
-### Layer 3: Major Character Essays
+### Layer 2: Major Character Essays
 
 After the theme essays, produce essays on major characters.
 
@@ -114,8 +95,6 @@ Connor Roy
 Gerri Kellman
 Marcia Roy
 ```
-
-Character essays consume the series thesis and relevant theme essays as context.
 
 They should not be biographies or plot summaries. They should explain the character as an expression of the show’s larger machinery.
 
@@ -144,15 +123,15 @@ Kendall Roy is the show’s central case study in failed self-authorship: he can
 
 The character essays should inherit vocabulary from the theme essays.
 
-### Layer 4: Episode Essays
+### Layer 3: Episode Essays
 
-Only after the series thesis, major theme essays, and major character essays exist should the pipeline generate per-episode essays.
+Only after the major theme essays and major character essays exist should the
+pipeline generate per-episode essays.
 
 Each episode essay should consume:
 
 - episode subtitles or transcript
 - web research blob for that episode
-- the series thesis essay
 - relevant theme essays
 - relevant character essays
 - house style guide
@@ -190,10 +169,9 @@ The second version is possible because “Logan's Fractured Inheritance” has a
 The order is not about saving generation time. It is about building a stable interpretive stack.
 
 ```txt
-Series thesis → defines the show’s master argument
-Themes       → define the conceptual vocabulary
-Characters   → embody and complicate the themes
-Episodes     → apply the framework to concrete dramatic units
+Themes     → define the conceptual vocabulary
+Characters → embody and complicate the themes
+Episodes   → apply the framework to concrete dramatic units
 ```
 
 This reduces:
@@ -214,7 +192,9 @@ It improves:
 - stylistic consistency
 - downstream prompt quality
 
-The episode essays should feel like the output of a single critical intelligence with a stable theory of the show.
+The episode essays should feel like the output of a single critical intelligence
+with a stable vocabulary for the whole show, without requiring a single master
+thesis essay.
 
 ## 5. Goals
 
@@ -222,7 +202,6 @@ The episode essays should feel like the output of a single critical intelligence
 
 1. Build a static Astro site that renders the public content in `content/`.
 2. Build an offline Python pipeline that generates static content in this order:
-   - series thesis essay
    - theme essays
    - character essays
    - episode essays
@@ -291,7 +270,6 @@ The first show should be **Succession**.
 The first content milestone should be the interpretive foundation:
 
 ```txt
-content/shows/succession/about/
 content/shows/succession/themes/logan-fractured-inheritance/
 content/shows/succession/themes/not-serious-people/
 content/shows/succession/themes/love-as-leverage/
@@ -335,7 +313,6 @@ rewatch-companion/
     pyproject.toml
     README.md
     manifests/
-    generate_about.py
     generate_theme.py
     generate_character.py
     generate_episode.py
@@ -346,7 +323,6 @@ rewatch-companion/
     shows/
       succession/
         show.yaml
-        about/
         themes/
         characters/
         episodes/
@@ -373,7 +349,6 @@ Use Astro for the site.
 The site should render:
 
 - show landing pages
-- series thesis essays
 - theme essays
 - character essays
 - episode article pages
@@ -399,7 +374,6 @@ Public URLs should be organized by show and artifact type:
 
 ```txt
 /shows/succession/
-/shows/succession/about/
 /shows/succession/themes/logan-fractured-inheritance/
 /shows/succession/characters/kendall-roy/
 /shows/succession/episodes/s01/e01-celebration/
@@ -420,11 +394,6 @@ content/
   shows/
     succession/
       show.yaml
-
-      about/
-        index.mdx
-        summary.mdx
-        article.yaml
 
       themes/
         logan-fractured-inheritance/
@@ -467,10 +436,6 @@ Example:
 title: "Succession"
 slug: "succession"
 
-about:
-  title: "What Is Succession About"
-  path: "about"
-
 themes:
   - title: "Logan's Fractured Inheritance"
     path: "themes/logan-fractured-inheritance"
@@ -489,7 +454,7 @@ seasons:
 
 ### General Article Metadata
 
-Use `article.yaml` for series thesis, theme, and character essays.
+Use `article.yaml` for theme and character essays.
 
 Example:
 
@@ -677,10 +642,9 @@ It should not maintain a complex public source database for MVP.
 The pipeline should build a layered critical system:
 
 ```txt
-What the show is about
-  → what its major themes mean
-    → how its characters embody those themes
-      → how each episode activates, complicates, or revises that framework
+What the major themes mean
+  → how the characters embody and distort those themes
+    → how each episode activates, complicates, or revises that framework
 ```
 
 ## 15. Pipeline Architecture
@@ -689,7 +653,6 @@ The MVP pipeline should stay explicit and small. It has separate commands for
 each generated artifact type:
 
 ```txt
-generate_about.py
 generate_theme.py
 generate_character.py
 generate_episode.py
@@ -717,7 +680,6 @@ pipeline/
   pyproject.toml
   README.md
   agent.py
-  generate_about.py
   generate_theme.py
   generate_character.py
   generate_episode.py
@@ -732,33 +694,13 @@ Rules:
 
 - No `src/` wrapper unless the project later has a concrete packaging reason for it.
 - No `rewatch_pipeline/` package layer.
-- Keep the four CLI commands separate instead of hiding them behind one generic command.
+- Keep the three CLI commands separate instead of hiding them behind one generic command.
 - Keep prompt strings in Python modules unless there is a concrete reason to split them out.
 - Empty `__init__.py` files should not exist.
 - Prefer naked functions over stateless classes.
 - Tests should be colocated at the level of the code they test, under `tests/unit` and `tests/integration`.
 
 ## 16. Workflow Details
-
-### Series Thesis Workflow
-
-Inputs:
-
-- show metadata
-- theme essay summaries
-- character essay summaries
-- house style guide
-
-Outputs:
-
-- `content/shows/<show>/about/index.mdx`
-- `content/shows/<show>/about/summary.mdx`
-- `content/shows/<show>/about/article.yaml`
-- `.local/runs/<show>/series-thesis/...`
-
-The series thesis workflow establishes the master interpretation used by episode
-workflows. For the MVP, it is generated after the initial theme and character
-essays so it can synthesize their compact summaries.
 
 ### Theme Essay Workflow
 
@@ -775,8 +717,8 @@ Outputs:
 - `content/shows/<show>/themes/<theme>/article.yaml`
 - `.local/runs/<show>/theme-<theme>/...`
 
-Theme essays define conceptual vocabulary used by the series thesis and episode
-essays. For the MVP, they do not depend on other generated essays.
+Theme essays define conceptual vocabulary used by character and episode essays.
+For the MVP, they do not depend on other generated essays.
 
 ### Character Essay Workflow
 
@@ -802,7 +744,6 @@ Inputs:
 
 - show metadata
 - episode metadata
-- series thesis summary
 - theme essay summaries
 - character essay summaries
 - house style guide
@@ -826,14 +767,12 @@ Example:
 .local/
   research/
     succession/
-      series-thesis/
       themes/
       characters/
       episodes/
 
   runs/
     succession/
-      series-thesis/
       theme-family-as-corporation/
       character-kendall-roy/
       episode-s01e01/
@@ -857,7 +796,6 @@ Use:
 
 - local subtitle file extracted from the episode
 - web research blob
-- series thesis essay
 - relevant theme essays
 - relevant character essays
 - house style guide
@@ -909,7 +847,6 @@ It should catch:
 - invented dialogue
 - overquoting
 - public citation clutter
-- weak connection to the series thesis
 - weak connection to relevant themes and characters
 - lack of full-series rewatch value
 
@@ -1064,7 +1001,7 @@ Do not turn the public site into a source archive.
 Build:
 
 - Astro site shell
-- content collections for shows, about essays, themes, characters, and episodes
+- content collections for shows, themes, characters, and episodes
 - show page
 - general article page
 - episode page
@@ -1074,24 +1011,7 @@ Build:
 - basic styles
 - content validation script
 
-### Phase 1: Series Thesis Workflow
-
-Build:
-
-- `generate_about.py`
-- series thesis prompt instructions
-- summary-based source loading from theme and character essays
-- export to `content/shows/<show>/about/`
-- `summary.mdx` generation
-- content-driven `show.yaml` rebuild
-
-Run for:
-
-```txt
-What Succession Is About
-```
-
-### Phase 2: Theme and Character Workflows
+### Phase 1: Theme and Character Workflows
 
 Build:
 
@@ -1103,12 +1023,12 @@ Build:
 
 Generate a small foundation set before episodes.
 
-### Phase 3: Episode Essay Workflow
+### Phase 2: Episode Essay Workflow
 
 Build:
 
 - `generate_episode.py`
-- context loading from series/theme/character summaries
+- context loading from theme and character summaries
 - episode draft/rewrite/export
 - `summary.mdx` generation
 

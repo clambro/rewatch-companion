@@ -23,7 +23,6 @@ const shows = defineCollection({
   schema: z.object({
     title: z.string(),
     slug: z.string(),
-    about: listedArticle.optional(),
     themes: z.array(listedArticle).optional(),
     characters: z.array(listedArticle).optional(),
     seasons: z.array(
@@ -73,10 +72,7 @@ const episodeArticles = defineCollection({
 const articleMetadata = defineCollection({
   loader: glob({
     base: contentBase,
-    pattern: [
-      "*/about/article.yaml",
-      `*/{${articleSections.join(",")}}/*/article.yaml`,
-    ],
+    pattern: `*/{${articleSections.join(",")}}/*/article.yaml`,
     generateId: ({ entry }) => entry.replace(/\/article\.ya?ml$/, ""),
   }),
   schema: z.object({
@@ -90,10 +86,7 @@ const articleMetadata = defineCollection({
 const articleArticles = defineCollection({
   loader: glob({
     base: contentBase,
-    pattern: [
-      "*/about/index.mdx",
-      `*/{${articleSections.join(",")}}/*/index.mdx`,
-    ],
+    pattern: `*/{${articleSections.join(",")}}/*/index.mdx`,
     generateId: ({ entry }) => entry.replace(/\/index\.mdx$/, ""),
   }),
   schema: z.object({

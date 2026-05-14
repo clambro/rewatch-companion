@@ -38,7 +38,6 @@ class ShowManifest(BaseModel):
     """Generation manifest for one show."""
 
     show: str
-    about: ManifestArticle
     themes: list[ManifestSluggedArticle]
     characters: list[ManifestSluggedArticle]
     episodes: list[ManifestEpisode]
@@ -57,7 +56,7 @@ def load_manifest(*, show: Show) -> ShowManifest:
 
 def manifest_content_paths(*, manifest: ShowManifest) -> set[str]:
     """Return content paths expected for a manifest."""
-    paths = {"about"}
+    paths: set[str] = set()
 
     for theme in manifest.themes:
         paths.add(f"themes/{theme.slug}")
@@ -83,9 +82,6 @@ def content_paths(*, show: Show, content_root: Path) -> set[str]:
     """Return content paths present for a show."""
     show_root = content_root / "shows" / show.value
     paths: set[str] = set()
-
-    if (show_root / "about" / "index.mdx").exists():
-        paths.add("about")
 
     paths.update(slugged_article_paths(show_root=show_root, section="themes"))
     paths.update(slugged_article_paths(show_root=show_root, section="characters"))

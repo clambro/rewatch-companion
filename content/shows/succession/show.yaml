@@ -1,10 +1,6 @@
 title: "Succession"
 slug: "succession"
 
-about:
-  title: "What Is Succession About"
-  path: "about"
-
 themes:
   - title: "Logan's Fractured Inheritance"
     path: "themes/logan-fractured-inheritance"

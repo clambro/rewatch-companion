@@ -14,7 +14,6 @@ class Show(StrEnum):
 class EssayKind(StrEnum):
     """Supported generated essay kinds."""
 
-    ABOUT = "about"
     THEMES = "themes"
     CHARACTERS = "characters"
     EPISODES = "episodes"

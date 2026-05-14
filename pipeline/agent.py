@@ -1,7 +1,6 @@
 """Pydantic AI essay agent."""
 
 import logfire
-from openai import OpenAI
 from pydantic_ai import Agent, ModelRetry, RunContext
 from pydantic_ai.common_tools.duckduckgo import duckduckgo_search_tool
 from pydantic_ai.common_tools.web_fetch import web_fetch_tool
@@ -10,9 +9,7 @@ from pydantic_ai.providers.openai import OpenAIProvider
 
 from prompt import (
     AGENT_INSTRUCTIONS,
-    SUMMARY_INSTRUCTIONS,
     build_essay_prompt,
-    build_summary_prompt,
 )
 from schemas import EssaySource, EssayTarget, EssayWorkspace, GeneratedEssay
 from settings import settings
@@ -45,21 +42,6 @@ def run_essay_agent(
     prompt = build_essay_prompt(workspace=workspace)
     agent.run_sync(prompt, deps=workspace)
     return generated_essay_from_workspace(workspace=workspace)
-
-
-def summarize_essay(*, target: EssayTarget, draft: GeneratedEssay) -> str:
-    """Generate the compact internal summary for an essay."""
-    client = OpenAI(api_key=settings.openai_api_key)
-    response = client.responses.create(
-        model=MODEL,
-        instructions=SUMMARY_INSTRUCTIONS,
-        input=build_summary_prompt(
-            title=target.title,
-            subtitle=draft.subtitle,
-            body_mdx=draft.body_mdx,
-        ),
-    )
-    return response.output_text.strip()
 
 
 def generated_essay_from_workspace(*, workspace: EssayWorkspace) -> GeneratedEssay:
