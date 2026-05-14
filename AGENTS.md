@@ -23,7 +23,7 @@ Rewatch Companion is a static publishing project for full-series, episode-by-epi
 Committed content should be safe to publish:
 
 - `content/shows/<show>/show.yaml`
-- `content/shows/<show>/episodes/<season>/<episode>/episode.yaml`
+- `content/shows/<show>/**/article.yaml`
 - `content/shows/<show>/episodes/<season>/<episode>/index.mdx`
 - `content/shows/<show>/**/summary.mdx` files used as compact pipeline reference context
 - final selected screenshots only, when screenshots are added

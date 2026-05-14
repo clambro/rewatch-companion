@@ -20,10 +20,9 @@ detailed analysis that only becomes possible on a full-context rewatch.
 
 The project is layered:
 
-1. Series thesis essays define the master reading of the completed show.
-2. Theme essays define the show's conceptual vocabulary.
-3. Character essays explain how characters embody and complicate that vocabulary.
-4. Episode essays apply the established framework to individual dramatic units.
+1. Theme essays define the show's conceptual vocabulary.
+2. Character essays explain how characters embody and complicate that vocabulary.
+3. Episode essays apply the established framework to individual dramatic units.
 
 # Workflow
 
@@ -145,10 +144,19 @@ SOURCE_TEMPLATE = """
 <source>
 Title: {title}
 Subtitle: {subtitle}
+Source type: {label}
 
 Summary:
 {summary_mdx}
 </source>
+""".strip()
+
+THEME_SOURCE_TYPE = "Theme essay summary for shared critical vocabulary."
+CHARACTER_SOURCE_TYPE = "Character essay summary for character-specific continuity."
+PREVIOUS_EPISODE_SOURCE_TYPE = """
+Previous episode essay summary for continuity. Use it to avoid repetition and
+preserve local progression from the prior episode, but do not recap it, quote it,
+or treat it as stronger evidence than the target episode itself.
 """.strip()
 
 SUMMARY_INSTRUCTIONS = """
@@ -162,15 +170,14 @@ full-series context.
 
 The project is layered:
 
-1. Series thesis essays define the master reading of the completed show.
-2. Theme essays define the show's conceptual vocabulary.
-3. Character essays explain how characters embody and complicate that
+1. Theme essays define the show's conceptual vocabulary.
+2. Character essays explain how characters embody and complicate that
    vocabulary.
-4. Episode essays apply the established framework to individual dramatic units.
+3. Episode essays apply the established framework to individual dramatic units.
 
 This summary will be used as source context for later essay-generation runs. It
 needs to preserve the essay's argument in a much smaller form so later runs can
-inherit the thesis, critical vocabulary, and useful interpretive claims without
+inherit critical vocabulary and useful interpretive claims without
 carrying the full essay in context.
 
 Return only the summary paragraph.
@@ -203,29 +210,6 @@ Subtitle: {subtitle}
 </essay>
 """.strip()
 
-
-ABOUT_INSTRUCTIONS = """
-Write the series thesis essay.
-
-Point of this essay:
-
-This is the root interpretation for the whole rewatch companion. It should give
-later essays a stable account of what the completed show is doing, what kind of
-dramatic machine it is, and what its ending reveals about the earlier material.
-It should be argumentative, not introductory.
-
-The essay should:
-
-- Explain what the completed show is fundamentally about.
-- Establish the baseline interpretation later essays should inherit.
-- Identify the governing dramatic engine: what keeps scenes, relationships, and
-  conflicts producing pressure.
-- Identify the recurring tensions that organize the show across seasons.
-- Explain what the ending clarifies about the whole series.
-- Distinguish the show's actual argument from the easier surface description of
-  its premise.
-- Avoid becoming a premise summary, topic list, or broad cultural diagnosis.
-""".strip()
 
 THEME_INSTRUCTIONS = """
 Write the theme essay.
@@ -305,8 +289,6 @@ def build_essay_prompt(*, workspace: EssayWorkspace) -> str:
     """Build the runtime task prompt for an essay target."""
     target = workspace.target
     match target.kind:
-        case EssayKind.ABOUT:
-            instructions = ABOUT_INSTRUCTIONS
         case EssayKind.THEMES:
             instructions = THEME_INSTRUCTIONS
         case EssayKind.CHARACTERS:
@@ -341,6 +323,7 @@ def render_sources(*, sources: list[EssaySource]) -> str:
     """Render reference sources for the model."""
     return "\n\n".join(
         SOURCE_TEMPLATE.format(
+            label=source.label,
             title=source.title,
             subtitle=source.subtitle,
             summary_mdx=source.summary_mdx,

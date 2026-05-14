@@ -14,7 +14,6 @@ class Show(StrEnum):
 class EssayKind(StrEnum):
     """Supported generated essay kinds."""
 
-    ABOUT = "about"
     THEMES = "themes"
     CHARACTERS = "characters"
     EPISODES = "episodes"
@@ -27,7 +26,7 @@ class EssayTarget(BaseModel):
     kind: EssayKind
     title: str
     prompt: str
-    slug: str | None = None
+    slug: str
     season: int | None = None
     episode: int | None = None
 
@@ -35,6 +34,7 @@ class EssayTarget(BaseModel):
 class EssaySource(BaseModel):
     """Reference source supplied to an essay run."""
 
+    label: str
     title: str
     subtitle: str
     summary_mdx: str

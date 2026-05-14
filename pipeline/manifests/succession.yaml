@@ -1,9 +1,5 @@
 show: succession
 
-about:
-  title: "What Is Succession About"
-  prompt: "A full-series thesis essay about what Succession is fundamentally about."
-
 themes:
   - slug: "logan-fractured-inheritance"
     title: "Logan's Fractured Inheritance"

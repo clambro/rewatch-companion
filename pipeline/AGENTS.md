@@ -11,8 +11,9 @@ These instructions apply to files under `pipeline/`. The root `AGENTS.md` also a
 Expected responsibilities once implemented:
 
 - clean SRT/VTT subtitles into an internal transcript format
-- generate series thesis, theme, character, and episode essays
+- generate theme, character, and episode essays
 - generate compact `summary.mdx` files for source context
+- enforce manifest-order episode generation with the previous episode summary as required context
 - rebuild `show.yaml` from committed content files
 - create screenshot candidates from local media
 - select and export final screenshots

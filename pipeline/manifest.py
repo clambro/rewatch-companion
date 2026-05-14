@@ -38,7 +38,6 @@ class ShowManifest(BaseModel):
     """Generation manifest for one show."""
 
     show: str
-    about: ManifestArticle
     themes: list[ManifestSluggedArticle]
     characters: list[ManifestSluggedArticle]
     episodes: list[ManifestEpisode]
@@ -57,7 +56,7 @@ def load_manifest(*, show: Show) -> ShowManifest:
 
 def manifest_content_paths(*, manifest: ShowManifest) -> set[str]:
     """Return content paths expected for a manifest."""
-    paths = {"about"}
+    paths: set[str] = set()
 
     for theme in manifest.themes:
         paths.add(f"themes/{theme.slug}")
@@ -84,9 +83,6 @@ def content_paths(*, show: Show, content_root: Path) -> set[str]:
     show_root = content_root / "shows" / show.value
     paths: set[str] = set()
 
-    if (show_root / "about" / "index.mdx").exists():
-        paths.add("about")
-
     paths.update(slugged_article_paths(show_root=show_root, section="themes"))
     paths.update(slugged_article_paths(show_root=show_root, section="characters"))
     paths.update(episode_paths(show_root=show_root))
@@ -101,7 +97,7 @@ def content_episode_titles(*, show: Show, content_root: Path) -> dict[str, str]:
         return {}
 
     titles: dict[str, str] = {}
-    for path in episodes_root.glob("s*/e*/episode.yaml"):
+    for path in episodes_root.glob("s*/e*/article.yaml"):
         episode = yaml.safe_load(path.read_text(encoding="utf-8"))
         key = path.parent.relative_to(show_root).as_posix()
         titles[key] = episode["title"]
@@ -125,7 +121,7 @@ def episode_paths(*, show_root: Path) -> set[str]:
         return set()
 
     paths: set[str] = set()
-    for path in episodes_root.glob("s*/e*/episode.yaml"):
+    for path in episodes_root.glob("s*/e*/article.yaml"):
         paths.add(path.parent.relative_to(show_root).as_posix())
 
     return paths

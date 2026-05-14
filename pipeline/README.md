@@ -6,7 +6,10 @@ The first pipeline feature is essay generation. It takes a manifest-defined arti
 
 ## Structure
 
-- `generate_essay.py` - CLI entrypoint and thin orchestration.
+- `generate_theme.py` - CLI entrypoint for theme essays.
+- `generate_character.py` - CLI entrypoint for character essays.
+- `generate_episode.py` - CLI entrypoint for episode essays.
+- `generate_essay.py` - shared orchestration, source loading, export, and show index helpers.
 - `agent.py` - Pydantic AI agent definition.
 - `manifest.py` - generation manifest loading and content-tree checks.
 - `manifests/` - fixed article titles, prompts, slugs, and episode titles.
@@ -29,7 +32,6 @@ uv run logfire projects use
 ```
 
 ```bash
-uv run python generate_about.py --show succession
 uv run python generate_theme.py --show succession --slug logan-fractured-inheritance
 uv run python generate_character.py --show succession --slug kendall-roy
 uv run python generate_episode.py --show succession --season 1 --episode 1
@@ -37,3 +39,6 @@ uv run python -m pytest tests/unit/test_manifest_content.py
 uv run ruff check
 uv run ty check
 ```
+
+Episode essays must be generated in manifest order. Every episode after the
+first one requires the previous episode's `summary.mdx` as continuity context.
