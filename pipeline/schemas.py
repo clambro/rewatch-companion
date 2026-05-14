@@ -2,7 +2,7 @@
 
 from enum import StrEnum
 
-from pydantic import BaseModel
+from pydantic import BaseModel, Field
 
 
 class Show(StrEnum):
@@ -23,9 +23,30 @@ class EssayKind(StrEnum):
 class EssayTarget(BaseModel):
     """Minimal user-provided target for an essay run."""
 
+    show: Show
     kind: EssayKind
     title: str
     prompt: str
+    slug: str | None = None
+    season: int | None = None
+    episode: int | None = None
+
+
+class EssaySource(BaseModel):
+    """Reference source supplied to an essay run."""
+
+    title: str
+    subtitle: str
+    summary_mdx: str
+
+
+class EssayWorkspace(BaseModel):
+    """Mutable state for an essay run."""
+
+    target: EssayTarget
+    sources: list[EssaySource] = Field(default_factory=list)
+    subtitle: str = ""
+    draft: str = ""
 
 
 class GeneratedEssay(BaseModel):

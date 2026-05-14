@@ -2,16 +2,24 @@ title: "Succession"
 slug: "succession"
 
 about:
-  title: "What Succession Is Fundamentally About: Power, Trauma, and the Lie of Inheritance"
+  title: "What Is Succession About"
   path: "about"
 
 themes:
-  - title: "Humiliation as Organizational Culture"
-    path: "themes/humiliation-as-organizational-culture"
+  - title: "Logan's Fractured Inheritance"
+    path: "themes/logan-fractured-inheritance"
+  - title: "Love as Leverage"
+    path: "themes/love-as-leverage"
+  - title: "Not Serious People"
+    path: "themes/not-serious-people"
 
 characters:
   - title: "Kendall Roy"
     path: "characters/kendall-roy"
+  - title: "Roman Roy"
+    path: "characters/roman-roy"
+  - title: "Shiv Roy"
+    path: "characters/shiv-roy"
 
 seasons:
   - season: 1
@@ -19,3 +27,17 @@ seasons:
       - code: "S01E01"
         title: "Celebration"
         path: "episodes/s01/e01-celebration"
+      - code: "S01E02"
+        title: "Shit Show at the Fuck Factory"
+        path: "episodes/s01/e02-shit-show-at-the-fuck-factory"
+      - code: "S01E03"
+        title: "Lifeboats"
+        path: "episodes/s01/e03-lifeboats"
+  - season: 2
+    episodes:
+      - code: "S02E01"
+        title: "The Summer Palace"
+        path: "episodes/s02/e01-the-summer-palace"
+      - code: "S02E02"
+        title: "Vaulter"
+        path: "episodes/s02/e02-vaulter"

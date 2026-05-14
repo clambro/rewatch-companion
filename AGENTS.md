@@ -25,6 +25,7 @@ Committed content should be safe to publish:
 - `content/shows/<show>/show.yaml`
 - `content/shows/<show>/episodes/<season>/<episode>/episode.yaml`
 - `content/shows/<show>/episodes/<season>/<episode>/index.mdx`
+- `content/shows/<show>/**/summary.mdx` files used as compact pipeline reference context
 - final selected screenshots only, when screenshots are added
 
 Do not commit raw subtitles, research blobs, intermediate drafts, scene-detection output, video files, or local media references.

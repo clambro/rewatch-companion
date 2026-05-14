@@ -73,7 +73,7 @@ For **Succession**, possible theme essays include:
 ```txt
 Family as Corporation, Corporation as Family
 Love as Leverage
-Humiliation as Organizational Culture
+Logan's Fractured Inheritance
 Reality-Making and Media Power
 Inheritance as Damage
 Language, Evasion, and Corporate Nonsense
@@ -95,7 +95,7 @@ They should answer:
 - How does the finale clarify or revise the theme?
 - What should later character and episode essays remember about this theme?
 
-The point is to prevent every episode essay from saying vague things like “this episode explores power and family.” The theme essays define exactly how power, family, money, language, media, humiliation, and inheritance work in this specific show.
+The point is to prevent every episode essay from saying vague things like “this episode explores power and family.” The theme essays define exactly how power, family, money, language, media, inheritance, and the Roy children's relationship to Logan work in this specific show.
 
 ### Layer 3: Major Character Essays
 
@@ -174,16 +174,16 @@ Each episode essay should answer:
 Weak episode analysis:
 
 ```txt
-The baseball scene shows Roman’s cruelty.
+The vote fails because the siblings cannot work together.
 ```
 
 Better episode analysis:
 
 ```txt
-The baseball scene is the pilot’s first full demonstration of humiliation as a Roy family technology: Roman turns another person’s economic reality into a game, then lets the family’s administrative apparatus convert the damage into silence.
+The failed alliance shows the central inheritance problem in miniature: Kendall, Shiv, and Roman each carry a usable fragment of Logan's force, but each fragment is damaged in a way that makes durable coalition impossible.
 ```
 
-The second version is possible because “humiliation as organizational culture” has already been defined upstream.
+The second version is possible because “Logan's Fractured Inheritance” has already been defined upstream.
 
 ## 4. Why This Order Matters
 
@@ -291,11 +291,13 @@ The first show should be **Succession**.
 The first content milestone should be the interpretive foundation:
 
 ```txt
-content/shows/succession/about/what-succession-is-about/
-content/shows/succession/themes/family-as-corporation/
-content/shows/succession/themes/humiliation-as-organizational-culture/
-content/shows/succession/characters/logan-roy/
+content/shows/succession/about/
+content/shows/succession/themes/logan-fractured-inheritance/
+content/shows/succession/themes/not-serious-people/
+content/shows/succession/themes/love-as-leverage/
 content/shows/succession/characters/kendall-roy/
+content/shows/succession/characters/roman-roy/
+content/shows/succession/characters/shiv-roy/
 ```
 
 Only after those are working should the pipeline generate the first episode essays:
@@ -332,9 +334,13 @@ rewatch-companion/
   pipeline/
     pyproject.toml
     README.md
-    workflows/
-    tools/
-    prompts/
+    manifests/
+    generate_about.py
+    generate_theme.py
+    generate_character.py
+    generate_episode.py
+    agent.py
+    prompt.py
 
   content/
     shows/
@@ -393,8 +399,8 @@ Public URLs should be organized by show and artifact type:
 
 ```txt
 /shows/succession/
-/shows/succession/about/what-succession-is-about/
-/shows/succession/themes/humiliation-as-organizational-culture/
+/shows/succession/about/
+/shows/succession/themes/logan-fractured-inheritance/
 /shows/succession/characters/kendall-roy/
 /shows/succession/episodes/s01/e01-celebration/
 ```
@@ -416,37 +422,42 @@ content/
       show.yaml
 
       about/
-        what-succession-is-about/
-          index.mdx
-          article.yaml
+        index.mdx
+        summary.mdx
+        article.yaml
 
       themes/
-        family-as-corporation/
+        logan-fractured-inheritance/
           index.mdx
-          article.yaml
-        humiliation-as-organizational-culture/
-          index.mdx
+          summary.mdx
           article.yaml
 
       characters/
-        logan-roy/
-          index.mdx
-          article.yaml
         kendall-roy/
           index.mdx
+          summary.mdx
           article.yaml
 
       episodes/
         s01/
           e01-celebration/
             index.mdx
+            summary.mdx
             episode.yaml
-            screenshots/
           e02-shit-show-at-the-fuck-factory/
             index.mdx
+            summary.mdx
             episode.yaml
-            screenshots/
 ```
+
+Each generated essay directory includes:
+
+- `index.mdx` — public article content rendered by Astro
+- `summary.mdx` — compact internal reference summary used by later pipeline runs
+- `article.yaml` or `episode.yaml` — static-site metadata
+
+`summary.mdx` is committed because it is part of the generation contract, but it
+is not loaded by Astro as public page content.
 
 ### Show Metadata
 
@@ -457,15 +468,15 @@ title: "Succession"
 slug: "succession"
 
 about:
-  - title: "What Succession Is About"
-    path: "about/what-succession-is-about"
+  title: "What Is Succession About"
+  path: "about"
 
 themes:
-  - title: "Humiliation as Organizational Culture"
-    path: "themes/humiliation-as-organizational-culture"
+  - title: "Logan's Fractured Inheritance"
+    path: "themes/logan-fractured-inheritance"
 
 characters:
-  - name: "Kendall Roy"
+  - title: "Kendall Roy"
     path: "characters/kendall-roy"
 
 seasons:
@@ -484,18 +495,12 @@ Example:
 
 ```yaml
 show: succession
-type: theme
-title: "Humiliation as Organizational Culture"
-slug: "humiliation-as-organizational-culture"
-status: published
+title: "Logan's Fractured Inheritance"
+slug: "logan-fractured-inheritance"
 
 seo:
-  title: "Succession Theme Analysis: Humiliation as Organizational Culture"
-  description: "A full-series analysis of humiliation as a Roy family technology and Waystar management system."
-
-context:
-  depends_on:
-    - "about/what-succession-is-about"
+  title: "Logan's Fractured Inheritance"
+  description: "A full-series analysis of the Roy children as partial, flawed expressions of Logan's power."
 ```
 
 ### Episode Metadata
@@ -511,33 +516,10 @@ episode: 1
 code: "S01E01"
 title: "Celebration"
 slug: "e01-celebration"
-air_date: "2018-06-03"
-
-writer:
-  - Jesse Armstrong
-
-director:
-  - Adam McKay
-
-status: published
 
 seo:
   title: "Succession S01E01 Analysis: Celebration"
   description: "A full-series rewatch analysis of Succession's pilot: Logan's body, Kendall's false coronation, and the family business of humiliation."
-
-context:
-  series_thesis: "about/what-succession-is-about"
-  themes:
-    - "themes/humiliation-as-organizational-culture"
-  characters:
-    - "characters/logan-roy"
-    - "characters/kendall-roy"
-
-screenshots:
-  - id: "baseball"
-    file: "screenshots/001-baseball.webp"
-    alt: "Roman Roy stands near the child at the family baseball game."
-    caption: "The baseball sequence turns wealth into a private cruelty machine."
 ```
 
 ## 11. Spoiler Policy
@@ -703,102 +685,56 @@ What the show is about
 
 ## 15. Pipeline Architecture
 
-Build first-class workflow types:
+The MVP pipeline should stay explicit and small. It has separate commands for
+each generated artifact type:
 
 ```txt
-series_thesis
-theme_essay
-character_essay
-episode_essay
+generate_about.py
+generate_theme.py
+generate_character.py
+generate_episode.py
 ```
 
-Each workflow can share the same basic mechanics:
+Each command builds a typed target from the show manifest, runs the essay agent,
+writes the public article, generates a compact `summary.mdx`, and updates the
+content-driven `show.yaml` index.
+
+The current shared mechanics are:
 
 ```txt
-research → draft → review → rewrite → export
+manifest target → source summaries → research/write/rewrite agent → summary → export
 ```
 
-But each artifact type needs its own schemas, prompts, and review checklist.
+There is no separate reviewer in the MVP. The essay agent performs research,
+drafting, internal reflection, targeted follow-up research, and rewrite through
+state-update tools. A separate direct OpenAI API call creates `summary.mdx` after
+the essay draft is complete.
 
-Do not build a vague universal “generate document” prompt. The artifact types are different enough to deserve separate workflows.
+The architecture should stay direct:
 
-The architecture should stay explicit and direct:
-
-```txt
+```text
 pipeline/
   pyproject.toml
   README.md
-
-  workflows/
-    series_thesis/
-      schemas.py
-      workflow.py
-      research_prompt.md
-      write_prompt.md
-      review_prompt.md
-
-    theme_essay/
-      schemas.py
-      workflow.py
-      research_prompt.md
-      write_prompt.md
-      review_prompt.md
-
-    character_essay/
-      schemas.py
-      workflow.py
-      research_prompt.md
-      write_prompt.md
-      review_prompt.md
-
-    episode_essay/
-      schemas.py
-      workflow.py
-      research_prompt.md
-      write_prompt.md
-      review_prompt.md
-      insert_screenshots_prompt.md
-
-  tools/
-    research/
-      schemas.py
-      service.py
-
-    write/
-      schemas.py
-      service.py
-
-    review/
-      schemas.py
-      service.py
-
-    rewrite/
-      schemas.py
-      service.py
-
-    subtitles/
-      schemas.py
-      service.py
-
-    screenshots/
-      schemas.py
-      service.py
-
-  prompts/
-    house_style.md
-    anti_slop_rules.md
-    rewrite.md
+  agent.py
+  generate_about.py
+  generate_theme.py
+  generate_character.py
+  generate_episode.py
+  generate_essay.py
+  manifest.py
+  prompt.py
+  schemas.py
+  manifests/
 ```
 
 Rules:
 
 - No `src/` wrapper unless the project later has a concrete packaging reason for it.
 - No `rewatch_pipeline/` package layer.
-- Keep workflow folders as the first-class artifact types.
-- Keep tools small and self-contained.
-- Prompt files should be files, not prompt directories.
+- Keep the four CLI commands separate instead of hiding them behind one generic command.
+- Keep prompt strings in Python modules unless there is a concrete reason to split them out.
 - Empty `__init__.py` files should not exist.
-- Parent modules should import child modules through explicit package APIs when a child package exposes one.
 - Prefer naked functions over stateless classes.
 - Tests should be colocated at the level of the code they test, under `tests/unit` and `tests/integration`.
 
@@ -809,51 +745,56 @@ Rules:
 Inputs:
 
 - show metadata
-- full-series research blob
+- theme essay summaries
+- character essay summaries
 - house style guide
 
 Outputs:
 
-- `content/shows/<show>/about/what-<show>-is-about/index.mdx`
-- `content/shows/<show>/about/what-<show>-is-about/article.yaml`
+- `content/shows/<show>/about/index.mdx`
+- `content/shows/<show>/about/summary.mdx`
+- `content/shows/<show>/about/article.yaml`
 - `.local/runs/<show>/series-thesis/...`
 
-The series thesis workflow establishes the master interpretation used by all later workflows.
+The series thesis workflow establishes the master interpretation used by episode
+workflows. For the MVP, it is generated after the initial theme and character
+essays so it can synthesize their compact summaries.
 
 ### Theme Essay Workflow
 
 Inputs:
 
 - show metadata
-- series thesis essay
 - theme-specific research blob
 - house style guide
 
 Outputs:
 
 - `content/shows/<show>/themes/<theme>/index.mdx`
+- `content/shows/<show>/themes/<theme>/summary.mdx`
 - `content/shows/<show>/themes/<theme>/article.yaml`
 - `.local/runs/<show>/theme-<theme>/...`
 
-Theme essays define the conceptual vocabulary used by character and episode essays.
+Theme essays define conceptual vocabulary used by the series thesis and episode
+essays. For the MVP, they do not depend on other generated essays.
 
 ### Character Essay Workflow
 
 Inputs:
 
 - show metadata
-- series thesis essay
-- relevant theme essays
 - character-specific research blob
 - house style guide
 
 Outputs:
 
 - `content/shows/<show>/characters/<character>/index.mdx`
+- `content/shows/<show>/characters/<character>/summary.mdx`
 - `content/shows/<show>/characters/<character>/article.yaml`
 - `.local/runs/<show>/character-<character>/...`
 
-Character essays explain a character as an expression of the show’s larger machinery.
+Character essays explain a character as an expression of the show’s larger
+machinery. For the MVP, they do not depend on other generated essays.
 
 ### Episode Essay Workflow
 
@@ -861,19 +802,16 @@ Inputs:
 
 - show metadata
 - episode metadata
-- subtitle file extracted from the aired episode
-- episode-specific web research blob
-- series thesis essay
-- relevant theme essays
-- relevant character essays
+- series thesis summary
+- theme essay summaries
+- character essay summaries
 - house style guide
-- optional screenshot candidates
 
 Outputs:
 
 - `content/shows/<show>/episodes/<season>/<episode>/index.mdx`
+- `content/shows/<show>/episodes/<season>/<episode>/summary.mdx`
 - `content/shows/<show>/episodes/<season>/<episode>/episode.yaml`
-- selected screenshots under `content/.../screenshots/`
 - `.local/runs/<show>/episode-<code>/...`
 
 Episode essays apply the established interpretive framework to a concrete dramatic unit.
@@ -905,7 +843,9 @@ Example:
       s01/
 ```
 
-The final reviewed `index.mdx`, metadata YAML, and selected screenshots are committed. Raw research blobs and intermediate LLM outputs are not.
+The final `index.mdx`, `summary.mdx`, and metadata YAML are committed. Raw
+research blobs and intermediate LLM outputs are not. Selected screenshots will
+also be committed later when the screenshot workflow exists.
 
 ## 18. Episode Inputs and Subtitles
 
@@ -951,9 +891,14 @@ The article should be written first. Screenshots should be inserted afterward to
 
 ## 20. Review Philosophy
 
-The reviewer is not a second critic. It is a guardrail.
+The MVP does not have a separate automated review step. The essay agent should
+reflect on its own draft, do targeted follow-up research when needed, and
+rewrite before finalizing.
 
-The reviewer should catch:
+If a separate reviewer is added later, it should be a guardrail rather than a
+second critic.
+
+It should catch:
 
 - obvious LLM slop
 - generic claims
@@ -976,7 +921,7 @@ PASS_WITH_NOTES
 FAIL
 ```
 
-A failed review triggers rewrite. Allow up to two review/rewrite loops.
+A failed review should trigger rewrite. Allow up to two review/rewrite loops.
 
 ## 21. SEO
 
@@ -1133,10 +1078,12 @@ Build:
 
 Build:
 
-- series thesis workflow schema
-- research/draft/review/rewrite/export flow
-- prompts for series thesis
-- export to `content/shows/<show>/about/...`
+- `generate_about.py`
+- series thesis prompt instructions
+- summary-based source loading from theme and character essays
+- export to `content/shows/<show>/about/`
+- `summary.mdx` generation
+- content-driven `show.yaml` rebuild
 
 Run for:
 
@@ -1148,10 +1095,11 @@ What Succession Is About
 
 Build:
 
-- theme essay workflow
-- character essay workflow
-- prompt files and review checklists for each
+- `generate_theme.py`
+- `generate_character.py`
+- theme and character prompt instructions
 - exports to `themes/` and `characters/`
+- `summary.mdx` generation
 
 Generate a small foundation set before episodes.
 
@@ -1159,10 +1107,10 @@ Generate a small foundation set before episodes.
 
 Build:
 
-- subtitle ingestion
-- episode research blob
-- context selection from series/theme/character essays
-- episode draft/review/rewrite/export
+- `generate_episode.py`
+- context loading from series/theme/character summaries
+- episode draft/rewrite/export
+- `summary.mdx` generation
 
 Run on:
 
@@ -1192,10 +1140,11 @@ The project has three layers:
    Astro renders committed static content.
 
 2. Static content contract
-   MDX, YAML, and selected screenshots live in content/.
+   Public MDX, summary MDX, YAML, and selected screenshots live in content/.
 
 3. Offline generation pipeline
-   Python creates layered critical essays and episode analyses from research, style guidance, subtitles, upstream context, and local media.
+   Python creates layered critical essays and episode analyses from research,
+   style guidance, manifest targets, and upstream summary context.
 ```
 
 The public site is intentionally simple.
@@ -1207,10 +1156,9 @@ The editorial quality comes from:
 - series-first interpretation
 - theme vocabulary
 - character frameworks
-- subtitle-grounded episode analysis
-- web research blobs
+- summary-based source context
+- web research
 - strong house style
-- mechanical anti-slop review
 - screenshot discipline
 - human final review
 

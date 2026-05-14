@@ -54,25 +54,7 @@ const episodeMetadata = defineCollection({
     code: z.string(),
     title: z.string(),
     slug: z.string(),
-    air_date: z.string(),
-    writer: z.array(z.string()),
-    director: z.array(z.string()),
     seo,
-    context: z
-      .object({
-        depends_on: z.array(z.string()).default([]),
-      })
-      .optional(),
-    screenshots: z
-      .array(
-        z.object({
-          id: z.string(),
-          file: z.string(),
-          alt: z.string(),
-          caption: z.string(),
-        }),
-      )
-      .default([]),
   }),
 });
 
