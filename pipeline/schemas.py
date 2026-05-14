@@ -34,6 +34,7 @@ class EssayTarget(BaseModel):
 class EssaySource(BaseModel):
     """Reference source supplied to an essay run."""
 
+    label: str
     title: str
     subtitle: str
     summary_mdx: str

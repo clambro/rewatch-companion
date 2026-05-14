@@ -43,8 +43,8 @@ const shows = defineCollection({
 const episodeMetadata = defineCollection({
   loader: glob({
     base: contentBase,
-    pattern: "*/episodes/*/*/episode.yaml",
-    generateId: ({ entry }) => entry.replace(/\/episode\.ya?ml$/, ""),
+    pattern: "*/episodes/*/*/article.yaml",
+    generateId: ({ entry }) => entry.replace(/\/article\.ya?ml$/, ""),
   }),
   schema: z.object({
     show: z.string(),

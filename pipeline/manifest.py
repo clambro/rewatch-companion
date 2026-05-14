@@ -97,7 +97,7 @@ def content_episode_titles(*, show: Show, content_root: Path) -> dict[str, str]:
         return {}
 
     titles: dict[str, str] = {}
-    for path in episodes_root.glob("s*/e*/episode.yaml"):
+    for path in episodes_root.glob("s*/e*/article.yaml"):
         episode = yaml.safe_load(path.read_text(encoding="utf-8"))
         key = path.parent.relative_to(show_root).as_posix()
         titles[key] = episode["title"]
@@ -121,7 +121,7 @@ def episode_paths(*, show_root: Path) -> set[str]:
         return set()
 
     paths: set[str] = set()
-    for path in episodes_root.glob("s*/e*/episode.yaml"):
+    for path in episodes_root.glob("s*/e*/article.yaml"):
         paths.add(path.parent.relative_to(show_root).as_posix())
 
     return paths

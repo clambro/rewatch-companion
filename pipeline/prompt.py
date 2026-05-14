@@ -144,10 +144,19 @@ SOURCE_TEMPLATE = """
 <source>
 Title: {title}
 Subtitle: {subtitle}
+Source type: {label}
 
 Summary:
 {summary_mdx}
 </source>
+""".strip()
+
+THEME_SOURCE_TYPE = "Theme essay summary for shared critical vocabulary."
+CHARACTER_SOURCE_TYPE = "Character essay summary for character-specific continuity."
+PREVIOUS_EPISODE_SOURCE_TYPE = """
+Previous episode essay summary for continuity. Use it to avoid repetition and
+preserve local progression from the prior episode, but do not recap it, quote it,
+or treat it as stronger evidence than the target episode itself.
 """.strip()
 
 SUMMARY_INSTRUCTIONS = """
@@ -314,6 +323,7 @@ def render_sources(*, sources: list[EssaySource]) -> str:
     """Render reference sources for the model."""
     return "\n\n".join(
         SOURCE_TEMPLATE.format(
+            label=source.label,
             title=source.title,
             subtitle=source.subtitle,
             summary_mdx=source.summary_mdx,

@@ -412,18 +412,18 @@ content/
           e01-celebration/
             index.mdx
             summary.mdx
-            episode.yaml
+            article.yaml
           e02-shit-show-at-the-fuck-factory/
             index.mdx
             summary.mdx
-            episode.yaml
+            article.yaml
 ```
 
 Each generated essay directory includes:
 
 - `index.mdx` — public article content rendered by Astro
 - `summary.mdx` — compact internal reference summary used by later pipeline runs
-- `article.yaml` or `episode.yaml` — static-site metadata
+- `article.yaml` — static-site metadata
 
 `summary.mdx` is committed because it is part of the generation contract, but it
 is not loaded by Astro as public page content.
@@ -452,7 +452,7 @@ seasons:
         path: "episodes/s01/e01-celebration"
 ```
 
-### General Article Metadata
+### Theme and Character Metadata
 
 Use `article.yaml` for theme and character essays.
 
@@ -470,7 +470,7 @@ seo:
 
 ### Episode Metadata
 
-Use `episode.yaml` for episode essays.
+Use `article.yaml` for episode essays.
 
 Example:
 
@@ -746,16 +746,20 @@ Inputs:
 - episode metadata
 - theme essay summaries
 - character essay summaries
+- previous episode summary, except for the first episode in manifest order
 - house style guide
 
 Outputs:
 
 - `content/shows/<show>/episodes/<season>/<episode>/index.mdx`
 - `content/shows/<show>/episodes/<season>/<episode>/summary.mdx`
-- `content/shows/<show>/episodes/<season>/<episode>/episode.yaml`
+- `content/shows/<show>/episodes/<season>/<episode>/article.yaml`
 - `.local/runs/<show>/episode-<code>/...`
 
-Episode essays apply the established interpretive framework to a concrete dramatic unit.
+Episode essays apply the established interpretive framework to a concrete
+dramatic unit. Episode generation must run in manifest order. For every episode
+after the first manifest episode, the previous episode's `summary.mdx` is
+required as continuity context.
 
 ## 17. Internal and Temporary Artifacts
 
@@ -923,7 +927,7 @@ Minimum content validation:
 
 - every published article has `index.mdx`
 - every published article has metadata YAML
-- every episode screenshot referenced in `episode.yaml` exists
+- every episode screenshot referenced in `article.yaml` exists
 - every screenshot has alt text
 - every screenshot has a caption
 - every page has SEO title and description
@@ -1028,7 +1032,7 @@ Generate a small foundation set before episodes.
 Build:
 
 - `generate_episode.py`
-- context loading from theme and character summaries
+- context loading from theme, character, and previous episode summaries
 - episode draft/rewrite/export
 - `summary.mdx` generation
 

@@ -36,3 +36,6 @@ uv run python -m pytest tests/unit/test_manifest_content.py
 uv run ruff check
 uv run ty check
 ```
+
+Episode essays must be generated in manifest order. Every episode after the
+first one requires the previous episode's `summary.mdx` as continuity context.

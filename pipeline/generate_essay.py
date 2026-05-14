@@ -8,7 +8,13 @@ from typing import TYPE_CHECKING, Any
 import yaml
 from openai import OpenAI
 
-from prompt import SUMMARY_INSTRUCTIONS, build_summary_prompt
+from prompt import (
+    CHARACTER_SOURCE_TYPE,
+    PREVIOUS_EPISODE_SOURCE_TYPE,
+    SUMMARY_INSTRUCTIONS,
+    THEME_SOURCE_TYPE,
+    build_summary_prompt,
+)
 from schemas import EssayKind, EssaySource, EssayTarget, GeneratedEssay, Show
 from settings import settings
 
@@ -33,13 +39,11 @@ def write_article(*, target: EssayTarget, draft: GeneratedEssay) -> None:
 
     match target.kind:
         case EssayKind.EPISODES:
-            metadata_file = "episode.yaml"
             metadata = render_episode_metadata(target=target, draft=draft)
         case _:
-            metadata_file = "article.yaml"
             metadata = render_article_metadata(target=target, draft=draft)
 
-    (output_dir / metadata_file).write_text(metadata, encoding="utf-8")
+    (output_dir / "article.yaml").write_text(metadata, encoding="utf-8")
     (output_dir / "summary.mdx").write_text(f"{summary}\n", encoding="utf-8")
     rebuild_show_index(show=target.show)
     sys.stdout.write(f"Wrote {output_dir / 'index.mdx'}\n")
@@ -95,7 +99,7 @@ def load_article_sources(*, show: Show, sections: list[EssayKind]) -> list[Essay
                     summary_path = article_path.with_name("summary.mdx")
                     if not summary_path.is_file():
                         raise ValueError(f"Missing source summary: {summary_path}")
-                    sources.append(load_article_source(path=summary_path))
+                    sources.append(load_article_source(path=summary_path, kind=section))
             case EssayKind.EPISODES:
                 raise ValueError("Episode essays are not supported as generation sources yet.")
 
@@ -125,7 +129,7 @@ def load_article_listing(*, show_root: Path, section: EssayKind) -> list[dict[st
 def load_episode_listing(*, show_root: Path) -> list[dict[str, Any]]:
     """Load generated episode entries for the frontend show index."""
     seasons_by_number: dict[int, list[dict[str, Any]]] = {}
-    for metadata_path in sorted((show_root / EssayKind.EPISODES.value).glob("s*/e*/episode.yaml")):
+    for metadata_path in sorted((show_root / EssayKind.EPISODES.value).glob("s*/e*/article.yaml")):
         article_path = metadata_path.with_name("index.mdx")
         if not article_path.is_file():
             continue
@@ -215,10 +219,23 @@ def find_episode(
     )
 
 
-def load_article_source(*, path: Path) -> EssaySource:
+def load_article_source(
+    *,
+    path: Path,
+    kind: EssayKind,
+) -> EssaySource:
     """Load one committed article summary as source context."""
+    match kind:
+        case EssayKind.THEMES:
+            label = THEME_SOURCE_TYPE
+        case EssayKind.CHARACTERS:
+            label = CHARACTER_SOURCE_TYPE
+        case EssayKind.EPISODES:
+            label = PREVIOUS_EPISODE_SOURCE_TYPE
+
     metadata = yaml.safe_load(path.with_name("article.yaml").read_text(encoding="utf-8"))
     return EssaySource(
+        label=label,
         title=metadata["title"],
         subtitle=metadata["seo"]["description"],
         summary_mdx=path.read_text(encoding="utf-8").strip(),
