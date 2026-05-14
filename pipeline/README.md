@@ -6,7 +6,10 @@ The first pipeline feature is essay generation. It takes a manifest-defined arti
 
 ## Structure
 
-- `generate_essay.py` - CLI entrypoint and thin orchestration.
+- `generate_theme.py` - CLI entrypoint for theme essays.
+- `generate_character.py` - CLI entrypoint for character essays.
+- `generate_episode.py` - CLI entrypoint for episode essays.
+- `generate_essay.py` - shared orchestration, source loading, export, and show index helpers.
 - `agent.py` - Pydantic AI agent definition.
 - `manifest.py` - generation manifest loading and content-tree checks.
 - `manifests/` - fixed article titles, prompts, slugs, and episode titles.

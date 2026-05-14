@@ -167,16 +167,12 @@ def output_path(*, target: EssayTarget) -> Path:
     """Return the content output path for a generated essay."""
     match target.kind:
         case EssayKind.THEMES:
-            if target.slug is None:
-                raise ValueError("Theme generation requires a slug.")
             return CONTENT_ROOT / target.show.value / EssayKind.THEMES.value / target.slug
         case EssayKind.CHARACTERS:
-            if target.slug is None:
-                raise ValueError("Character generation requires a slug.")
             return CONTENT_ROOT / target.show.value / EssayKind.CHARACTERS.value / target.slug
         case EssayKind.EPISODES:
-            if target.slug is None or target.season is None:
-                raise ValueError("Episode generation requires a season and slug.")
+            if target.season is None:
+                raise ValueError("Episode generation requires a season.")
             return (
                 CONTENT_ROOT
                 / target.show.value
@@ -255,11 +251,10 @@ def render_draft(*, target: EssayTarget, draft: GeneratedEssay) -> str:
 
 def render_article_metadata(*, target: EssayTarget, draft: GeneratedEssay) -> str:
     """Render article metadata for the static site content collection."""
-    slug = f"slug: {json.dumps(target.slug)}\n" if target.slug is not None else ""
     return (
         f"show: {target.show.value}\n"
         f"title: {json.dumps(target.title)}\n"
-        f"{slug}"
+        f"slug: {json.dumps(target.slug)}\n"
         "\n"
         "seo:\n"
         f"  title: {json.dumps(target.title)}\n"
@@ -269,8 +264,8 @@ def render_article_metadata(*, target: EssayTarget, draft: GeneratedEssay) -> st
 
 def render_episode_metadata(*, target: EssayTarget, draft: GeneratedEssay) -> str:
     """Render episode metadata for the static site content collection."""
-    if target.season is None or target.episode is None or target.slug is None:
-        raise ValueError("Episode metadata requires season, episode, and slug.")
+    if target.season is None or target.episode is None:
+        raise ValueError("Episode metadata requires season and episode.")
 
     code = f"S{target.season:02}E{target.episode:02}"
     return (

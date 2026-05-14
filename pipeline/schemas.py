@@ -26,7 +26,7 @@ class EssayTarget(BaseModel):
     kind: EssayKind
     title: str
     prompt: str
-    slug: str | None = None
+    slug: str
     season: int | None = None
     episode: int | None = None
 

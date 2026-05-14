@@ -78,7 +78,7 @@ const articleMetadata = defineCollection({
   schema: z.object({
     show: z.string(),
     title: z.string(),
-    slug: z.string().optional(),
+    slug: z.string(),
     seo,
   }),
 });
