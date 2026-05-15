@@ -1,6 +1,7 @@
 ---
 import BaseLayout from "../../../../../../layouts/BaseLayout.astro";
-import EpisodeNav from "../../../../../../components/EpisodeNav.astro";
+import EssayNav from "../../../../../../components/EssayNav.astro";
+import EssaySidebar from "../../../../../../components/EssaySidebar.astro";
 import SpoilerNotice from "../../../../../../components/SpoilerNotice.astro";
 import { getCollection, render } from "astro:content";
 
@@ -31,6 +32,7 @@ export async function getStaticPaths() {
       params: { show: showSlug, season, episode },
       props: {
         article,
+        currentPath: `episodes/${season}/${episode}`,
         metadata,
         show,
         previous: currentIndex > 0 ? episodes[currentIndex - 1] : null,
@@ -43,24 +45,45 @@ export async function getStaticPaths() {
   });
 }
 
-const { article, metadata, show, previous, next } = Astro.props;
+const { article, currentPath, metadata, show, previous, next } = Astro.props;
 const { Content } = await render(article);
 const title = metadata.data.seo.title;
 const description = metadata.data.seo.description;
 ---
 
 <BaseLayout title={title} description={description}>
-  <article class="episode">
-    <p class="eyebrow">{show.data.title} {metadata.data.code}</p>
-    <h1>{article.data.title ?? metadata.data.title}</h1>
-    {article.data.dek && <p class="dek">{article.data.dek}</p>}
+  <article class="article-shell">
+    <EssaySidebar
+      show={show}
+      currentPath={currentPath}
+      previous={previous}
+      next={next}
+    />
 
-    <SpoilerNotice />
+    <div class="article-main">
+      <header class="article-header">
+        <div class="article-kicker">
+          <span>{show.data.title}</span>
+          <span>Episode Analysis</span>
+          <span>{metadata.data.code}</span>
+        </div>
+        <h1>{article.data.title ?? metadata.data.title}</h1>
+        {article.data.dek && <p class="dek">{article.data.dek}</p>}
+      </header>
 
-    <div class="article-body">
-      <Content />
+      <SpoilerNotice />
+
+      <div class="article-body">
+        <Content />
+      </div>
+
+      <EssayNav
+        previous={previous}
+        next={next}
+        showSlug={show.data.slug}
+        showTitle={show.data.title}
+        variant="footer"
+      />
     </div>
-
-    <EpisodeNav previous={previous} next={next} showSlug={show.data.slug} />
   </article>
 </BaseLayout>

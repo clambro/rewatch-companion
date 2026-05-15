@@ -1,0 +1,43 @@
+---
+const { previous, next, showSlug, showTitle, variant = "rail" } = Astro.props;
+
+function hrefFor(essay) {
+  return `/shows/${showSlug}/${essay.path}/`;
+}
+---
+
+<nav
+  class:list={["essay-nav", `essay-nav-${variant}`]}
+  aria-label="Essay navigation"
+>
+  <div>
+    {
+      previous && (
+        <a class="essay-nav-link" href={hrefFor(previous)}>
+          <span>← Previous</span>
+          {previous.code && <strong>{previous.code}</strong>} {previous.title}
+        </a>
+      )
+    }
+  </div>
+  {
+    variant === "footer" && (
+      <div>
+        <a class="essay-nav-link essay-nav-home" href={`/shows/${showSlug}/`}>
+          <span>Show guide</span>
+          {showTitle}
+        </a>
+      </div>
+    )
+  }
+  <div>
+    {
+      next && (
+        <a class="essay-nav-link" href={hrefFor(next)}>
+          <span>Next →</span>
+          {next.code && <strong>{next.code}</strong>} {next.title}
+        </a>
+      )
+    }
+  </div>
+</nav>

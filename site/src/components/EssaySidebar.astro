@@ -1,0 +1,93 @@
+---
+import EssayNav from "./EssayNav.astro";
+
+const { show, currentPath, previous = null, next = null } = Astro.props;
+const themes = show.data.themes ?? [];
+const characters = show.data.characters ?? [];
+const seasons = show.data.seasons ?? [];
+const currentSection = currentPath?.split("/")[0];
+const currentSeason = currentPath?.split("/")[1];
+
+function isCurrent(path) {
+  return path === currentPath;
+}
+
+function isCurrentSeason(season) {
+  return currentSeason === `s${String(season.season).padStart(2, "0")}`;
+}
+---
+
+<aside class="essay-sidebar" aria-label={`${show.data.title} essay navigation`}>
+  <a class="show-link" href={`/shows/${show.data.slug}/`}>
+    <span aria-hidden="true">←</span>
+    <strong>{show.data.title}</strong>
+    <small>Show guide</small>
+  </a>
+
+  {
+    (previous || next) && (
+      <EssayNav previous={previous} next={next} showSlug={show.data.slug} />
+    )
+  }
+
+  {
+    themes.length > 0 && (
+      <details class="sidebar-drawer" open={currentSection === "themes"}>
+        <summary>Themes</summary>
+        <nav aria-label="Theme essays">
+          {themes.map((theme) => (
+            <a
+              aria-current={isCurrent(theme.path) ? "page" : undefined}
+              class:list={{ current: isCurrent(theme.path) }}
+              href={`/shows/${show.data.slug}/${theme.path}/`}
+            >
+              {theme.title}
+            </a>
+          ))}
+        </nav>
+      </details>
+    )
+  }
+
+  {
+    characters.length > 0 && (
+      <details class="sidebar-drawer" open={currentSection === "characters"}>
+        <summary>Characters</summary>
+        <nav aria-label="Character essays">
+          {characters.map((character) => (
+            <a
+              aria-current={isCurrent(character.path) ? "page" : undefined}
+              class:list={{ current: isCurrent(character.path) }}
+              href={`/shows/${show.data.slug}/${character.path}/`}
+            >
+              {character.title}
+            </a>
+          ))}
+        </nav>
+      </details>
+    )
+  }
+
+  {
+    seasons.map((season) => (
+      <details
+        class="sidebar-drawer season-drawer"
+        open={isCurrentSeason(season)}
+      >
+        <summary>Season {season.season}</summary>
+        <nav aria-label={`Season ${season.season} episodes`}>
+          {season.episodes.map((episode) => (
+            <a
+              aria-current={isCurrent(episode.path) ? "page" : undefined}
+              class:list={{ current: isCurrent(episode.path) }}
+              href={`/shows/${show.data.slug}/${episode.path}/`}
+            >
+              <span class="episode-code">{episode.code}</span>
+              {episode.title}
+            </a>
+          ))}
+        </nav>
+      </details>
+    ))
+  }
+</aside>
