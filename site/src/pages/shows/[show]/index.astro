@@ -4,68 +4,202 @@ import { getCollection } from "astro:content";
 
 export async function getStaticPaths() {
   const shows = await getCollection("shows");
-  return shows.map((show) => ({
-    params: { show: show.data.slug },
-    props: { show },
-  }));
+  const articleMetadata = await getCollection("articleMetadata");
+  const episodeMetadata = await getCollection("episodeMetadata");
+
+  return shows.map((show) => {
+    const metadataById = new Map(
+      [...articleMetadata, ...episodeMetadata]
+        .filter((entry) => entry.id.startsWith(`${show.data.slug}/`))
+        .map((entry) => [entry.id, entry]),
+    );
+
+    return {
+      params: { show: show.data.slug },
+      props: { metadataById, show },
+    };
+  });
 }
 
-const { show } = Astro.props;
-const episodes = show.data.seasons.flatMap((season) => season.episodes);
-const articleSections = [
-  { heading: "Themes", entries: show.data.themes ?? [] },
-  { heading: "Characters", entries: show.data.characters ?? [] },
-];
+const { metadataById, show } = Astro.props;
+
+function cardFor(entry, label) {
+  const metadata = metadataById.get(`${show.data.slug}/${entry.path}`);
+  return {
+    ...entry,
+    description: metadata?.data.seo.description,
+    label,
+  };
+}
+
+function episodeCardFor(episode) {
+  const metadata = metadataById.get(`${show.data.slug}/${episode.path}`);
+  return {
+    ...episode,
+    description: metadata?.data.seo.description,
+    label: episode.code,
+  };
+}
+
+const themeCards = (show.data.themes ?? []).map((entry) =>
+  cardFor(entry, "Theme"),
+);
+const characterCards = (show.data.characters ?? []).map((entry) =>
+  cardFor(entry, "Character"),
+);
+const seasonCards = show.data.seasons.map((season) => ({
+  ...season,
+  episodes: season.episodes.map(episodeCardFor),
+}));
 ---
 
 <BaseLayout
   title={`${show.data.title} | Rewatch Companion`}
   description={`Full-series rewatch essays for ${show.data.title}.`}
 >
-  <section class="page-intro">
-    <p class="eyebrow">Show guide</p>
+  <section class="show-masthead">
+    <p class="eyebrow">Show Guide</p>
     <h1>{show.data.title}</h1>
-    <p>
+    <p class="show-dek">
       Full-series rewatch essays written for viewers who already know the
       ending.
     </p>
   </section>
 
-  {
-    articleSections.map(
-      (section) =>
-        section.entries.length > 0 && (
-          <section class="listing">
-            <h2>{section.heading}</h2>
-            <ul>
-              {section.entries.map((entry) => (
-                <li>
-                  <a href={`/shows/${show.data.slug}/${entry.path}/`}>
-                    {entry.title}
-                  </a>
-                </li>
-              ))}
-            </ul>
-          </section>
-        ),
-    )
-  }
+  <section class="show-catalog" data-show-catalog>
+    <nav
+      class="catalog-tabs"
+      aria-label={`${show.data.title} catalog sections`}
+    >
+      <button type="button" data-catalog-tab="episodes" aria-selected="true">
+        Episodes
+      </button>
+      <button type="button" data-catalog-tab="themes" aria-selected="false">
+        Themes
+      </button>
+      <button type="button" data-catalog-tab="characters" aria-selected="false">
+        Characters
+      </button>
+    </nav>
 
-  {
-    episodes.length > 0 && (
-      <section class="listing">
-        <h2>Episodes</h2>
-        <ol>
-          {episodes.map((episode) => (
-            <li>
-              <a href={`/shows/${show.data.slug}/${episode.path}/`}>
-                <span>{episode.code}</span>
-                {episode.title}
-              </a>
-            </li>
-          ))}
-        </ol>
-      </section>
-    )
-  }
+    <section class="catalog-panel" data-catalog-panel="episodes">
+      <div class="catalog-panel-header catalog-panel-header-tabs">
+        <nav class="season-tabs" aria-label={`${show.data.title} seasons`}>
+          {
+            seasonCards.map((season, index) => (
+              <button
+                type="button"
+                data-season-tab={`season-${season.season}`}
+                aria-selected={index === 0 ? "true" : "false"}
+              >
+                Season {season.season}
+              </button>
+            ))
+          }
+        </nav>
+      </div>
+
+      {
+        seasonCards.map((season, index) => (
+          <section
+            class="season-panel"
+            data-season-panel={`season-${season.season}`}
+            hidden={index !== 0}
+          >
+            <div class="essay-card-grid episode-card-grid">
+              {season.episodes.map((card) => (
+                <a
+                  class="essay-card episode-card"
+                  href={`/shows/${show.data.slug}/${card.path}/`}
+                >
+                  <p>{card.label}</p>
+                  <h3>{card.title}</h3>
+                  {card.description && <span>{card.description}</span>}
+                </a>
+              ))}
+            </div>
+          </section>
+        ))
+      }
+    </section>
+
+    <section class="catalog-panel" data-catalog-panel="themes" hidden>
+      <div class="catalog-panel-header">
+        <h2>Themes</h2>
+      </div>
+      <div class="essay-card-grid">
+        {
+          themeCards.map((card) => (
+            <a
+              class="essay-card"
+              href={`/shows/${show.data.slug}/${card.path}/`}
+            >
+              <p>{card.label}</p>
+              <h3>{card.title}</h3>
+              {card.description && <span>{card.description}</span>}
+            </a>
+          ))
+        }
+      </div>
+    </section>
+
+    <section class="catalog-panel" data-catalog-panel="characters" hidden>
+      <div class="catalog-panel-header">
+        <h2>Characters</h2>
+      </div>
+      <div class="essay-card-grid">
+        {
+          characterCards.map((card) => (
+            <a
+              class="essay-card"
+              href={`/shows/${show.data.slug}/${card.path}/`}
+            >
+              <p>{card.label}</p>
+              <h3>{card.title}</h3>
+              {card.description && <span>{card.description}</span>}
+            </a>
+          ))
+        }
+      </div>
+    </section>
+  </section>
+
+  <script>
+    document.querySelectorAll("[data-show-catalog]").forEach((catalog) => {
+      const catalogTabs = catalog.querySelectorAll("[data-catalog-tab]");
+      const catalogPanels = catalog.querySelectorAll("[data-catalog-panel]");
+      const seasonTabs = catalog.querySelectorAll("[data-season-tab]");
+      const seasonPanels = catalog.querySelectorAll("[data-season-panel]");
+
+      catalogTabs.forEach((tab) => {
+        tab.addEventListener("click", () => {
+          const target = tab.getAttribute("data-catalog-tab");
+          catalogTabs.forEach((item) => {
+            item.setAttribute("aria-selected", String(item === tab));
+          });
+          catalogPanels.forEach((panel) => {
+            panel.toggleAttribute(
+              "hidden",
+              panel.getAttribute("data-catalog-panel") !== target,
+            );
+          });
+        });
+      });
+
+      seasonTabs.forEach((tab) => {
+        tab.addEventListener("click", () => {
+          const target = tab.getAttribute("data-season-tab");
+          seasonTabs.forEach((item) => {
+            item.setAttribute("aria-selected", String(item === tab));
+          });
+          seasonPanels.forEach((panel) => {
+            panel.toggleAttribute(
+              "hidden",
+              panel.getAttribute("data-season-panel") !== target,
+            );
+          });
+        });
+      });
+    });
+  </script>
 </BaseLayout>
