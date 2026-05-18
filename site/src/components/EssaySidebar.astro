@@ -1,7 +1,5 @@
 ---
-import EssayNav from "./EssayNav.astro";
-
-const { show, currentPath, previous = null, next = null } = Astro.props;
+const { show, currentPath } = Astro.props;
 const themes = show.data.themes ?? [];
 const characters = show.data.characters ?? [];
 const seasons = show.data.seasons ?? [];
@@ -23,12 +21,6 @@ function isCurrentSeason(season) {
     <strong>{show.data.title}</strong>
     <small>Show guide</small>
   </a>
-
-  {
-    (previous || next) && (
-      <EssayNav previous={previous} next={next} showSlug={show.data.slug} />
-    )
-  }
 
   {
     themes.length > 0 && (

@@ -270,17 +270,17 @@ main {
 
 .article-shell {
   display: grid;
-  gap: clamp(34px, 6vw, 72px);
-  grid-template-columns: minmax(210px, 280px) minmax(0, 720px);
+  gap: clamp(32px, 5vw, 56px);
+  grid-template-columns: minmax(190px, 240px) minmax(0, 720px);
 }
 
 .essay-sidebar {
   align-self: start;
   border-left: 1px solid var(--border);
   color: var(--muted);
-  font-size: 0.8rem;
+  font-size: 0.78rem;
   line-height: 1.45;
-  padding-left: 14px;
+  padding-left: 12px;
   position: sticky;
   top: 24px;
 }
@@ -291,7 +291,7 @@ main {
   gap: 0 7px;
   grid-template-columns: auto 1fr;
   line-height: 1.25;
-  margin-bottom: 14px;
+  margin-bottom: 12px;
   text-decoration: none;
 }
 
@@ -303,12 +303,12 @@ main {
 
 .show-link strong {
   color: var(--text);
-  font-size: 0.92rem;
+  font-size: 0.88rem;
 }
 
 .show-link small {
   color: var(--faint);
-  font-size: 0.72rem;
+  font-size: 0.66rem;
   font-weight: 800;
   letter-spacing: 0.08em;
   text-transform: uppercase;
@@ -316,7 +316,7 @@ main {
 
 .sidebar-drawer {
   border-top: 1px solid var(--border);
-  padding: 7px 0;
+  padding: 8px 0;
 }
 
 .sidebar-drawer:first-of-type {
@@ -325,14 +325,19 @@ main {
 
 .sidebar-drawer summary,
 .season-drawer summary {
-  color: var(--text);
+  color: var(--muted);
   cursor: pointer;
-  font-size: 0.72rem;
+  font-size: 0.68rem;
   font-weight: 800;
-  letter-spacing: 0.08em;
+  letter-spacing: 0.075em;
   list-style: none;
   position: relative;
   text-transform: uppercase;
+}
+
+.sidebar-drawer[open] > summary,
+.season-drawer[open] > summary {
+  color: var(--text);
 }
 
 .sidebar-drawer summary::-webkit-details-marker,
@@ -357,8 +362,8 @@ main {
 .sidebar-drawer nav,
 .season-drawer nav {
   display: grid;
-  gap: 3px;
-  margin-top: 7px;
+  gap: 2px;
+  margin-top: 8px;
 }
 
 .sidebar-drawer nav a,
@@ -367,14 +372,13 @@ main {
   color: var(--muted);
   display: block;
   line-height: 1.35;
-  margin-left: -8px;
+  margin-left: -6px;
   padding: 3px 0 3px 6px;
   text-decoration: none;
 }
 
 .sidebar-drawer nav a.current,
 .season-drawer nav a.current {
-  background: color-mix(in srgb, var(--accent) 7%, transparent);
   border-left-color: var(--accent);
   color: var(--text);
   font-weight: 750;
@@ -398,8 +402,8 @@ main {
 .season-drawer nav a {
   align-items: baseline;
   display: grid;
-  gap: 8px;
-  grid-template-columns: 54px minmax(0, 1fr);
+  gap: 7px;
+  grid-template-columns: 48px minmax(0, 1fr);
 }
 
 .episode-code {
@@ -542,7 +546,7 @@ h3 {
 
 .essay-nav {
   display: grid;
-  gap: 8px;
+  gap: 5px;
 }
 
 .essay-nav-link {
@@ -557,16 +561,18 @@ h3 {
 
 .essay-nav-rail .essay-nav-link {
   border: 0;
-  padding: 3px 0;
+  color: var(--muted);
+  font-size: 0.76rem;
+  padding: 2px 0;
 }
 
 .essay-nav-link span {
   color: var(--faint);
   display: block;
-  font-size: 0.7rem;
+  font-size: 0.64rem;
   font-weight: 750;
-  letter-spacing: 0.12em;
-  margin-bottom: 3px;
+  letter-spacing: 0.1em;
+  margin-bottom: 2px;
   text-transform: uppercase;
 }
 
@@ -578,8 +584,8 @@ h3 {
 
 .essay-nav-rail {
   border-top: 1px solid var(--border);
-  margin: 0 0 6px;
-  padding: 8px 0 10px;
+  margin: 0 0 8px;
+  padding: 9px 0 10px;
 }
 
 .essay-nav-footer {
