@@ -80,6 +80,15 @@ main {
   max-width: 650px;
 }
 
+.home-masthead {
+  max-width: 760px;
+}
+
+.home-masthead h1 {
+  font-size: clamp(2.2rem, 4.2vw, 3.4rem);
+  max-width: 720px;
+}
+
 .show-section {
   margin-top: 36px;
 }
@@ -157,6 +166,59 @@ main {
 
 .season-panel {
   margin-top: 0;
+}
+
+.show-card-grid {
+  display: grid;
+  gap: 14px;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  max-width: 760px;
+}
+
+.show-card {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  color: var(--text);
+  display: block;
+  min-height: 168px;
+  padding: 17px;
+  text-decoration: none;
+}
+
+.show-card:hover {
+  border-color: color-mix(in srgb, var(--accent) 45%, var(--border));
+}
+
+.show-card p {
+  color: var(--faint);
+  font-size: 0.7rem;
+  font-weight: 800;
+  letter-spacing: 0.12em;
+  margin: 0 0 14px;
+  text-transform: uppercase;
+}
+
+.show-card h3 {
+  font-size: 1.35rem;
+  line-height: 1.15;
+  margin: 0;
+}
+
+.show-card span {
+  color: var(--muted);
+  display: block;
+  font-size: 0.92rem;
+  line-height: 1.45;
+  margin-top: 14px;
+}
+
+.show-card-muted {
+  background: transparent;
+}
+
+.show-card-muted h3,
+.show-card-muted span {
+  color: var(--muted);
 }
 
 .essay-card-grid {
@@ -548,6 +610,7 @@ h3 {
     display: block;
   }
 
+  .show-card-grid,
   .essay-card-grid,
   .episode-card-grid {
     grid-template-columns: 1fr;
