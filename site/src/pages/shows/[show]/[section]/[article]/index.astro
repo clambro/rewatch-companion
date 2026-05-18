@@ -1,9 +1,21 @@
 ---
 import BaseLayout from "../../../../../layouts/BaseLayout.astro";
+import EssayNav from "../../../../../components/EssayNav.astro";
+import EssaySidebar from "../../../../../components/EssaySidebar.astro";
 import SpoilerNotice from "../../../../../components/SpoilerNotice.astro";
 import { getCollection, render } from "astro:content";
 
 export async function getStaticPaths() {
+  function sectionEntries(show, section) {
+    if (section === "themes") {
+      return show.data.themes ?? [];
+    }
+    if (section === "characters") {
+      return show.data.characters ?? [];
+    }
+    return [];
+  }
+
   const allowedSections = new Set(["themes", "characters"]);
   const shows = await getCollection("shows");
   const metadataEntries = await getCollection("articleMetadata");
@@ -22,34 +34,74 @@ export async function getStaticPaths() {
       throw new Error(`Unsupported article section for ${article.id}`);
     }
 
+    const entries = sectionEntries(show, section);
+    const currentPath = `${section}/${articleSlug}`;
+    const currentIndex = entries.findIndex(
+      (entry) => entry.path === currentPath,
+    );
+
     return {
       params: { show: showSlug, section, article: articleSlug },
-      props: { article, metadata, show, section },
+      props: {
+        article,
+        currentPath,
+        metadata,
+        next:
+          currentIndex >= 0 && currentIndex < entries.length - 1
+            ? entries[currentIndex + 1]
+            : null,
+        previous: currentIndex > 0 ? entries[currentIndex - 1] : null,
+        section,
+        show,
+      },
     };
   });
 }
 
-const { article, metadata, show, section } = Astro.props;
+const { article, currentPath, metadata, next, previous, show, section } =
+  Astro.props;
 const { Content } = await render(article);
 const title = metadata.data.seo.title;
 const description = metadata.data.seo.description;
 const sectionLabels = {
-  themes: "Theme Essay",
-  characters: "Character Essay",
+  themes: "Themes",
+  characters: "Characters",
 };
 const label = sectionLabels[section];
 ---
 
 <BaseLayout title={title} description={description}>
-  <article class="episode">
-    <p class="eyebrow">{show.data.title} {label}</p>
-    <h1>{article.data.title ?? metadata.data.title}</h1>
-    {article.data.dek && <p class="dek">{article.data.dek}</p>}
+  <article class="article-shell">
+    <EssaySidebar
+      show={show}
+      currentPath={currentPath}
+      previous={previous}
+      next={next}
+    />
 
-    <SpoilerNotice />
+    <div class="article-main">
+      <header class="article-header">
+        <div class="article-kicker">
+          <span>{show.data.title}</span>
+          <span>{label}</span>
+        </div>
+        <h1>{article.data.title ?? metadata.data.title}</h1>
+        {article.data.dek && <p class="dek">{article.data.dek}</p>}
+      </header>
 
-    <div class="article-body">
-      <Content />
+      <SpoilerNotice />
+
+      <div class="article-body">
+        <Content />
+      </div>
+
+      <EssayNav
+        previous={previous}
+        next={next}
+        showSlug={show.data.slug}
+        showTitle={show.data.title}
+        variant="footer"
+      />
     </div>
   </article>
 </BaseLayout>

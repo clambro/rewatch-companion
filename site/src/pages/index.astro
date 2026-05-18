@@ -3,28 +3,48 @@ import BaseLayout from "../layouts/BaseLayout.astro";
 import { getCollection } from "astro:content";
 
 const shows = await getCollection("shows");
+
+function countsFor(show) {
+  return {
+    characters: show.data.characters?.length ?? 0,
+    episodes: show.data.seasons.reduce(
+      (total, season) => total + season.episodes.length,
+      0,
+    ),
+    themes: show.data.themes?.length ?? 0,
+  };
+}
 ---
 
 <BaseLayout>
-  <section class="page-intro">
-    <p class="eyebrow">Full-series rewatch essays</p>
-    <h1>Serious companions for shows that reward close attention.</h1>
-    <p>
-      Episode-by-episode analysis written for viewers who already know the
-      ending.
-    </p>
+  <section class="show-masthead home-masthead">
+    <p class="eyebrow">Rewatch Companion</p>
+    <h1>Essays for viewers who already know the ending.</h1>
   </section>
 
-  <section class="listing">
-    <h2>Shows</h2>
-    <ul>
+  <section class="show-section home-guides">
+    <div class="show-card-grid">
       {
-        shows.map((show) => (
-          <li>
-            <a href={`/shows/${show.data.slug}/`}>{show.data.title}</a>
-          </li>
-        ))
+        shows.map((show) => {
+          const counts = countsFor(show);
+          return (
+            <a class="show-card" href={`/shows/${show.data.slug}/`}>
+              <p>Available Now</p>
+              <h3>{show.data.title}</h3>
+              <span>
+                {counts.themes} themes · {counts.characters} characters ·{" "}
+                {counts.episodes} episodes
+              </span>
+            </a>
+          );
+        })
       }
-    </ul>
+
+      <div class="show-card show-card-muted">
+        <p>Coming Soon</p>
+        <h3>More shows</h3>
+        <span>More full-series companions are on the way.</span>
+      </div>
+    </div>
   </section>
 </BaseLayout>
