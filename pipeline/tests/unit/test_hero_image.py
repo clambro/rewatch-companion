@@ -2,13 +2,15 @@
 
 from __future__ import annotations
 
-from typing import TYPE_CHECKING
+from types import SimpleNamespace
+from typing import TYPE_CHECKING, Any, cast
 
 import pytest
 from PIL import Image
-from pydantic_ai import ModelRetry
+from pydantic_ai import ModelRetry, RunContext
 
 import find_hero_image
+import hero_image_prompt
 from find_hero_image import (
     HeroImageCommand,
     article_body_without_frontmatter,
@@ -22,11 +24,20 @@ from find_hero_image import (
     write_jpeg_hero_image,
 )
 from hero_image_agent import (
+    add_hero_image_candidate,
     image_search_result_from_ddgs_result,
+    selected_hero_image_from_selection,
     validate_selected_image_aspect_ratio,
 )
 from manifest import ManifestEpisode, ShowManifest
-from schemas import EssayKind, FoundHeroImage, Show
+from schemas import (
+    EssayKind,
+    FoundHeroImage,
+    HeroImageArticle,
+    HeroImageSelection,
+    HeroImageWorkspace,
+    Show,
+)
 
 if TYPE_CHECKING:
     from pathlib import Path
@@ -129,6 +140,7 @@ def test_image_search_result_from_ddgs_result_normalizes_known_fields() -> None:
 
     assert result.title == "Succession Vaulter"
     assert result.image_url == "https://example.com/image.jpg"
+    assert result.image.url == "https://example.com/image.jpg"
     assert result.source_page_url == "https://example.com/article"
     assert result.width == EXPECTED_WIDTH
     assert result.height == EXPECTED_HEIGHT
@@ -190,6 +202,140 @@ def test_selected_image_aspect_ratio_rejects_square_images() -> None:
                 width=1200,
                 height=1200,
             ),
+        )
+
+
+def test_add_hero_image_candidate_collects_candidate() -> None:
+    """The agent should collect candidates before separate final selection."""
+    workspace = HeroImageWorkspace(
+        article=HeroImageArticle(
+            show=Show.SUCCESSION,
+            title="Shiv Roy",
+            subtitle="Dek.",
+            article_mdx="Article.",
+        ),
+    )
+    ctx = cast("RunContext[HeroImageWorkspace]", SimpleNamespace(deps=workspace))
+    image = FoundHeroImage(
+        image_url="https://example.com/image.jpg",
+        source_page_url="https://example.com/article",
+        alt="Shiv Roy standing in an office.",
+        rationale="Relevant image.",
+        width=EXPECTED_WIDTH,
+        height=EXPECTED_HEIGHT,
+    )
+
+    add_hero_image_candidate(ctx=ctx, image=image)
+
+    assert len(workspace.candidates) == 1
+    assert workspace.candidates[0].image_url == "https://example.com/image.jpg"
+
+
+def test_add_hero_image_candidate_returns_rejection_without_retry() -> None:
+    """Bad image candidates should not exhaust tool retry limits."""
+    workspace = HeroImageWorkspace(
+        article=HeroImageArticle(
+            show=Show.SUCCESSION,
+            title="Shiv Roy",
+            subtitle="Dek.",
+            article_mdx="Article.",
+        ),
+    )
+    ctx = cast("RunContext[HeroImageWorkspace]", SimpleNamespace(deps=workspace))
+
+    result = add_hero_image_candidate(
+        ctx=ctx,
+        image=FoundHeroImage(
+            image_url="https://example.com/small.jpg",
+            source_page_url="https://example.com/article",
+            alt="Small image.",
+            rationale="Too small.",
+            width=800,
+            height=450,
+        ),
+    )
+
+    assert result.startswith("Candidate rejected:")
+    assert workspace.candidates == []
+
+
+def test_selected_hero_image_from_selection_uses_candidate_index() -> None:
+    """Final image selection should come from the direct selector output."""
+    candidates = [
+        FoundHeroImage(
+            image_url="https://example.com/generic-office.jpg",
+            source_page_url="https://example.com/gallery",
+            alt="A generic office.",
+            rationale="Usable dimensions.",
+            width=EXPECTED_WIDTH,
+            height=EXPECTED_HEIGHT,
+        ),
+        FoundHeroImage(
+            image_url="https://assets.example.com/shiv-roy-succession.jpg",
+            source_page_url="https://variety.com/tv/recaps/succession-shiv-roy",
+            alt="Shiv Roy in Succession.",
+            rationale="Directly matches Shiv Roy and the article.",
+            width=EXPECTED_WIDTH,
+            height=EXPECTED_HEIGHT,
+        ),
+        FoundHeroImage(
+            image_url="https://example.com/latest-bad-choice.jpg",
+            source_page_url="https://example.com/gallery",
+            alt="A vague image.",
+            rationale="Most recent candidate.",
+            width=EXPECTED_WIDTH,
+            height=EXPECTED_HEIGHT,
+        ),
+    ]
+
+    selected = selected_hero_image_from_selection(
+        candidates=candidates,
+        selection=HeroImageSelection(candidate_index=1, rationale="Best fit."),
+    )
+
+    assert selected.image_url == "https://assets.example.com/shiv-roy-succession.jpg"
+    assert selected.rationale == "Best fit."
+
+
+def test_hero_image_selection_input_includes_images() -> None:
+    """The direct selector should see candidate images, not only metadata text."""
+    article = HeroImageArticle(
+        show=Show.SUCCESSION,
+        title="Shiv Roy",
+        subtitle="Dek.",
+        article_mdx="Article.",
+    )
+    candidates = [
+        FoundHeroImage(
+            image_url="https://example.com/shiv.jpg",
+            source_page_url="https://example.com/article",
+            alt="Shiv Roy.",
+            rationale="Relevant image.",
+            width=EXPECTED_WIDTH,
+            height=EXPECTED_HEIGHT,
+        ),
+    ]
+
+    selection_input = hero_image_prompt.build_hero_image_selection_input(
+        article=article,
+        candidates=candidates,
+    )
+
+    raw_selection_input = cast("list[dict[str, Any]]", selection_input)
+    content = raw_selection_input[0]["content"]
+    assert {
+        "type": "input_image",
+        "image_url": "https://example.com/shiv.jpg",
+        "detail": "low",
+    } in content
+
+
+def test_selected_hero_image_from_selection_rejects_invalid_index() -> None:
+    """The direct selector must choose a real candidate."""
+    with pytest.raises(RuntimeError, match="invalid candidate index"):
+        selected_hero_image_from_selection(
+            candidates=[],
+            selection=HeroImageSelection(candidate_index=0, rationale="Bad index."),
         )
 
 
