@@ -17,10 +17,7 @@ const seo = z.object({
 const heroImage = z
   .object({
     src: z.string(),
-    image_url: z.string(),
-    credit: z.string(),
-    title: z.string(),
-    rationale: z.string(),
+    alt: z.string(),
   })
   .optional();
 

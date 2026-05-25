@@ -100,12 +100,7 @@ const placeholderLabel = `${show.data.title} / ${label}`;
         {
           heroImage ? (
             <>
-              <img src={heroImage.src} alt="" />
-              {heroImage.credit && (
-                <figcaption>
-                  <span>{heroImage.credit}</span>
-                </figcaption>
-              )}
+              <img src={heroImage.src} alt={heroImage.alt} />
             </>
           ) : (
             <div>{placeholderLabel}</div>

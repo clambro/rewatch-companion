@@ -10,6 +10,12 @@ from pydantic_ai.models.openai import OpenAIResponsesModel, OpenAIResponsesModel
 from pydantic_ai.providers.openai import OpenAIProvider
 
 from hero_image_prompt import HERO_IMAGE_AGENT_INSTRUCTIONS, build_hero_image_prompt
+from hero_image_rules import (
+    ASPECT_RATIO_TOLERANCE,
+    HERO_IMAGE_HEIGHT,
+    HERO_IMAGE_WIDTH,
+    TARGET_ASPECT_RATIO,
+)
 from schemas import FoundHeroImage, HeroImageArticle, HeroImageSearchResult, HeroImageWorkspace
 from settings import settings
 
@@ -89,12 +95,12 @@ def set_hero_image(
     image: FoundHeroImage,
 ) -> str:
     """Store the selected hero image candidate."""
+    validate_selected_image_aspect_ratio(image=image)
     ctx.deps.selected_image = image.model_copy(
         update={
             "image_url": image.image_url.strip(),
             "source_page_url": image.source_page_url.strip(),
-            "title": image.title.strip(),
-            "credit": image.credit.strip(),
+            "alt": image.alt.strip(),
             "rationale": image.rationale.strip(),
         },
     )
@@ -107,6 +113,27 @@ def validate_final_state(ctx: RunContext[HeroImageWorkspace], output: str) -> st
         raise ModelRetry("Select a hero image with set_hero_image before final output.")
 
     return output
+
+
+def validate_selected_image_aspect_ratio(*, image: FoundHeroImage) -> None:
+    """Reject selected image dimensions that cannot produce the standard hero image."""
+    if image.width is None or image.height is None:
+        return
+
+    if image.width < HERO_IMAGE_WIDTH or image.height < HERO_IMAGE_HEIGHT:
+        raise ModelRetry(
+            f"Choose a hero image at least {HERO_IMAGE_WIDTH}x{HERO_IMAGE_HEIGHT}. "
+            f"The selected image is {image.width}x{image.height}.",
+        )
+
+    ratio = image.width / image.height
+    if abs(ratio - TARGET_ASPECT_RATIO) <= ASPECT_RATIO_TOLERANCE:
+        return
+
+    raise ModelRetry(
+        f"Choose a hero image closer to 16:9. The selected image is "
+        f"{image.width}x{image.height} ({ratio:.2f}:1).",
+    )
 
 
 def image_search_result_from_ddgs_result(*, result: dict[str, Any]) -> HeroImageSearchResult:

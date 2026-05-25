@@ -82,9 +82,10 @@ class FoundHeroImage(BaseModel):
 
     image_url: str
     source_page_url: str
-    title: str
-    credit: str
+    alt: str
     rationale: str
+    width: int | None = None
+    height: int | None = None
 
 
 class HeroImageWorkspace(BaseModel):

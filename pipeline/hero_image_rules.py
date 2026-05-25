@@ -1,0 +1,6 @@
+"""Shared rules for selected hero images."""
+
+HERO_IMAGE_WIDTH = 1200
+HERO_IMAGE_HEIGHT = 675
+TARGET_ASPECT_RATIO = 16 / 9
+ASPECT_RATIO_TOLERANCE = 0.18

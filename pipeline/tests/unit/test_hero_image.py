@@ -4,25 +4,32 @@ from __future__ import annotations
 
 from typing import TYPE_CHECKING
 
+import pytest
+from PIL import Image
+from pydantic_ai import ModelRetry
+
 import find_hero_image
 from find_hero_image import (
     HeroImageCommand,
     article_body_without_frontmatter,
     article_path_for_command,
-    image_extension,
+    download_hero_image,
     load_completed_article,
     public_image_path_for_article,
     public_image_src,
     update_article_metadata,
+    validate_hero_image_size,
+    write_jpeg_hero_image,
 )
-from hero_image_agent import image_search_result_from_ddgs_result
+from hero_image_agent import (
+    image_search_result_from_ddgs_result,
+    validate_selected_image_aspect_ratio,
+)
 from manifest import ManifestEpisode, ShowManifest
 from schemas import EssayKind, FoundHeroImage, Show
 
 if TYPE_CHECKING:
     from pathlib import Path
-
-    import pytest
 
 EXPECTED_WIDTH = 1200
 EXPECTED_HEIGHT = 675
@@ -156,8 +163,7 @@ def test_update_article_metadata_writes_hero_image_block(
         hero_image=FoundHeroImage(
             image_url="https://example.com/image.jpg",
             source_page_url="https://example.com/article",
-            title="Succession Vaulter",
-            credit="HBO",
+            alt="Roman Roy standing in the Vaulter office.",
             rationale="Matches the article.",
         ),
     )
@@ -168,32 +174,23 @@ def test_update_article_metadata_writes_hero_image_block(
 
     assert metadata["hero_image"] == {
         "src": "/images/shows/succession/episodes/s02/e02-vaulter/hero.jpg",
-        "image_url": "https://example.com/image.jpg",
-        "credit": "HBO",
-        "title": "Succession Vaulter",
-        "rationale": "Matches the article.",
+        "alt": "Roman Roy standing in the Vaulter office.",
     }
 
 
-def test_image_extension_prefers_supported_url_extension() -> None:
-    """URL extensions are used before response content type."""
-    response = find_hero_image.httpx.Response(
-        200,
-        headers={"content-type": "image/png"},
-    )
-
-    extension = image_extension(
-        hero_image=FoundHeroImage(
-            image_url="https://example.com/image.jpeg?width=1200",
-            source_page_url="https://example.com/article",
-            title="Image",
-            credit="HBO",
-            rationale="Good image.",
-        ),
-        response=response,
-    )
-
-    assert extension == ".jpg"
+def test_selected_image_aspect_ratio_rejects_square_images() -> None:
+    """The agent gets an early retry when it selects a non-16:9 image."""
+    with pytest.raises(ModelRetry, match="closer to 16:9"):
+        validate_selected_image_aspect_ratio(
+            image=FoundHeroImage(
+                image_url="https://example.com/image.jpg",
+                source_page_url="https://example.com/article",
+                alt="A square image.",
+                rationale="Good image.",
+                width=1200,
+                height=1200,
+            ),
+        )
 
 
 def test_public_image_path_and_src_use_article_content_path(
@@ -207,7 +204,7 @@ def test_public_image_path_and_src_use_article_content_path(
     monkeypatch.setattr(find_hero_image, "CONTENT_SHOWS_ROOT", content_root)
     monkeypatch.setattr(find_hero_image, "PUBLIC_IMAGE_ROOT", public_root)
 
-    image_path = public_image_path_for_article(article_path=article_path, extension=".jpg")
+    image_path = public_image_path_for_article(article_path=article_path)
 
     assert (
         image_path == public_root / "succession" / "episodes" / "s02" / "e02-vaulter" / "hero.jpg"
@@ -215,3 +212,67 @@ def test_public_image_path_and_src_use_article_content_path(
     assert public_image_src(image_path=image_path) == (
         "/images/shows/succession/episodes/s02/e02-vaulter/hero.jpg"
     )
+
+
+def test_write_jpeg_hero_image_converts_input_bytes(tmp_path: Path) -> None:
+    """Downloaded image bytes are normalized to a JPEG file."""
+    source_path = tmp_path / "source.png"
+    output_path = tmp_path / "hero.jpg"
+    Image.new("RGBA", (EXPECTED_WIDTH, EXPECTED_HEIGHT), color=(10, 20, 30, 255)).save(source_path)
+
+    write_jpeg_hero_image(
+        image_path=output_path,
+        content=source_path.read_bytes(),
+    )
+
+    with Image.open(output_path) as image:
+        assert image.format == "JPEG"
+        assert image.mode == "RGB"
+        assert image.size == (EXPECTED_WIDTH, EXPECTED_HEIGHT)
+
+
+def test_hero_image_size_rejects_small_sources() -> None:
+    """Hero image sources must be large enough for the fixed output size."""
+    with pytest.raises(ValueError, match="at least 1200x675"):
+        validate_hero_image_size(width=800, height=450)
+
+
+def test_download_hero_image_preserves_existing_file_when_validation_fails(
+    tmp_path: Path,
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    """A rejected replacement should not delete an existing hero image."""
+    content_root = tmp_path / "content" / "shows"
+    public_root = tmp_path / "site" / "public" / "images" / "shows"
+    article_path = content_root / "succession" / "episodes" / "s02" / "e02-vaulter" / "index.mdx"
+    image_path = public_root / "succession" / "episodes" / "s02" / "e02-vaulter" / "hero.jpg"
+    image_path.parent.mkdir(parents=True)
+    Image.new("RGB", (EXPECTED_WIDTH, EXPECTED_HEIGHT), color=(10, 20, 30)).save(image_path)
+
+    square_source_path = tmp_path / "square.png"
+    Image.new("RGB", (EXPECTED_WIDTH, EXPECTED_WIDTH), color=(200, 10, 10)).save(square_source_path)
+    monkeypatch.setattr(find_hero_image, "CONTENT_SHOWS_ROOT", content_root)
+    monkeypatch.setattr(find_hero_image, "PUBLIC_IMAGE_ROOT", public_root)
+
+    def fake_get(*_args: object, **_kwargs: object) -> find_hero_image.httpx.Response:
+        return find_hero_image.httpx.Response(
+            200,
+            content=square_source_path.read_bytes(),
+            request=find_hero_image.httpx.Request("GET", "https://example.com/square.png"),
+        )
+
+    monkeypatch.setattr(find_hero_image.httpx, "get", fake_get)
+
+    with pytest.raises(ValueError, match="close to 16:9"):
+        download_hero_image(
+            article_path=article_path,
+            hero_image=FoundHeroImage(
+                image_url="https://example.com/square.png",
+                source_page_url="https://example.com/article",
+                alt="A square image.",
+                rationale="Wrong shape.",
+            ),
+        )
+
+    with Image.open(image_path) as image:
+        assert image.size == (EXPECTED_WIDTH, EXPECTED_HEIGHT)
