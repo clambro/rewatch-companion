@@ -16,6 +16,7 @@ from hero_image_rules import (
     HERO_IMAGE_WIDTH,
     TARGET_ASPECT_RATIO,
 )
+from rate_limit_retry import RateLimitRetryCapability
 from schemas import FoundHeroImage, HeroImageArticle, HeroImageSearchResult, HeroImageWorkspace
 from settings import settings
 
@@ -66,6 +67,7 @@ def build_hero_image_agent() -> Agent[HeroImageWorkspace, str]:
             set_hero_image,
             web_fetch_tool(),
         ],
+        capabilities=[RateLimitRetryCapability[HeroImageWorkspace]()],
         instructions=HERO_IMAGE_AGENT_INSTRUCTIONS,
     )
     agent.output_validator(validate_final_state)

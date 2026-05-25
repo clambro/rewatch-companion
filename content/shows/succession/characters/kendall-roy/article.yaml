@@ -1,7 +1,11 @@
 show: succession
-title: "Kendall Roy"
-slug: "kendall-roy"
-
+title: Kendall Roy
+slug: kendall-roy
 seo:
-  title: "Kendall Roy"
-  description: "Kendall Roy\u2019s bids for legitimacy are bids for absolution, and Succession keeps proving the performance can never become reality."
+  title: Kendall Roy
+  description:
+    Kendall Roy wants absolution for his leadership, but the show keeps
+    proving it is leverage all the way down.
+hero_image:
+  src: /images/shows/succession/characters/kendall-roy/hero.jpg
+  alt: Jeremy Strong as Kendall Roy in Succession

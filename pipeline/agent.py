@@ -11,6 +11,7 @@ from prompt import (
     AGENT_INSTRUCTIONS,
     build_essay_prompt,
 )
+from rate_limit_retry import RateLimitRetryCapability
 from schemas import EssaySource, EssayTarget, EssayWorkspace, GeneratedEssay
 from settings import settings
 
@@ -78,6 +79,7 @@ def build_essay_agent() -> Agent[EssayWorkspace, str]:
             duckduckgo_search_tool(),
             web_fetch_tool(),
         ],
+        capabilities=[RateLimitRetryCapability[EssayWorkspace]()],
         instructions=AGENT_INSTRUCTIONS,
     )
     agent.output_validator(validate_final_state)
@@ -85,7 +87,12 @@ def build_essay_agent() -> Agent[EssayWorkspace, str]:
 
 
 def update_subtitle(ctx: RunContext[EssayWorkspace], subtitle: str) -> str:
-    """Update the article subtitle/dek. A good subtitle is a single short sentence."""
+    """
+    Update the article dek.
+
+    A good dek is a single short sentence meant to be read alongside the fixed
+    title. It is plain text only and does not support formatting of any kind.
+    """
     ctx.deps.subtitle = subtitle.strip()
     return "Subtitle updated."
 

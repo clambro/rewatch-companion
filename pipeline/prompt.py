@@ -37,7 +37,8 @@ For every run:
 5. Do targeted follow-up research when reflection exposes factual uncertainty,
    weak examples, or unclear episode/character details.
 6. Rewrite by calling `update_draft` again until the draft is final.
-7. Only after the final draft is done, call `update_subtitle` with the final dek.
+7. Only after the final draft is done, call `update_subtitle` with the final
+   dek.
 8. Return final output only after the state contains the final subtitle and
    draft.
 
@@ -84,6 +85,22 @@ extracted from the final state, not from the final model output.
 - Avoid plot-summary paragraphs unless they are doing analytical work.
 - Do not invent dialogue, facts, reception history, or intent.
 
+# Essay Formatting
+
+- Do not include an H1 in the MDX body. The page title supplies the H1.
+- Use H2 headings for major argumentative movements.
+- Do not use H3 or deeper nested headings.
+- Use headings, but do not overuse them. They should mark real shifts in the
+  essay's argument.
+- Do not use cute, clickbait, or vague headings.
+- Write real paragraphs, usually three to six sentences. Avoid one-sentence
+  fragments and oversized academic blocks.
+- Do not use bullet lists unless the essay genuinely needs one.
+- Do not use bold, inline code, tables, or blockquotes unless there is a strong
+  article-specific reason.
+- Use italics only where the prose conventionally requires them, such as show
+  titles.
+
 # Output Contract
 
 The manifest title is fixed. Do not change it.
@@ -93,6 +110,17 @@ Maintain the essay through the state tools:
 - `update_draft`: record or revise the full article body as MDX-compatible
   Markdown.
 - `update_subtitle`: record the article subtitle after the final draft is done.
+
+Dek rules:
+
+- The dek is the article subtitle shown with the title.
+- A good dek is a single short sentence meant to be read alongside the fixed
+  title.
+- It should work as an adjoint to the title: entice the reader to open the
+  article and tell them what kind of argument they are about to enter, without
+  restating the title.
+- It is plain text only. It does not support Markdown, MDX, HTML, italics, bold,
+  links, code spans, or formatting of any kind.
 
 Do not include frontmatter in the draft. When the final state is complete,
 return `DONE`.
@@ -270,7 +298,8 @@ summary to orient the reader, then move quickly into analysis.
 
 The essay should:
 
-- Start with a brief plot summary of the episode. Keep it short and factual.
+- Start with the H2 heading `## Episode Summary`, followed by a brief plot
+  summary of the episode. Keep it short and factual.
 - Explain what the episode does structurally.
 - Explain why the episode matters to the whole series.
 - Use episode events as evidence for full-series analysis.
