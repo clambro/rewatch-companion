@@ -7,7 +7,7 @@ The initial target show is **Succession**. Essays assume the reader has already 
 ## Structure
 
 - `site/` - Astro static site.
-- `content/` - publishable show metadata, episode metadata, MDX articles, and final selected screenshots.
+- `content/` - publishable show metadata, episode metadata, MDX articles, and final selected images.
 - `pipeline/` - reserved for the future offline Python content-generation pipeline.
 - `docs/project_plan.md` - project plan and editorial/product context.
 - `.local/` - local-only research, media, drafts, and generated artifacts. This is ignored by Git.

@@ -15,8 +15,6 @@ Expected responsibilities once implemented:
 - generate compact `summary.mdx` files for source context
 - enforce manifest-order episode generation with the previous episode summary as required context
 - rebuild `show.yaml` from committed content files
-- create screenshot candidates from local media
-- select and export final screenshots
 - write final `index.mdx`, `summary.mdx`, and metadata YAML files into `content/`
 
 ## Commands
@@ -64,8 +62,6 @@ Keep raw and intermediate artifacts out of version control. Use `.local/` for:
 - review notes
 - run logs
 - local video/media references
-- scene-detection outputs
-- screenshot candidate images
 
 Only write reviewed, publishable static output into `content/`.
 

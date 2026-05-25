@@ -526,24 +526,6 @@ h3 {
     sans-serif;
 }
 
-.screenshot {
-  margin: 36px 0;
-}
-
-.screenshot img {
-  border-radius: 6px;
-  display: block;
-  height: auto;
-  width: 100%;
-}
-
-.screenshot figcaption {
-  color: var(--muted);
-  font-family: Inter, ui-sans-serif, system-ui, sans-serif;
-  font-size: 0.9rem;
-  margin-top: 9px;
-}
-
 .essay-nav {
   display: grid;
   gap: 5px;
