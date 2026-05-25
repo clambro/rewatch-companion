@@ -14,7 +14,7 @@ from essay_generation.prompt import (
     build_research_source_summary_prompt,
 )
 
-SUMMARY_MODEL = "gpt-5.4-nano"
+SUMMARY_MODEL = "gpt-5.4-mini"
 MAX_CLEAN_RESEARCH_CHARS = 20_000
 MIN_MEANINGFUL_LINE_CHARS = 2
 MIN_USABLE_RESEARCH_CHARS = 700

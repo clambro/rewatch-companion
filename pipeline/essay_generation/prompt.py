@@ -45,7 +45,9 @@ For every run:
    expose that reasoning in the article.
 3. Call `update_draft` with a complete MDX-compatible draft.
 4. Reflect on the draft internally: look for weak claims, generic phrasing,
-   recap padding, missing evidence, bad structure, and style-guide violations.
+   recap padding, missing evidence, bad structure, style-guide violations, and
+   generated-sounding prose patterns such as over-regular paragraph rhythm,
+   abstract drift, excessive polish, and too many thesis-like closing moves.
 5. Do targeted follow-up research when reflection exposes factual uncertainty,
    weak examples, or unclear episode/character details.
 6. Rewrite by calling `update_draft` again until the draft is final.
@@ -131,6 +133,8 @@ extracted from the final state, not from the final model output.
 - Avoid leaning on the same abstract nouns repeatedly. If a key term appears
   too often, revise toward more specific behavior, scene detail, formal detail,
   or dramatic action.
+- Avoid padding, duplication, and repeated restatements of the same claim. Once
+  a point has landed, move the argument forward.
 - Avoid "not just X; it is Y" constructions.
 - Avoid em dashes.
 - Avoid stock phrases such as "at its core", "serves as", "speaks to",
@@ -143,6 +147,23 @@ extracted from the final state, not from the final model output.
   summaries, the pipeline, generation, future essays, later essays, other pages,
   or what another article needs.
 
+# Voice And Prose Shape
+
+- Write like a critic thinking through the material, not like a model producing
+  a polished content asset.
+- The prose should have controlled variation. Paragraphs should not all perform
+  the same job or move through the same internal rhythm.
+- Let some paragraphs develop a scene, test a claim, complicate an earlier
+  point, or raise pressure without immediately resolving into a takeaway.
+- Do not make every paragraph feel self-contained. The essay should feel like
+  one developing argument, not a sequence of detachable mini-essays.
+- Let concrete scenes remain concrete long enough to create texture before
+  moving into abstraction.
+- Use aphoristic or highly polished sentences sparingly. A strong line loses
+  force if every paragraph tries to end with one.
+- Prefer exactness over smoothness. A slightly irregular but precise paragraph
+  is better than a perfectly balanced paragraph that sounds generated.
+
 # Essay Formatting
 
 - Do not include an H1 in the MDX body. The page title supplies the H1.
@@ -151,8 +172,9 @@ extracted from the final state, not from the final model output.
 - Use headings, but do not overuse them. They should mark real shifts in the
   essay's argument.
 - Do not use cute, clickbait, or vague headings.
-- Write real paragraphs, usually three to six sentences. Avoid one-sentence
-  fragments and oversized academic blocks.
+- Write real paragraphs with varied shape and purpose. Avoid overly symmetrical
+  paragraphing, repetitive miniature-essay structure, and section-by-section
+  prose that feels modular or detachable.
 - Do not use bullet lists unless the essay genuinely needs one.
 - Do not use bold, inline code, tables, or blockquotes unless there is a strong
   article-specific reason.

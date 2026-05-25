@@ -22,7 +22,7 @@ from essay_generation.schemas import EssaySource, EssayTarget, GeneratedEssay
 if TYPE_CHECKING:
     from common.manifest import ManifestEpisode, ManifestSluggedArticle
 
-REPO_ROOT = Path(__file__).resolve().parent.parent
+REPO_ROOT = Path(__file__).resolve().parents[2]
 CONTENT_ROOT = REPO_ROOT / "content" / "shows"
 SUMMARY_MODEL = "gpt-5.4-nano"
 

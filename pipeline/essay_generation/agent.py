@@ -26,7 +26,7 @@ from essay_generation.research_limits import (
 )
 from essay_generation.schemas import EssaySource, EssayTarget, EssayWorkspace, GeneratedEssay
 
-MODEL = "gpt-5.4-mini"
+MODEL = "gpt-5.5"
 MODEL_SETTINGS: OpenAIResponsesModelSettings = {
     "openai_reasoning_effort": "medium",
     "openai_reasoning_summary": "concise",
@@ -129,7 +129,13 @@ def update_subtitle(ctx: RunContext[EssayWorkspace], subtitle: str) -> str:
 
 
 def update_draft(ctx: RunContext[EssayWorkspace], body_mdx: str) -> str:
-    """Rewrite the full article draft."""
+    """
+    Rewrite the full article draft.
+
+    The draft should read as one developing critical argument, not a stack of
+    self-contained mini-essays. Prefer precise, varied, scene-aware prose over
+    smooth symmetrical paragraphing.
+    """
     ctx.deps.draft = body_mdx.strip()
     return "Draft updated."
 
