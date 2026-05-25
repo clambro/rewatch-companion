@@ -13,19 +13,19 @@ from pydantic_ai.providers.openai import OpenAIProvider
 
 from common.rate_limit_retry import RateLimitRetryCapability
 from common.settings import settings
-from hero_image_prompt import (
+from hero_images.prompt import (
     HERO_IMAGE_AGENT_INSTRUCTIONS,
     HERO_IMAGE_SELECTION_INSTRUCTIONS,
     build_hero_image_prompt,
     build_hero_image_selection_input,
 )
-from hero_image_rules import (
+from hero_images.rules import (
     ASPECT_RATIO_TOLERANCE,
     HERO_IMAGE_HEIGHT,
     HERO_IMAGE_WIDTH,
     TARGET_ASPECT_RATIO,
 )
-from schemas import (
+from hero_images.schemas import (
     FoundHeroImage,
     HeroImageArticle,
     HeroImageSearchResult,

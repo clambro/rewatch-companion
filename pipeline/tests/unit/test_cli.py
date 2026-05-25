@@ -58,7 +58,7 @@ def test_cli_dispatches_character_image(monkeypatch: pytest.MonkeyPatch) -> None
     calls: list[dict[str, Any]] = []
     monkeypatch.setattr(
         cli,
-        "find_hero_image",
+        "find_article_hero_image",
         lambda **kwargs: calls.append(kwargs),
     )
 

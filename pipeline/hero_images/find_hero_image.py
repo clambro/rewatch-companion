@@ -12,16 +12,17 @@ from pydantic import BaseModel
 
 from common.manifest import episode_slug, load_manifest
 from generate_essay import find_episode, find_slugged_article
-from hero_image_agent import find_hero_image_for_article
-from hero_image_rules import (
+from hero_images.agent import find_hero_image_for_article
+from hero_images.rules import (
     ASPECT_RATIO_TOLERANCE,
     HERO_IMAGE_HEIGHT,
     HERO_IMAGE_WIDTH,
     TARGET_ASPECT_RATIO,
 )
-from schemas import EssayKind, FoundHeroImage, HeroImageArticle, Show
+from hero_images.schemas import FoundHeroImage, HeroImageArticle
+from schemas import EssayKind, Show
 
-REPO_ROOT = Path(__file__).resolve().parent.parent
+REPO_ROOT = Path(__file__).resolve().parents[2]
 CONTENT_SHOWS_ROOT = REPO_ROOT / "content" / "shows"
 PUBLIC_IMAGE_ROOT = REPO_ROOT / "site" / "public" / "images" / "shows"
 HERO_IMAGE_FILENAME = "hero.jpg"

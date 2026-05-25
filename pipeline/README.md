@@ -11,15 +11,12 @@ The first pipeline feature is essay generation. It takes a manifest-defined arti
 - `generate_character.py` - character essay workflow.
 - `generate_episode.py` - episode essay workflow.
 - `generate_missing_essays.py` - manifest-driven backfill for missing essays.
-- `find_hero_image.py` - workflow for finding an online hero image for a completed article.
-- `find_missing_hero_images.py` - manifest-driven backfill for missing article hero images.
 - `generate_essay.py` - shared orchestration, source loading, export, and show index helpers.
 - `agent.py` - Pydantic AI agent definition.
-- `hero_image_agent.py` - Pydantic AI hero image search agent definition.
 - `common/` - shared settings, manifest loading, and agent retry plumbing.
+- `hero_images/` - hero image search, download, metadata, prompts, rules, schemas, and tests.
 - `manifests/` - fixed article titles, prompts, slugs, and episode titles.
 - `prompt.py` - essay agent prompt strings.
-- `hero_image_prompt.py` - hero image agent prompt strings.
 - `schemas.py` - target and generated essay schemas.
 
 ## Commands

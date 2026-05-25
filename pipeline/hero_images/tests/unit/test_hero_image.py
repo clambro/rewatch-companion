@@ -7,10 +7,16 @@ import pytest
 from PIL import Image
 from pydantic_ai import ModelRetry, RunContext
 
-import find_hero_image
-import hero_image_prompt
 from common.manifest import ManifestEpisode, ShowManifest
-from find_hero_image import (
+from hero_images import find_hero_image
+from hero_images import prompt as hero_image_prompt
+from hero_images.agent import (
+    add_hero_image_candidate,
+    image_search_result_from_ddgs_result,
+    selected_hero_image_from_selection,
+    validate_selected_image_aspect_ratio,
+)
+from hero_images.find_hero_image import (
     HeroImageCommand,
     article_body_without_frontmatter,
     article_path_for_command,
@@ -22,20 +28,13 @@ from find_hero_image import (
     validate_hero_image_size,
     write_jpeg_hero_image,
 )
-from hero_image_agent import (
-    add_hero_image_candidate,
-    image_search_result_from_ddgs_result,
-    selected_hero_image_from_selection,
-    validate_selected_image_aspect_ratio,
-)
-from schemas import (
-    EssayKind,
+from hero_images.schemas import (
     FoundHeroImage,
     HeroImageArticle,
     HeroImageSelection,
     HeroImageWorkspace,
-    Show,
 )
+from schemas import EssayKind, Show
 
 if TYPE_CHECKING:
     from pathlib import Path

@@ -1,8 +1,8 @@
 """Tests for manifest backfill scripts."""
 
+import importlib
 from typing import TYPE_CHECKING
 
-import find_missing_hero_images
 import generate_missing_essays
 from common.manifest import ManifestEpisode, ManifestSluggedArticle, ShowManifest
 from schemas import Show
@@ -11,6 +11,8 @@ if TYPE_CHECKING:
     from pathlib import Path
 
     import pytest
+
+find_missing_hero_images = importlib.import_module("hero_images.find_missing_hero_images")
 
 
 def test_missing_manifest_essays_follow_manifest_order(

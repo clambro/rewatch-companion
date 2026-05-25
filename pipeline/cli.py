@@ -6,12 +6,11 @@ import argparse
 from enum import StrEnum
 from typing import TYPE_CHECKING
 
-from find_hero_image import HeroImageCommand, find_hero_image
-from find_missing_hero_images import find_missing_hero_images
 from generate_character import generate_character_essay
 from generate_episode import generate_episode_essay
 from generate_missing_essays import generate_missing_essays
 from generate_theme import generate_theme_essay
+from hero_images import HeroImageCommand, find_article_hero_image, find_missing_hero_images
 from schemas import EssayKind, Show
 
 if TYPE_CHECKING:
@@ -86,15 +85,15 @@ def run_image_command(*, args: argparse.Namespace) -> None:
     show = Show(args.show)
     match ImageCommand(args.image_command):
         case ImageCommand.THEME:
-            find_hero_image(
+            find_article_hero_image(
                 command=HeroImageCommand(show=show, kind=EssayKind.THEMES, slug=args.slug),
             )
         case ImageCommand.CHARACTER:
-            find_hero_image(
+            find_article_hero_image(
                 command=HeroImageCommand(show=show, kind=EssayKind.CHARACTERS, slug=args.slug),
             )
         case ImageCommand.EPISODE:
-            find_hero_image(
+            find_article_hero_image(
                 command=HeroImageCommand(
                     show=show,
                     kind=EssayKind.EPISODES,
