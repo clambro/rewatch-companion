@@ -14,6 +14,13 @@ const seo = z.object({
   description: z.string(),
 });
 
+const heroImage = z
+  .object({
+    src: z.string(),
+    alt: z.string(),
+  })
+  .optional();
+
 const shows = defineCollection({
   loader: glob({
     base: contentBase,
@@ -23,6 +30,7 @@ const shows = defineCollection({
   schema: z.object({
     title: z.string(),
     slug: z.string(),
+    hero_image: heroImage,
     themes: z.array(listedArticle).optional(),
     characters: z.array(listedArticle).optional(),
     seasons: z.array(
@@ -54,6 +62,7 @@ const episodeMetadata = defineCollection({
     title: z.string(),
     slug: z.string(),
     seo,
+    hero_image: heroImage,
   }),
 });
 
@@ -80,6 +89,7 @@ const articleMetadata = defineCollection({
     title: z.string(),
     slug: z.string(),
     seo,
+    hero_image: heroImage,
   }),
 });
 

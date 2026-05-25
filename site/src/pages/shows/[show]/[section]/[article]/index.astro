@@ -63,11 +63,13 @@ const { article, currentPath, metadata, next, previous, show, section } =
 const { Content } = await render(article);
 const title = metadata.data.seo.title;
 const description = metadata.data.seo.description;
+const heroImage = metadata.data.hero_image;
 const sectionLabels = {
   themes: "Themes",
   characters: "Characters",
 };
 const label = sectionLabels[section];
+const placeholderLabel = `${show.data.title} / ${label}`;
 ---
 
 <BaseLayout title={title} description={description}>
@@ -88,6 +90,23 @@ const label = sectionLabels[section];
         <h1>{article.data.title ?? metadata.data.title}</h1>
         {article.data.dek && <p class="dek">{article.data.dek}</p>}
       </header>
+
+      <figure
+        class:list={[
+          "article-hero",
+          { "article-hero-placeholder": !heroImage },
+        ]}
+      >
+        {
+          heroImage ? (
+            <>
+              <img src={heroImage.src} alt={heroImage.alt} />
+            </>
+          ) : (
+            <div>{placeholderLabel}</div>
+          )
+        }
+      </figure>
 
       <SpoilerNotice />
 

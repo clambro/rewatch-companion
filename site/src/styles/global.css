@@ -61,9 +61,12 @@ main {
 }
 
 .show-masthead {
+  align-items: end;
   border-bottom: 1px solid var(--border);
+  display: grid;
+  gap: 28px;
+  grid-template-columns: minmax(0, 1fr) minmax(280px, 420px);
   margin-bottom: 34px;
-  max-width: 880px;
   padding-bottom: 28px;
 }
 
@@ -80,7 +83,36 @@ main {
   max-width: 650px;
 }
 
+.show-hero {
+  margin: 0;
+}
+
+.show-hero img,
+.show-hero-placeholder div {
+  aspect-ratio: 16 / 9;
+  background: color-mix(in srgb, var(--border) 52%, transparent);
+  border: 1px solid var(--border);
+  display: block;
+  width: 100%;
+}
+
+.show-hero img {
+  object-fit: cover;
+}
+
+.show-hero-placeholder div {
+  align-items: center;
+  color: var(--faint);
+  display: flex;
+  font-size: 0.78rem;
+  font-weight: 800;
+  justify-content: center;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+}
+
 .home-masthead {
+  display: block;
   max-width: 760px;
 }
 
@@ -181,7 +213,8 @@ main {
   color: var(--text);
   display: block;
   min-height: 168px;
-  padding: 17px;
+  overflow: hidden;
+  padding: 0;
   text-decoration: none;
 }
 
@@ -194,14 +227,14 @@ main {
   font-size: 0.7rem;
   font-weight: 800;
   letter-spacing: 0.12em;
-  margin: 0 0 14px;
+  margin: 17px 17px 14px;
   text-transform: uppercase;
 }
 
 .show-card h3 {
   font-size: 1.35rem;
   line-height: 1.15;
-  margin: 0;
+  margin: 17px 17px 0;
 }
 
 .show-card span {
@@ -209,11 +242,44 @@ main {
   display: block;
   font-size: 0.92rem;
   line-height: 1.45;
-  margin-top: 14px;
+  margin: 14px 17px 17px;
+}
+
+.show-card-image {
+  aspect-ratio: 16 / 9;
+  background: color-mix(in srgb, var(--border) 52%, transparent);
+  border-bottom: 1px solid var(--border);
+  display: block;
+  object-fit: cover;
+  width: 100%;
+}
+
+.show-card-image-placeholder {
+  align-items: center;
+  color: var(--faint);
+  display: flex;
+  font-size: 0.72rem;
+  font-weight: 800;
+  justify-content: center;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
 }
 
 .show-card-muted {
   background: transparent;
+  padding: 17px;
+}
+
+.show-card-muted p {
+  margin: 0 0 14px;
+}
+
+.show-card-muted h3 {
+  margin: 0;
+}
+
+.show-card-muted span {
+  margin: 14px 0 0;
 }
 
 .show-card-muted h3,
@@ -237,12 +303,36 @@ main {
   color: var(--text);
   display: block;
   min-height: 168px;
-  padding: 15px;
+  overflow: hidden;
   text-decoration: none;
 }
 
 .essay-card:hover {
   border-color: color-mix(in srgb, var(--accent) 45%, var(--border));
+}
+
+.essay-card-content {
+  padding: 15px;
+}
+
+.essay-card-image {
+  aspect-ratio: 16 / 9;
+  background: color-mix(in srgb, var(--border) 52%, transparent);
+  border-bottom: 1px solid var(--border);
+  display: block;
+  object-fit: cover;
+  width: 100%;
+}
+
+.essay-card-image-placeholder {
+  align-items: center;
+  color: var(--faint);
+  display: flex;
+  font-size: 0.7rem;
+  font-weight: 800;
+  justify-content: center;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
 }
 
 .essay-card p {
@@ -476,6 +566,43 @@ h3 {
   margin: 15px 0 0;
 }
 
+.article-hero {
+  margin: 0 0 24px;
+}
+
+.article-hero img,
+.article-hero-placeholder div {
+  aspect-ratio: 16 / 9;
+  background: color-mix(in srgb, var(--border) 52%, transparent);
+  border: 1px solid var(--border);
+  display: block;
+  width: 100%;
+}
+
+.article-hero img {
+  object-fit: cover;
+}
+
+.article-hero-placeholder div {
+  align-items: center;
+  color: var(--faint);
+  display: flex;
+  font-size: 0.78rem;
+  font-weight: 800;
+  justify-content: center;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+}
+
+.article-hero figcaption {
+  color: var(--muted);
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  font-size: 0.74rem;
+  margin-top: 7px;
+}
+
 .spoiler-notice {
   background: var(--surface);
   border: 1px solid var(--border);
@@ -524,24 +651,6 @@ h3 {
     BlinkMacSystemFont,
     "Segoe UI",
     sans-serif;
-}
-
-.screenshot {
-  margin: 36px 0;
-}
-
-.screenshot img {
-  border-radius: 6px;
-  display: block;
-  height: auto;
-  width: 100%;
-}
-
-.screenshot figcaption {
-  color: var(--muted);
-  font-family: Inter, ui-sans-serif, system-ui, sans-serif;
-  font-size: 0.9rem;
-  margin-top: 9px;
 }
 
 .essay-nav {
@@ -618,7 +727,8 @@ h3 {
 
   .show-card-grid,
   .essay-card-grid,
-  .episode-card-grid {
+  .episode-card-grid,
+  .show-masthead {
     grid-template-columns: 1fr;
   }
 

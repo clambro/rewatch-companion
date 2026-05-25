@@ -23,10 +23,15 @@ def generate_theme() -> None:
     parser.add_argument("--show", choices=[show.value for show in Show], required=True)
     parser.add_argument("--slug", required=True)
     command = ThemeCommand.model_validate(vars(parser.parse_args()))
-    manifest = load_manifest(show=command.show)
-    theme = find_slugged_article(entries=manifest.themes, slug=command.slug)
+    generate_theme_essay(show=command.show, slug=command.slug)
+
+
+def generate_theme_essay(*, show: Show, slug: str) -> None:
+    """Generate one theme essay from the manifest."""
+    manifest = load_manifest(show=show)
+    theme = find_slugged_article(entries=manifest.themes, slug=slug)
     target = EssayTarget(
-        show=command.show,
+        show=show,
         kind=EssayKind.THEMES,
         title=theme.title,
         prompt=theme.prompt,

@@ -1,3 +1,6 @@
+default_language_version:
+  python: python3.14
+
 repos:
   # Format repo-level content and config with Prettier.
   - repo: local
@@ -43,7 +46,7 @@ repos:
   #
   # TODO(content): Add a content validation hook once the content contract
   # stabilizes. It should check show/episode YAML shape, episode path
-  # resolution, published article presence, screenshot references, and
+  # resolution, published article presence, image references, and
   # internal links between generated static routes.
   #
   # TODO(site): Add broken-link checking in CI after routes and content volume

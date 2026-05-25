@@ -54,3 +54,42 @@ class GeneratedEssay(BaseModel):
 
     subtitle: str
     body_mdx: str
+
+
+class HeroImageArticle(BaseModel):
+    """Completed article used as input for hero image search."""
+
+    show: Show
+    title: str
+    subtitle: str
+    article_mdx: str
+
+
+class HeroImageSearchResult(BaseModel):
+    """One image-search result exposed to the agent."""
+
+    title: str
+    image_url: str
+    source_page_url: str
+    thumbnail_url: str = ""
+    source_name: str = ""
+    width: int | None = None
+    height: int | None = None
+
+
+class FoundHeroImage(BaseModel):
+    """Selected online image result for a completed article."""
+
+    image_url: str
+    source_page_url: str
+    alt: str
+    rationale: str
+    width: int | None = None
+    height: int | None = None
+
+
+class HeroImageWorkspace(BaseModel):
+    """Mutable state for a hero image search run."""
+
+    article: HeroImageArticle
+    selected_image: FoundHeroImage | None = None

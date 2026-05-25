@@ -12,9 +12,9 @@ Rewatch Companion is a static publishing project for full-series, episode-by-epi
 
 - `docs/project_plan.md` - product and architecture background. Use it as context, not as an immutable spec.
 - `site/` - Astro static site. Read `site/AGENTS.md` before changing site code.
-- `content/` - publishable show metadata, episode metadata, MDX articles, and final selected screenshots.
-- `pipeline/` - future offline Python pipeline. Read `pipeline/AGENTS.md` before adding pipeline code.
-- `.local/` - local-only artifacts such as research, media, generated drafts, run logs, and scene candidates. Never commit it.
+- `content/` - publishable show metadata, episode metadata, and MDX articles.
+- `pipeline/` - offline Python pipeline. Read `pipeline/AGENTS.md` before adding pipeline code.
+- `.local/` - local-only artifacts such as research, media, generated drafts, run logs, and image candidates. Never commit it.
 
 ## Content Boundary
 
@@ -26,9 +26,9 @@ Committed content should be safe to publish:
 - `content/shows/<show>/**/article.yaml`
 - `content/shows/<show>/episodes/<season>/<episode>/index.mdx`
 - `content/shows/<show>/**/summary.mdx` files used as compact pipeline reference context
-- final selected screenshots only, when screenshots are added
+- `hero_image` metadata that references committed local images under `site/public/images/`
 
-Do not commit raw subtitles, research blobs, intermediate drafts, scene-detection output, video files, or local media references.
+Do not commit raw subtitles, research blobs, intermediate drafts, image candidates, video files, external image source URLs, or local media references.
 
 ## Global Rules
 

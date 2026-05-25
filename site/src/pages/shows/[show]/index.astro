@@ -22,12 +22,14 @@ export async function getStaticPaths() {
 }
 
 const { metadataById, show } = Astro.props;
+const showHeroImage = show.data.hero_image;
 
 function cardFor(entry, label) {
   const metadata = metadataById.get(`${show.data.slug}/${entry.path}`);
   return {
     ...entry,
     description: metadata?.data.seo.description,
+    heroImage: metadata?.data.hero_image,
     label,
   };
 }
@@ -37,6 +39,7 @@ function episodeCardFor(episode) {
   return {
     ...episode,
     description: metadata?.data.seo.description,
+    heroImage: metadata?.data.hero_image,
     label: episode.code,
   };
 }
@@ -58,11 +61,25 @@ const seasonCards = show.data.seasons.map((season) => ({
   description={`Full-series essays for ${show.data.title}.`}
 >
   <section class="show-masthead">
-    <p class="eyebrow">Show Guide</p>
-    <h1>{show.data.title}</h1>
-    <p class="show-dek">
-      Full-series essays written for viewers who already know the ending.
-    </p>
+    <div class="show-masthead-copy">
+      <p class="eyebrow">Show Guide</p>
+      <h1>{show.data.title}</h1>
+      <p class="show-dek">
+        Full-series essays written for viewers who already know the ending.
+      </p>
+    </div>
+
+    <figure
+      class:list={["show-hero", { "show-hero-placeholder": !showHeroImage }]}
+    >
+      {
+        showHeroImage ? (
+          <img src={showHeroImage.src} alt={showHeroImage.alt} />
+        ) : (
+          <div>{show.data.title}</div>
+        )
+      }
+    </figure>
   </section>
 
   <section class="show-catalog" data-show-catalog>
@@ -111,9 +128,23 @@ const seasonCards = show.data.seasons.map((season) => ({
                   class="essay-card episode-card"
                   href={`/shows/${show.data.slug}/${card.path}/`}
                 >
-                  <p>{card.label}</p>
-                  <h3>{card.title}</h3>
-                  {card.description && <span>{card.description}</span>}
+                  {card.heroImage ? (
+                    <img
+                      class="essay-card-image"
+                      src={card.heroImage.src}
+                      alt={card.heroImage.alt}
+                      loading="lazy"
+                    />
+                  ) : (
+                    <div class="essay-card-image essay-card-image-placeholder">
+                      {card.label}
+                    </div>
+                  )}
+                  <div class="essay-card-content">
+                    <p>{card.label}</p>
+                    <h3>{card.title}</h3>
+                    {card.description && <span>{card.description}</span>}
+                  </div>
                 </a>
               ))}
             </div>
@@ -133,9 +164,23 @@ const seasonCards = show.data.seasons.map((season) => ({
               class="essay-card"
               href={`/shows/${show.data.slug}/${card.path}/`}
             >
-              <p>{card.label}</p>
-              <h3>{card.title}</h3>
-              {card.description && <span>{card.description}</span>}
+              {card.heroImage ? (
+                <img
+                  class="essay-card-image"
+                  src={card.heroImage.src}
+                  alt={card.heroImage.alt}
+                  loading="lazy"
+                />
+              ) : (
+                <div class="essay-card-image essay-card-image-placeholder">
+                  {card.label}
+                </div>
+              )}
+              <div class="essay-card-content">
+                <p>{card.label}</p>
+                <h3>{card.title}</h3>
+                {card.description && <span>{card.description}</span>}
+              </div>
             </a>
           ))
         }
@@ -153,9 +198,23 @@ const seasonCards = show.data.seasons.map((season) => ({
               class="essay-card"
               href={`/shows/${show.data.slug}/${card.path}/`}
             >
-              <p>{card.label}</p>
-              <h3>{card.title}</h3>
-              {card.description && <span>{card.description}</span>}
+              {card.heroImage ? (
+                <img
+                  class="essay-card-image"
+                  src={card.heroImage.src}
+                  alt={card.heroImage.alt}
+                  loading="lazy"
+                />
+              ) : (
+                <div class="essay-card-image essay-card-image-placeholder">
+                  {card.label}
+                </div>
+              )}
+              <div class="essay-card-content">
+                <p>{card.label}</p>
+                <h3>{card.title}</h3>
+                {card.description && <span>{card.description}</span>}
+              </div>
             </a>
           ))
         }

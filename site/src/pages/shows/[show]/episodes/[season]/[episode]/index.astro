@@ -49,6 +49,8 @@ const { article, currentPath, metadata, show, previous, next } = Astro.props;
 const { Content } = await render(article);
 const title = metadata.data.seo.title;
 const description = metadata.data.seo.description;
+const heroImage = metadata.data.hero_image;
+const placeholderLabel = `${show.data.title} / ${metadata.data.code}`;
 ---
 
 <BaseLayout title={title} description={description}>
@@ -70,6 +72,23 @@ const description = metadata.data.seo.description;
         <h1>{article.data.title ?? metadata.data.title}</h1>
         {article.data.dek && <p class="dek">{article.data.dek}</p>}
       </header>
+
+      <figure
+        class:list={[
+          "article-hero",
+          { "article-hero-placeholder": !heroImage },
+        ]}
+      >
+        {
+          heroImage ? (
+            <>
+              <img src={heroImage.src} alt={heroImage.alt} />
+            </>
+          ) : (
+            <div>{placeholderLabel}</div>
+          )
+        }
+      </figure>
 
       <SpoilerNotice />
 

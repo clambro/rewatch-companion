@@ -31,15 +31,24 @@ def generate_episode() -> None:
     parser.add_argument("--season", type=int, required=True)
     parser.add_argument("--episode", type=int, required=True)
     command = EpisodeCommand.model_validate(vars(parser.parse_args()))
-    manifest = load_manifest(show=command.show)
+    generate_episode_essay(
+        show=command.show,
+        season=command.season,
+        episode_number=command.episode,
+    )
+
+
+def generate_episode_essay(*, show: Show, season: int, episode_number: int) -> None:
+    """Generate one episode essay from the manifest."""
+    manifest = load_manifest(show=show)
     episode = find_episode(
         entries=manifest.episodes,
-        season=command.season,
-        episode=command.episode,
+        season=season,
+        episode=episode_number,
     )
     code = f"S{episode.season:02}E{episode.episode:02}"
     target = EssayTarget(
-        show=command.show,
+        show=show,
         kind=EssayKind.EPISODES,
         title=episode.title,
         prompt=f"A full-series rewatch essay about {code}, {episode.title}.",

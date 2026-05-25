@@ -1,5 +1,8 @@
 title: "Succession"
 slug: "succession"
+hero_image:
+  src: "/images/shows/succession/hero.jpg"
+  alt: "The Roy family gathered together in a Succession promotional image."
 
 themes:
   - title: "Logan's Fractured Inheritance"

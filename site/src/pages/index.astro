@@ -29,7 +29,17 @@ function countsFor(show) {
           const counts = countsFor(show);
           return (
             <a class="show-card" href={`/shows/${show.data.slug}/`}>
-              <p>Available Now</p>
+              {show.data.hero_image ? (
+                <img
+                  class="show-card-image"
+                  src={show.data.hero_image.src}
+                  alt={show.data.hero_image.alt}
+                />
+              ) : (
+                <div class="show-card-image show-card-image-placeholder">
+                  {show.data.title}
+                </div>
+              )}
               <h3>{show.data.title}</h3>
               <span>
                 {counts.themes} themes · {counts.characters} characters ·{" "}

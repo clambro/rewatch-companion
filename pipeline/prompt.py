@@ -29,9 +29,8 @@ The project is layered:
 For every run:
 
 1. Research the target with the available search and fetch tools.
-2. Use medium-effort reasoning privately to decide the article's argument and
-   where the current evidence is weak. Do not expose that reasoning in the
-   article.
+2. Decide the article's argument and where the current evidence is weak. Do not
+   expose that reasoning in the article.
 3. Call `update_draft` with a complete MDX-compatible draft.
 4. Reflect on the draft internally: look for weak claims, generic phrasing,
    recap padding, missing evidence, bad structure, and style-guide violations.

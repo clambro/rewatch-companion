@@ -136,8 +136,6 @@ Each episode essay should consume:
 - relevant character essays
 - house style guide
 
-For visual analysis, the episode workflow should also use screenshot candidates extracted from the local episode file.
-
 Episode essays are the primary rewatch product, but they should not be generated in isolation. They should apply the already-established series, theme, and character framework to a concrete episode.
 
 Each episode essay should answer:
@@ -207,8 +205,8 @@ thesis essay.
    - episode essays
 3. Keep artifact workflows explicit. Do not hide distinct content types behind a vague universal “generate document” abstraction.
 4. Support research, drafting, review, and rewrite loops for each artifact type.
-5. Support screenshot extraction and screenshot insertion for episode essays only.
-6. Keep raw research, intermediate drafts, local media, screenshot candidates, and run logs outside version control.
+5. Support later hero-image sourcing for article pages without making the site depend on external assets at runtime.
+6. Keep raw research, intermediate drafts, local media, image candidates, and run logs outside version control.
 7. Publish only reviewed static content into the repo’s `content/` directory.
 
 ### Non-Goals for MVP
@@ -252,7 +250,6 @@ It is not:
 - a fan theory archive
 - a quote database
 - a transcript replacement
-- a screenshot gallery
 - an SEO content farm
 
 ### Editorial Test
@@ -332,13 +329,16 @@ rewatch-companion/
 
   .local/
     research/
+    images/
     runs/
     media/
 
   README.md
 ```
 
-The `.local/` directory must be gitignored. It is where raw research, intermediate drafts, video-derived artifacts, screenshot candidates, and run logs live.
+The `.local/` directory must be gitignored. It is where raw research,
+intermediate drafts, image candidates, local media references, and run logs
+live.
 
 ## 9. Public Site Architecture
 
@@ -354,7 +354,7 @@ The site should render:
 - episode article pages
 - previous/next episode navigation
 - spoiler notices
-- screenshots in episode essays
+- article hero images
 - basic SEO metadata
 - sitemap output
 
@@ -385,7 +385,8 @@ The `content/` directory is the publishing contract.
 
 Everything in `content/` should be safe to commit.
 
-Raw research, raw subtitles, local episode files, generated contact sheets, scene images, screenshot candidates, and intermediate drafts should not be committed.
+Raw research, raw subtitles, local media files, image candidates, and
+intermediate drafts should not be committed.
 
 Example public content structure:
 
@@ -539,22 +540,6 @@ The reader does not need basic plot summary.
 
 Write full-series rewatch essays that explain how the show, theme, character, or episode works.
 
-### Default Move
-
-Do not say what happened. Say what the work is doing.
-
-Bad:
-
-```txt
-Kendall goes to the Vaulter meeting and tries to buy the company.
-```
-
-Good:
-
-```txt
-The Vaulter meeting shows Kendall’s basic problem: he can identify the future of the business, but he cannot make others believe he has inherited Logan’s authority.
-```
-
 ### Voice
 
 The voice should be:
@@ -593,24 +578,6 @@ delves into
 at its core
 in many ways
 this moment encapsulates
-```
-
-### Prefer
-
-Prefer concrete verbs and mechanisms:
-
-```txt
-converts
-exposes
-literalizes
-rehearses
-disguises
-weaponizes
-withholds
-collapses
-translates
-turns X into Y
-makes X legible as Y
 ```
 
 ### Recap Rule
@@ -763,7 +730,8 @@ required as continuity context.
 
 ## 17. Internal and Temporary Artifacts
 
-Raw research, intermediate drafts, review outputs, and screenshot candidates should live outside version control.
+Raw research, intermediate drafts, review outputs, and image candidates should
+live outside version control.
 
 Example:
 
@@ -781,14 +749,13 @@ Example:
       character-kendall-roy/
       episode-s01e01/
 
-  media/
+  images/
     succession/
-      s01/
 ```
 
-The final `index.mdx`, `summary.mdx`, and metadata YAML are committed. Raw
-research blobs and intermediate LLM outputs are not. Selected screenshots will
-also be committed later when the screenshot workflow exists.
+The final `index.mdx`, `summary.mdx`, metadata YAML, and selected local hero
+images are committed. Raw research blobs, intermediate LLM outputs, external
+image URLs, and unselected image candidates are not.
 
 ## 18. Episode Inputs and Subtitles
 
@@ -810,26 +777,52 @@ Subtitles provide:
 - timestamps
 - searchable text
 - quote verification
-- anchors for screenshots
 
-They do not provide screen direction, but that is acceptable because the show itself and extracted screenshots provide visual evidence.
+They do not provide screen direction, so visual claims should be limited to what
+the writer can verify from the episode or supporting research.
 
-## 19. Screenshot Workflow
+## 19. Article Image Workflow
 
-Screenshots are part of the episode workflow only.
+Article images are a separate workflow from essay generation.
 
-Use PySceneDetect or similar tooling to extract candidate frames from the local episode file. Then feed the completed article plus candidate images into a vision-capable LLM to select screenshots that support specific analytical claims.
+The image-sourcing agent reads a completed article, searches for one suitable
+show image, downloads it, normalizes it, and stores the local asset under
+`site/public/images/`. The public site renders local committed assets only. It
+does not hotlink external image URLs.
 
-Screenshots should be:
+Committed article metadata should stay publishable and minimal:
+
+```yaml
+hero_image:
+  src: /images/shows/<show>/<section>/<article>/hero.jpg
+  alt: Concise model-written image alt text.
+```
+
+External image URLs, source pages, rationale, and other provenance details are
+pipeline runtime context only. Do not write them into public article YAML.
+
+Images should be:
 
 - fair-use critical images
-- analytically necessary
 - non-decorative
 - limited in number
-- captioned with interpretation
 - stored only after final selection
+- converted to local JPEG assets
+- normalized to the project hero image dimensions
+- described with useful alt text
 
-The article should be written first. Screenshots should be inserted afterward to support the already-written analysis.
+For MVP, use one hero image per article before revisiting inline images.
+
+Backfill scripts should make manifest-driven generation resumable:
+
+```bash
+uv run python generate_missing_essays.py --show succession
+uv run python find_missing_hero_images.py --show succession
+```
+
+The essay backfill runs themes, then characters, then episodes in manifest
+order. The image backfill only targets generated articles that are missing
+local `hero_image` metadata or the referenced local file.
 
 ## 20. Review Philosophy
 
@@ -919,7 +912,7 @@ on pull request:
   - validate content files
   - build Astro site
   - check for broken internal links
-  - verify screenshots referenced in YAML exist
+  - verify images referenced in YAML exist
   - verify required metadata exists
 ```
 
@@ -927,9 +920,9 @@ Minimum content validation:
 
 - every published article has `index.mdx`
 - every published article has metadata YAML
-- every episode screenshot referenced in `article.yaml` exists
-- every screenshot has alt text
-- every screenshot has a caption
+- every image referenced in `article.yaml` exists
+- every image has alt text
+- every hero image is a local JPEG with the expected dimensions
 - every page has SEO title and description
 - no draft articles are published accidentally
 
@@ -939,7 +932,7 @@ Pipeline smoke tests can be minimal:
 - review parser handles PASS/PASS_WITH_NOTES/FAIL
 - export writes expected files
 - subtitle parser works on sample SRT
-- screenshot metadata validation works
+- image metadata validation works
 
 ## 24. Human Review
 
@@ -950,8 +943,7 @@ Human review remains necessary for:
 - final editorial judgment
 - verifying the article is not generic
 - checking that claims sound right
-- checking screenshot choices
-- checking image captions
+- checking image choices and rights posture
 - checking that the article does not overquote
 - checking that the piece is actually worth reading
 
@@ -968,17 +960,17 @@ This project should avoid functioning as a substitute for watching the show.
 - Do not publish transcript-like passages.
 - Treat subtitles as internal source material, not public content.
 
-### Screenshots
+### Images
 
-Screenshots should be used for criticism and commentary.
+Show images should be used for criticism and commentary.
 
 Rules:
 
-- screenshots must support specific analysis
+- images must support the article and not substitute for watching the show
 - no decorative galleries
-- no excessive frame extraction
-- captions should be analytical
-- avoid using screenshots as mere visual filler
+- no excessive image use
+- public metadata should include only local `src` and useful `alt` text
+- avoid using images as mere visual filler
 
 ### Scripts
 
@@ -1011,7 +1003,6 @@ Build:
 - episode page
 - previous/next episode nav
 - spoiler notice
-- screenshot component
 - basic styles
 - content validation script
 
@@ -1044,16 +1035,15 @@ S01E02 Shit Show at the Fuck Factory
 S01E03 Lifeboats
 ```
 
-### Phase 4: Screenshot Selection
+### Phase 4: Article Image Sourcing
 
 Build:
 
-- PySceneDetect candidate generation
-- candidate manifest
-- LLM screenshot selection
-- copying selected screenshots into `content/`
-- generating screenshot metadata
-- inserting screenshot tags into MDX
+- image search agent for theme, character, and episode hero images
+- local hero image export into `site/public/images/`
+- minimal `hero_image.src` and `hero_image.alt` metadata
+- image metadata validation
+- article card and hero image rendering
 
 ## 27. Final Architecture Summary
 
@@ -1064,7 +1054,8 @@ The project has three layers:
    Astro renders committed static content.
 
 2. Static content contract
-   Public MDX, summary MDX, YAML, and selected screenshots live in content/.
+   Public MDX, summary MDX, and article YAML live in content/. Local selected
+   images live under site/public/images/.
 
 3. Offline generation pipeline
    Python creates layered critical essays and episode analyses from research,
@@ -1083,7 +1074,7 @@ The editorial quality comes from:
 - summary-based source context
 - web research
 - strong house style
-- screenshot discipline
+- image discipline
 - human final review
 
 The project succeeds if each episode essay feels like part of a coherent rewatch companion: specific, rewatch-aware, visually attentive, and grounded in a stable theory of the whole show.
