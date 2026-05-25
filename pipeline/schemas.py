@@ -1,6 +1,7 @@
 """Schemas for essay generation."""
 
 from enum import StrEnum
+from typing import Any
 
 from pydantic import BaseModel, Field
 
@@ -47,6 +48,8 @@ class EssayWorkspace(BaseModel):
     sources: list[EssaySource] = Field(default_factory=list)
     subtitle: str = ""
     draft: str = ""
+    research_searches: int = 0
+    research_fetches: int = 0
 
 
 class GeneratedEssay(BaseModel):
@@ -70,6 +73,7 @@ class HeroImageSearchResult(BaseModel):
 
     title: str
     image_url: str
+    image: Any
     source_page_url: str
     thumbnail_url: str = ""
     source_name: str = ""
@@ -88,8 +92,15 @@ class FoundHeroImage(BaseModel):
     height: int | None = None
 
 
+class HeroImageSelection(BaseModel):
+    """Direct model selection from collected hero image candidates."""
+
+    candidate_index: int
+    rationale: str
+
+
 class HeroImageWorkspace(BaseModel):
     """Mutable state for a hero image search run."""
 
     article: HeroImageArticle
-    selected_image: FoundHeroImage | None = None
+    candidates: list[FoundHeroImage] = Field(default_factory=list)

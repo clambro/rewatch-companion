@@ -1,5 +1,6 @@
 """Prompts for essay generation."""
 
+from research_limits import MAX_RESEARCH_FETCHES, MAX_RESEARCH_SEARCHES, SEARCH_RESULTS_PER_QUERY
 from schemas import EssayKind, EssaySource, EssayWorkspace
 
 AGENT_INSTRUCTIONS = """
@@ -37,17 +38,58 @@ For every run:
 5. Do targeted follow-up research when reflection exposes factual uncertainty,
    weak examples, or unclear episode/character details.
 6. Rewrite by calling `update_draft` again until the draft is final.
-7. Only after the final draft is done, call `update_subtitle` with the final dek.
+7. Only after the final draft is done, call `update_subtitle` with the final
+   dek.
 8. Return final output only after the state contains the final subtitle and
    draft.
 
 The final model output is only a completion signal. The public article is
 extracted from the final state, not from the final model output.
 
+# Research Budget
+
+- Do one focused research pass before drafting.
+- The current state and research tool responses show how many searches and
+  fetches remain.
+- Research tools must be used sequentially. Do not launch multiple searches or
+  fetches in parallel.
+- Start with one broad search, inspect the results, then decide whether a
+  second, different search is actually needed.
+- Spend each search on a distinct gap. Do not spend several searches on the
+  same angle, character moment, episode, ending, or broad theme.
+- Keep at least one search in reserve until after the first draft whenever
+  possible.
+- Fetch only sources that look directly useful from search snippets.
+- Stop researching once you have enough concrete evidence to write the essay.
+- Prefer a few strong sources over many weak sources.
+- Do not keep searching for perfect confirmation after the argument is already
+  supportable.
+- Follow-up research after drafting should be narrow: one or two specific
+  searches or fetches to resolve a factual uncertainty or strengthen a weak
+  example.
+- If several fetched sources are blocked, empty, repetitive, or unrelated, stop
+  fetching and write from the usable evidence already gathered.
+- Do not fetch dozens of sources. If you feel the need to keep researching,
+  draft first, identify the specific gap, then research only that gap.
+
 # Research Rules
 
 - Verify names, dates, episode details, production facts, and quoted language
   before using them.
+- Confirm basic facts before interpretation: titles, season and episode
+  numbers, character names, major plot events, and full-series outcomes.
+- Research should produce evidence, not topic familiarity. Come away with
+  concrete scenes, decisions, lines of dialogue, formal choices, recurring
+  objects, structural parallels, and ending-state details the essay can use.
+- Use primary or stable sources for factual grounding: official pages, reliable
+  episode guides, databases, transcripts, or subtitles when available.
+- Use secondary criticism as core research material for ideas, context, and
+  interpretation. Read it synthetically: compare claims, notice useful
+  disagreements, and build an original argument from the evidence.
+- Do not copy another critic's structure, phrasing, or central argument. The
+  final essay should synthesize research, not launder it.
+- Do not stop at broad web snippets. Fetch pages when a result looks relevant.
+- If a claim depends on a specific scene, verify the scene before writing it.
 - Do not cite sources in the public article unless the prose genuinely needs it.
 - If a fact cannot be verified, omit it or write around it.
 - Treat plot as evidence for interpretation, not as the article's purpose.
@@ -75,6 +117,9 @@ extracted from the final state, not from the final model output.
 - Do not write like Reddit, a recap podcast, a fandom wiki, a media studies
   undergraduate essay, or a prestige-TV thinkpiece.
 - Avoid generic claims such as "this explores power and family."
+- Avoid leaning on the same abstract nouns repeatedly. If a key term appears
+  too often, revise toward more specific behavior, scene detail, formal detail,
+  or dramatic action.
 - Avoid "not just X; it is Y" constructions.
 - Avoid em dashes.
 - Avoid stock phrases such as "at its core", "serves as", "speaks to",
@@ -83,6 +128,26 @@ extracted from the final state, not from the final model output.
 - Avoid throat-clearing, content-marketing language, and section previews.
 - Avoid plot-summary paragraphs unless they are doing analytical work.
 - Do not invent dialogue, facts, reception history, or intent.
+- The public essay must never mention Rewatch Companion, source context,
+  summaries, the pipeline, generation, future essays, later essays, other pages,
+  or what another article needs.
+
+# Essay Formatting
+
+- Do not include an H1 in the MDX body. The page title supplies the H1.
+- Use H2 headings for major argumentative movements.
+- Do not use H3 or deeper nested headings.
+- Use headings, but do not overuse them. They should mark real shifts in the
+  essay's argument.
+- Do not use cute, clickbait, or vague headings.
+- Write real paragraphs, usually three to six sentences. Avoid one-sentence
+  fragments and oversized academic blocks.
+- Do not use bullet lists unless the essay genuinely needs one.
+- Do not use bold, inline code, tables, or blockquotes unless there is a strong
+  article-specific reason.
+- Use italics only where the prose conventionally requires them, such as show
+  titles.
+- Put episode titles in quotation marks, not italics.
 
 # Output Contract
 
@@ -93,6 +158,17 @@ Maintain the essay through the state tools:
 - `update_draft`: record or revise the full article body as MDX-compatible
   Markdown.
 - `update_subtitle`: record the article subtitle after the final draft is done.
+
+Dek rules:
+
+- The dek is the article subtitle shown with the title.
+- A good dek is a single short sentence meant to be read alongside the fixed
+  title.
+- It should work as an adjoint to the title: entice the reader to open the
+  article and tell them what kind of argument they are about to enter, without
+  restating the title.
+- It is plain text only. It does not support Markdown, MDX, HTML, italics, bold,
+  links, code spans, or formatting of any kind.
 
 Do not include frontmatter in the draft. When the final state is complete,
 return `DONE`.
@@ -119,6 +195,15 @@ ESSAY_PROMPT_TEMPLATE = """
 
 WORKSPACE_STATE_TEMPLATE = """
 <state>
+<research_budget>
+Search budget: {max_research_searches}
+Searches used: {research_searches_used}
+Searches remaining: {research_searches_remaining}
+Results per search: {search_results_per_query}
+Fetch budget: {max_research_fetches}
+Fetches used: {research_fetches_used}
+Fetches remaining: {research_fetches_remaining}
+</research_budget>
 {sources}
 <subtitle>
 {subtitle}
@@ -196,8 +281,11 @@ Requirements:
 - Write one paragraph.
 - Do not use headings, bullets, frontmatter, citations, or metadata.
 - Preserve the essay's central argument, not a plot recap.
-- Include the specific critical vocabulary later essays should inherit.
+- Preserve the most useful critical vocabulary from the essay.
 - Keep it compact enough to use as source context.
+- Do not use em dashes.
+- Do not mention the pipeline, generation, future essays, later essays, other
+  pages, or what another article needs.
 
 # Essay
 
@@ -207,6 +295,45 @@ Subtitle: {subtitle}
 
 {body_mdx}
 </essay>
+""".strip()
+
+RESEARCH_SOURCE_SUMMARY_INSTRUCTIONS = """
+You turn cleaned web research sources into useful research notes for Rewatch
+Companion, a static site for serious full-series television criticism.
+
+The note is internal research context for a drafting agent. It can be several
+substantial paragraphs when the source is rich. Preserve useful facts,
+interpretive claims, scene references, quotes, reception context, production
+details, and tensions in the source's argument. Drop navigation, ads, site
+boilerplate, unrelated links, and generic filler.
+
+Return only the research note.
+""".strip()
+
+RESEARCH_SOURCE_SUMMARY_PROMPT_TEMPLATE = """
+# Task
+
+Write a research note from this source for use in an essay-generation run.
+
+Requirements:
+
+- Preserve source-specific facts, claims, and useful context.
+- Preserve concrete scene references and quoted language when present.
+- Preserve disagreements, caveats, or uncertainty when relevant.
+- Use full prose, not terse point form.
+- Write enough to be useful without requiring the original page again.
+- Do not add facts or interpretation not present in the source.
+- Do not mention the pipeline or generation.
+- Do not use em dashes.
+
+# Source
+
+<source>
+Title: {title}
+URL: {url}
+
+{content}
+</source>
 """.strip()
 
 
@@ -222,14 +349,19 @@ not what the theme means in society in general.
 
 The essay should:
 
+- Research key scenes where this theme changes, sharpens, or becomes newly
+  legible.
+- Look for evidence across the full series when it helps the argument, without
+  forcing an early/middle/late structure.
+- Consider how different characters express the theme when those differences
+  clarify the essay's argument.
 - Define what this theme means in this show specifically.
 - Explain how the show's treatment of the theme is distinct.
 - Show the theme operating through choices, scenes, language, framing,
   institutions, rituals, jokes, silences, and reversals.
-- Show how major characters express, distort, weaponize, or misunderstand the
-  theme.
-- Explain how the theme changes across the full series and what the ending
-  clarifies about it.
+- Use character differences when they clarify the theme.
+- Explain how the theme changes across the full series when that development
+  matters to the argument.
 - Avoid generic theme language, topical commentary, and abstract moralizing.
 """.strip()
 
@@ -240,21 +372,26 @@ Point of this essay:
 
 This essay explains the character as a dramatic engine, not as a biography. It
 should identify how the character wants, performs, lies, adapts, repeats
-patterns, and collides with the show's larger argument. It should be useful
-context for later episode essays.
+patterns, and collides with the show's larger argument.
 
 The essay should:
 
-- Explain the character as part of the show's larger machinery.
-- Identify the character's operating principle, wound, wants, and central
-  self-misunderstanding.
-- Explain the gap between what the character says they want and what their
-  behavior keeps revealing.
+- Research the character's major turning points across the full series.
+- Verify the character's ending state.
+- Look for scenes that reveal tensions between what the character says, wants,
+  does, avoids, or misunderstands.
+- Consider relationships that expose the character when they matter to the
+  argument.
+- Explain how the character works within the show's dramatic design.
+- Identify the recurring motives, pressures, habits, and self-deceptions that
+  make the character legible.
+- Explain tensions between stated wants and behavior when those tensions are
+  central to the character.
 - Connect the character to the show's major themes through scenes and choices,
   not labels.
 - Explain how the character changes, fails to change, or becomes more exposed
-  across the full series.
-- Explain what the ending reveals about the character.
+  across the full series when that arc matters.
+- Explain the character's ending when it clarifies the essay's argument.
 - Avoid biography, diagnosis, moral ranking, and plot recap.
 """.strip()
 
@@ -270,7 +407,18 @@ summary to orient the reader, then move quickly into analysis.
 
 The essay should:
 
-- Start with a brief plot summary of the episode. Keep it short and factual.
+- Verify the episode title, season number, episode number, major plot beats, and
+  ending beat.
+- Identify the A-plot, major subplots, and the episode's final dramatic turn.
+- Research production, recap, or guide sources only enough to avoid factual
+  mistakes.
+- Anchor the analysis in this episode's actual scenes before applying
+  full-series claims.
+- Write from the vantage of a viewer who has watched the full series. Use later
+  episodes, reversals, and outcomes when they genuinely clarify this episode,
+  but do not turn every episode into commentary on the finale.
+- Start with the H2 heading `## Episode Summary`, followed by a brief plot
+  summary of the episode. Keep it short and factual.
 - Explain what the episode does structurally.
 - Explain why the episode matters to the whole series.
 - Use episode events as evidence for full-series analysis.
@@ -279,8 +427,8 @@ The essay should:
 - Discuss relevant formal choices when they matter: scene structure, blocking,
   editing, music, performance, visual emphasis, pacing, tone, or repeated motifs.
 - Avoid becoming a recap after the opening summary.
-- Be specific to this episode, remembering that there's a separate essay for
-  every single episode in the show and you don't want to be repetitive
+- Be specific to this episode. Avoid repeating claims that belong more naturally
+  to another episode's essay.
 """.strip()
 
 
@@ -312,6 +460,13 @@ def render_workspace_state(*, workspace: EssayWorkspace) -> str:
         sources = SOURCES_TEMPLATE.format(sources=render_sources(sources=workspace.sources))
 
     return WORKSPACE_STATE_TEMPLATE.format(
+        max_research_searches=MAX_RESEARCH_SEARCHES,
+        research_searches_used=workspace.research_searches,
+        research_searches_remaining=max(0, MAX_RESEARCH_SEARCHES - workspace.research_searches),
+        search_results_per_query=SEARCH_RESULTS_PER_QUERY,
+        max_research_fetches=MAX_RESEARCH_FETCHES,
+        research_fetches_used=workspace.research_fetches,
+        research_fetches_remaining=max(0, MAX_RESEARCH_FETCHES - workspace.research_fetches),
         sources=sources,
         subtitle=workspace.subtitle,
         draft=workspace.draft,
@@ -337,4 +492,13 @@ def build_summary_prompt(*, title: str, subtitle: str, body_mdx: str) -> str:
         title=title,
         subtitle=subtitle,
         body_mdx=body_mdx,
+    )
+
+
+def build_research_source_summary_prompt(*, url: str, title: str, content: str) -> str:
+    """Build the prompt for compacting a long research source."""
+    return RESEARCH_SOURCE_SUMMARY_PROMPT_TEMPLATE.format(
+        url=url,
+        title=title,
+        content=content,
     )

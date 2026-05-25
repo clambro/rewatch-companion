@@ -1,7 +1,5 @@
 """Tests for manifest backfill scripts."""
 
-from __future__ import annotations
-
 from typing import TYPE_CHECKING
 
 import find_missing_hero_images
