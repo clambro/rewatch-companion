@@ -8,9 +8,9 @@ import yaml
 from pydantic import BaseModel
 
 if TYPE_CHECKING:
-    from schemas import Show
+    from common.schemas import Show
 
-MANIFEST_ROOT = Path(__file__).resolve().parent / "manifests"
+MANIFEST_ROOT = Path(__file__).resolve().parents[1] / "manifests"
 
 
 class ManifestArticle(BaseModel):

@@ -11,27 +11,27 @@ from pydantic_ai.messages import ImageUrl
 from pydantic_ai.models.openai import OpenAIResponsesModel, OpenAIResponsesModelSettings
 from pydantic_ai.providers.openai import OpenAIProvider
 
-from hero_image_prompt import (
+from common.rate_limit_retry import RateLimitRetryCapability
+from common.settings import settings
+from hero_images.prompt import (
     HERO_IMAGE_AGENT_INSTRUCTIONS,
     HERO_IMAGE_SELECTION_INSTRUCTIONS,
     build_hero_image_prompt,
     build_hero_image_selection_input,
 )
-from hero_image_rules import (
+from hero_images.rules import (
     ASPECT_RATIO_TOLERANCE,
     HERO_IMAGE_HEIGHT,
     HERO_IMAGE_WIDTH,
     TARGET_ASPECT_RATIO,
 )
-from rate_limit_retry import RateLimitRetryCapability
-from schemas import (
+from hero_images.schemas import (
     FoundHeroImage,
     HeroImageArticle,
     HeroImageSearchResult,
     HeroImageSelection,
     HeroImageWorkspace,
 )
-from settings import settings
 
 MODEL = "gpt-5.4-mini"
 MODEL_SETTINGS: OpenAIResponsesModelSettings = {

@@ -8,18 +8,19 @@ from typing import TYPE_CHECKING, Any
 import yaml
 from openai import OpenAI
 
-from prompt import (
+from common.schemas import EssayKind, Show
+from common.settings import settings
+from essay_generation.prompt import (
     CHARACTER_SOURCE_TYPE,
     PREVIOUS_EPISODE_SOURCE_TYPE,
     SUMMARY_INSTRUCTIONS,
     THEME_SOURCE_TYPE,
     build_summary_prompt,
 )
-from schemas import EssayKind, EssaySource, EssayTarget, GeneratedEssay, Show
-from settings import settings
+from essay_generation.schemas import EssaySource, EssayTarget, GeneratedEssay
 
 if TYPE_CHECKING:
-    from manifest import ManifestEpisode, ManifestSluggedArticle
+    from common.manifest import ManifestEpisode, ManifestSluggedArticle
 
 REPO_ROOT = Path(__file__).resolve().parent.parent
 CONTENT_ROOT = REPO_ROOT / "content" / "shows"

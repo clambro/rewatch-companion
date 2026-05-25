@@ -1,6 +1,10 @@
 """Tests for cleaned research fetching."""
 
-from research_fetch import cleaned_research_content, is_junk_line, is_usable_research_content
+from essay_generation.research_fetch import (
+    cleaned_research_content,
+    is_junk_line,
+    is_usable_research_content,
+)
 
 
 def test_cleaned_research_content_removes_page_machinery() -> None:

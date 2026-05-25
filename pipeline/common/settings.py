@@ -9,7 +9,7 @@ class Settings(BaseSettings):
     """Settings loaded from the pipeline environment."""
 
     model_config = SettingsConfigDict(
-        env_file=Path(__file__).with_name(".env"),
+        env_file=Path(__file__).resolve().parents[1] / ".env",
         env_file_encoding="utf-8",
         extra="ignore",
     )

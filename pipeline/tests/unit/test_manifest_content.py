@@ -2,14 +2,14 @@
 
 from pathlib import Path
 
-from manifest import (
+from common.manifest import (
     content_episode_titles,
     content_paths,
     load_manifest,
     manifest_content_paths,
     manifest_episode_titles,
 )
-from schemas import Show
+from common.schemas import Show
 
 CONTENT_ROOT = Path(__file__).resolve().parents[3] / "content"
 

@@ -1,62 +1,10 @@
-"""Schemas for essay generation."""
+"""Schemas for hero image workflows."""
 
-from enum import StrEnum
 from typing import Any
 
 from pydantic import BaseModel, Field
 
-
-class Show(StrEnum):
-    """Supported show slugs."""
-
-    SUCCESSION = "succession"
-
-
-class EssayKind(StrEnum):
-    """Supported generated essay kinds."""
-
-    THEMES = "themes"
-    CHARACTERS = "characters"
-    EPISODES = "episodes"
-
-
-class EssayTarget(BaseModel):
-    """Minimal user-provided target for an essay run."""
-
-    show: Show
-    kind: EssayKind
-    title: str
-    prompt: str
-    slug: str
-    season: int | None = None
-    episode: int | None = None
-
-
-class EssaySource(BaseModel):
-    """Reference source supplied to an essay run."""
-
-    label: str
-    title: str
-    subtitle: str
-    summary_mdx: str
-
-
-class EssayWorkspace(BaseModel):
-    """Mutable state for an essay run."""
-
-    target: EssayTarget
-    sources: list[EssaySource] = Field(default_factory=list)
-    subtitle: str = ""
-    draft: str = ""
-    research_searches: int = 0
-    research_fetches: int = 0
-
-
-class GeneratedEssay(BaseModel):
-    """Structured output returned by the LLM."""
-
-    subtitle: str
-    body_mdx: str
+from common.schemas import Show  # noqa: TC001 - Pydantic needs the enum at runtime.
 
 
 class HeroImageArticle(BaseModel):

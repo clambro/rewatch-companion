@@ -1,6 +1,5 @@
 """CLI entrypoint for finding a hero image for a completed article."""
 
-import argparse
 import json
 import sys
 from io import BytesIO
@@ -11,18 +10,19 @@ import yaml
 from PIL import Image, ImageOps
 from pydantic import BaseModel
 
-from generate_essay import find_episode, find_slugged_article
-from hero_image_agent import find_hero_image_for_article
-from hero_image_rules import (
+from common.manifest import episode_slug, load_manifest
+from common.schemas import EssayKind, Show
+from essay_generation.generate_essay import find_episode, find_slugged_article
+from hero_images.agent import find_hero_image_for_article
+from hero_images.rules import (
     ASPECT_RATIO_TOLERANCE,
     HERO_IMAGE_HEIGHT,
     HERO_IMAGE_WIDTH,
     TARGET_ASPECT_RATIO,
 )
-from manifest import episode_slug, load_manifest
-from schemas import EssayKind, FoundHeroImage, HeroImageArticle, Show
+from hero_images.schemas import FoundHeroImage, HeroImageArticle
 
-REPO_ROOT = Path(__file__).resolve().parent.parent
+REPO_ROOT = Path(__file__).resolve().parents[2]
 CONTENT_SHOWS_ROOT = REPO_ROOT / "content" / "shows"
 PUBLIC_IMAGE_ROOT = REPO_ROOT / "site" / "public" / "images" / "shows"
 HERO_IMAGE_FILENAME = "hero.jpg"
@@ -36,26 +36,6 @@ class HeroImageCommand(BaseModel):
     slug: str | None = None
     season: int | None = None
     episode: int | None = None
-
-
-def main() -> None:
-    """Find a hero image for a completed article."""
-    parser = argparse.ArgumentParser(description="Find an online hero image for an article.")
-    parser.add_argument("--show", choices=[show.value for show in Show], required=True)
-    subparsers = parser.add_subparsers(dest="kind", required=True)
-
-    themes_parser = subparsers.add_parser(EssayKind.THEMES.value)
-    themes_parser.add_argument("--slug", required=True)
-
-    characters_parser = subparsers.add_parser(EssayKind.CHARACTERS.value)
-    characters_parser.add_argument("--slug", required=True)
-
-    episodes_parser = subparsers.add_parser(EssayKind.EPISODES.value)
-    episodes_parser.add_argument("--season", type=int, required=True)
-    episodes_parser.add_argument("--episode", type=int, required=True)
-
-    command = HeroImageCommand.model_validate(vars(parser.parse_args()))
-    find_hero_image(command=command)
 
 
 def find_hero_image(*, command: HeroImageCommand) -> Path:
@@ -228,7 +208,3 @@ def validate_hero_image_size(*, width: int, height: int) -> None:
         f"Hero image must be at least {HERO_IMAGE_WIDTH}x{HERO_IMAGE_HEIGHT}. "
         f"Got {width}x{height}.",
     )
-
-
-if __name__ == "__main__":
-    main()

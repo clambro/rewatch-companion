@@ -6,9 +6,9 @@ from typing import TYPE_CHECKING, Any, cast
 if TYPE_CHECKING:
     from openai.types.responses import ResponseInputParam
 
-    from schemas import FoundHeroImage, HeroImageArticle, HeroImageWorkspace
+    from hero_images.schemas import FoundHeroImage, HeroImageArticle, HeroImageWorkspace
 
-from hero_image_rules import HERO_IMAGE_HEIGHT, HERO_IMAGE_WIDTH
+from hero_images.rules import HERO_IMAGE_HEIGHT, HERO_IMAGE_WIDTH
 
 HERO_IMAGE_AGENT_INSTRUCTIONS = f"""
 # Identity

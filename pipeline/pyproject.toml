@@ -21,6 +21,7 @@ dev = [
 ]
 
 [tool.poe.tasks]
+rw = { cmd = "python cli.py", help = "Run the Rewatch Companion pipeline CLI." }
 unit_tests = "python -m pytest **/tests/unit"
 integration_tests = "python -m pytest **/tests/integration"
 

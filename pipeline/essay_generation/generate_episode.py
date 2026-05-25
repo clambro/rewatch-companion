@@ -1,41 +1,16 @@
 """CLI entrypoint for episode essay generation."""
 
-import argparse
-
-from pydantic import BaseModel
-
-from agent import run_essay_agent
-from generate_essay import (
+from common.manifest import ManifestEpisode, ShowManifest, episode_slug, load_manifest
+from common.schemas import EssayKind, Show
+from essay_generation.agent import run_essay_agent
+from essay_generation.generate_essay import (
     CONTENT_ROOT,
     find_episode,
     load_article_source,
     load_article_sources,
     write_article,
 )
-from manifest import ManifestEpisode, ShowManifest, episode_slug, load_manifest
-from schemas import EssayKind, EssaySource, EssayTarget, Show
-
-
-class EpisodeCommand(BaseModel):
-    """Parsed CLI command for episode generation."""
-
-    show: Show
-    season: int
-    episode: int
-
-
-def generate_episode() -> None:
-    """Generate an episode essay."""
-    parser = argparse.ArgumentParser(description="Generate an episode essay.")
-    parser.add_argument("--show", choices=[show.value for show in Show], required=True)
-    parser.add_argument("--season", type=int, required=True)
-    parser.add_argument("--episode", type=int, required=True)
-    command = EpisodeCommand.model_validate(vars(parser.parse_args()))
-    generate_episode_essay(
-        show=command.show,
-        season=command.season,
-        episode_number=command.episode,
-    )
+from essay_generation.schemas import EssaySource, EssayTarget
 
 
 def generate_episode_essay(*, show: Show, season: int, episode_number: int) -> None:
@@ -118,7 +93,3 @@ def previous_manifest_episode(
     raise ValueError(
         f"Episode is not listed in manifest: S{episode.season:02}E{episode.episode:02}",
     )
-
-
-if __name__ == "__main__":
-    generate_episode()

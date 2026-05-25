@@ -4,8 +4,9 @@ from typing import TYPE_CHECKING
 
 import yaml
 
-import generate_essay
-from schemas import EssayKind, EssayTarget, GeneratedEssay, Show
+from common.schemas import EssayKind, Show
+from essay_generation import generate_essay
+from essay_generation.schemas import EssayTarget, GeneratedEssay
 
 if TYPE_CHECKING:
     from pathlib import Path
