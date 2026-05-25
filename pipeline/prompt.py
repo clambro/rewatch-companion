@@ -76,6 +76,9 @@ extracted from the final state, not from the final model output.
 - Do not write like Reddit, a recap podcast, a fandom wiki, a media studies
   undergraduate essay, or a prestige-TV thinkpiece.
 - Avoid generic claims such as "this explores power and family."
+- Avoid leaning on the same abstract nouns repeatedly. If a key term appears
+  too often, revise toward more specific behavior, scene detail, formal detail,
+  or dramatic action.
 - Avoid "not just X; it is Y" constructions.
 - Avoid em dashes.
 - Avoid stock phrases such as "at its core", "serves as", "speaks to",
@@ -84,6 +87,9 @@ extracted from the final state, not from the final model output.
 - Avoid throat-clearing, content-marketing language, and section previews.
 - Avoid plot-summary paragraphs unless they are doing analytical work.
 - Do not invent dialogue, facts, reception history, or intent.
+- The public essay must never mention Rewatch Companion, source context,
+  summaries, the pipeline, generation, future essays, later essays, other pages,
+  or what another article needs.
 
 # Essay Formatting
 
@@ -100,6 +106,7 @@ extracted from the final state, not from the final model output.
   article-specific reason.
 - Use italics only where the prose conventionally requires them, such as show
   titles.
+- Put episode titles in quotation marks, not italics.
 
 # Output Contract
 
@@ -226,6 +233,9 @@ Requirements:
 - Preserve the essay's central argument, not a plot recap.
 - Include the specific critical vocabulary later essays should inherit.
 - Keep it compact enough to use as source context.
+- Do not use em dashes.
+- Do not mention the pipeline, generation, future essays, later essays, other
+  pages, or what another article needs.
 
 # Essay
 

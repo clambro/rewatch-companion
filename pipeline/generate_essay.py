@@ -37,13 +37,19 @@ def write_article(*, target: EssayTarget, draft: GeneratedEssay) -> None:
         encoding="utf-8",
     )
 
-    match target.kind:
-        case EssayKind.EPISODES:
-            metadata = render_episode_metadata(target=target, draft=draft)
-        case _:
-            metadata = render_article_metadata(target=target, draft=draft)
+    metadata_path = output_dir / "article.yaml"
+    if metadata_path.is_file():
+        metadata = yaml.safe_load(metadata_path.read_text(encoding="utf-8"))
+        metadata.setdefault("seo", {})["description"] = draft.subtitle
+        metadata_path.write_text(yaml.safe_dump(metadata, sort_keys=False), encoding="utf-8")
+    else:
+        match target.kind:
+            case EssayKind.EPISODES:
+                metadata = render_episode_metadata(target=target, draft=draft)
+            case _:
+                metadata = render_article_metadata(target=target, draft=draft)
 
-    (output_dir / "article.yaml").write_text(metadata, encoding="utf-8")
+        metadata_path.write_text(metadata, encoding="utf-8")
     (output_dir / "summary.mdx").write_text(f"{summary}\n", encoding="utf-8")
     rebuild_show_index(show=target.show)
     sys.stdout.write(f"Wrote {output_dir / 'index.mdx'}\n")
