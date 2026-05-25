@@ -8,6 +8,7 @@ from typing import TYPE_CHECKING, Any
 import yaml
 from openai import OpenAI
 
+from common.schemas import EssayKind, Show
 from common.settings import settings
 from essay_generation.prompt import (
     CHARACTER_SOURCE_TYPE,
@@ -17,7 +18,6 @@ from essay_generation.prompt import (
     build_summary_prompt,
 )
 from essay_generation.schemas import EssaySource, EssayTarget, GeneratedEssay
-from schemas import EssayKind, Show
 
 if TYPE_CHECKING:
     from common.manifest import ManifestEpisode, ManifestSluggedArticle

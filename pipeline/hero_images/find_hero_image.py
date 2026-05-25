@@ -11,6 +11,7 @@ from PIL import Image, ImageOps
 from pydantic import BaseModel
 
 from common.manifest import episode_slug, load_manifest
+from common.schemas import EssayKind, Show
 from essay_generation.generate_essay import find_episode, find_slugged_article
 from hero_images.agent import find_hero_image_for_article
 from hero_images.rules import (
@@ -20,7 +21,6 @@ from hero_images.rules import (
     TARGET_ASPECT_RATIO,
 )
 from hero_images.schemas import FoundHeroImage, HeroImageArticle
-from schemas import EssayKind, Show
 
 REPO_ROOT = Path(__file__).resolve().parents[2]
 CONTENT_SHOWS_ROOT = REPO_ROOT / "content" / "shows"

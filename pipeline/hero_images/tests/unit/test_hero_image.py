@@ -8,6 +8,7 @@ from PIL import Image
 from pydantic_ai import ModelRetry, RunContext
 
 from common.manifest import ManifestEpisode, ShowManifest
+from common.schemas import EssayKind, Show
 from hero_images import find_hero_image
 from hero_images import prompt as hero_image_prompt
 from hero_images.agent import (
@@ -34,7 +35,6 @@ from hero_images.schemas import (
     HeroImageSelection,
     HeroImageWorkspace,
 )
-from schemas import EssayKind, Show
 
 if TYPE_CHECKING:
     from pathlib import Path

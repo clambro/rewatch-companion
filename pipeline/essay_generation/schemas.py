@@ -2,7 +2,7 @@
 
 from pydantic import BaseModel, Field
 
-from schemas import EssayKind, Show  # noqa: TC001 - Pydantic needs these enums at runtime.
+from common.schemas import EssayKind, Show  # noqa: TC001 - Pydantic needs these enums at runtime.
 
 
 class EssayTarget(BaseModel):

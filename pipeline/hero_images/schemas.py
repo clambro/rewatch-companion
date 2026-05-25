@@ -4,7 +4,7 @@ from typing import Any
 
 from pydantic import BaseModel, Field
 
-from schemas import Show  # noqa: TC001 - Pydantic needs the enum at runtime.
+from common.schemas import Show  # noqa: TC001 - Pydantic needs the enum at runtime.
 
 
 class HeroImageArticle(BaseModel):

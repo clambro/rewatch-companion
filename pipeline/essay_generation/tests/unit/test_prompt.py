@@ -1,9 +1,9 @@
 """Tests for essay prompts."""
 
+from common.schemas import EssayKind, Show
 from essay_generation.prompt import AGENT_INSTRUCTIONS, render_workspace_state
 from essay_generation.research_limits import MAX_RESEARCH_FETCHES, MAX_RESEARCH_SEARCHES
 from essay_generation.schemas import EssayTarget, EssayWorkspace
-from schemas import EssayKind, Show
 
 
 def test_agent_instructions_refer_to_live_research_budget() -> None:

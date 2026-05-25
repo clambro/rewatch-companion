@@ -1,4 +1,4 @@
-"""Schemas for essay generation."""
+"""Shared pipeline enums."""
 
 from enum import StrEnum
 

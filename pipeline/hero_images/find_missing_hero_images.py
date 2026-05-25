@@ -6,9 +6,9 @@ from pathlib import Path
 import yaml
 
 from common.manifest import episode_slug, load_manifest
+from common.schemas import EssayKind, Show
 from essay_generation.generate_essay import CONTENT_ROOT
 from hero_images.find_hero_image import HeroImageCommand, find_hero_image
-from schemas import EssayKind, Show
 
 REPO_ROOT = Path(__file__).resolve().parents[2]
 SITE_PUBLIC_ROOT = REPO_ROOT / "site" / "public"

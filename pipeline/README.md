@@ -7,11 +7,10 @@ The first pipeline feature is essay generation. It takes a manifest-defined arti
 ## Structure
 
 - `cli.py` - root CLI for essay generation and hero image workflows.
-- `common/` - shared settings, manifest loading, and agent retry plumbing.
+- `common/` - shared settings, schemas, manifest loading, and agent retry plumbing.
 - `essay_generation/` - essay agent, prompts, research fetching, article export, workflows, schemas, and tests.
 - `hero_images/` - hero image search, download, metadata, prompts, rules, schemas, and tests.
 - `manifests/` - fixed article titles, prompts, slugs, and episode titles.
-- `schemas.py` - shared enums used across pipeline features.
 
 ## Commands
 

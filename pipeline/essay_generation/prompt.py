@@ -4,12 +4,12 @@ from __future__ import annotations
 
 from typing import TYPE_CHECKING
 
+from common.schemas import EssayKind
 from essay_generation.research_limits import (
     MAX_RESEARCH_FETCHES,
     MAX_RESEARCH_SEARCHES,
     SEARCH_RESULTS_PER_QUERY,
 )
-from schemas import EssayKind
 
 if TYPE_CHECKING:
     from essay_generation.schemas import EssaySource, EssayWorkspace

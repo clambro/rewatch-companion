@@ -6,6 +6,7 @@ import argparse
 from enum import StrEnum
 from typing import TYPE_CHECKING
 
+from common.schemas import EssayKind, Show
 from essay_generation import (
     generate_character_essay,
     generate_episode_essay,
@@ -13,7 +14,6 @@ from essay_generation import (
     generate_theme_essay,
 )
 from hero_images import HeroImageCommand, find_article_hero_image, find_missing_hero_images
-from schemas import EssayKind, Show
 
 if TYPE_CHECKING:
     from collections.abc import Sequence

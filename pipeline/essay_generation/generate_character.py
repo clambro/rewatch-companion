@@ -1,10 +1,10 @@
 """CLI entrypoint for character essay generation."""
 
 from common.manifest import load_manifest
+from common.schemas import EssayKind, Show
 from essay_generation.agent import run_essay_agent
 from essay_generation.generate_essay import find_slugged_article, write_article
 from essay_generation.schemas import EssayTarget
-from schemas import EssayKind, Show
 
 
 def generate_character_essay(*, show: Show, slug: str) -> None:

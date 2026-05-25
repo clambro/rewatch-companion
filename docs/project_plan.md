@@ -309,12 +309,26 @@ rewatch-companion/
   pipeline/
     pyproject.toml
     README.md
+    cli.py
+    common/
+      manifest.py
+      schemas.py
+      settings.py
+    essay_generation/
+      agent.py
+      generate_theme.py
+      generate_character.py
+      generate_episode.py
+      generate_missing_essays.py
+      prompt.py
+      schemas.py
+    hero_images/
+      agent.py
+      find_hero_image.py
+      find_missing_hero_images.py
+      prompt.py
+      rules.py
     manifests/
-    generate_theme.py
-    generate_character.py
-    generate_episode.py
-    agent.py
-    prompt.py
 
   content/
     shows/
@@ -616,18 +630,22 @@ What the major themes mean
 
 ## 15. Pipeline Architecture
 
-The MVP pipeline should stay explicit and small. It has separate commands for
-each generated artifact type:
+The MVP pipeline should stay explicit and small. It has one root CLI that
+dispatches to separate workflows for each generated artifact type:
 
 ```txt
-generate_theme.py
-generate_character.py
-generate_episode.py
+uv run poe rw -- essay theme
+uv run poe rw -- essay character
+uv run poe rw -- essay episode
+uv run poe rw -- image theme
+uv run poe rw -- image character
+uv run poe rw -- image episode
 ```
 
-Each command builds a typed target from the show manifest, runs the essay agent,
-writes the public article, generates a compact `summary.mdx`, and updates the
-content-driven `show.yaml` index.
+Each essay workflow builds a typed target from the show manifest, runs the essay
+agent, writes the public article, generates a compact `summary.mdx`, and updates
+the content-driven `show.yaml` index. Hero-image workflows are separate and run
+against already generated articles.
 
 The current shared mechanics are:
 
@@ -646,14 +664,30 @@ The architecture should stay direct:
 pipeline/
   pyproject.toml
   README.md
-  agent.py
-  generate_theme.py
-  generate_character.py
-  generate_episode.py
-  generate_essay.py
-  manifest.py
-  prompt.py
-  schemas.py
+  cli.py
+  common/
+    manifest.py
+    rate_limit_retry.py
+    schemas.py
+    settings.py
+  essay_generation/
+    agent.py
+    generate_theme.py
+    generate_character.py
+    generate_episode.py
+    generate_missing_essays.py
+    generate_essay.py
+    prompt.py
+    research_fetch.py
+    research_limits.py
+    schemas.py
+  hero_images/
+    agent.py
+    find_hero_image.py
+    find_missing_hero_images.py
+    prompt.py
+    rules.py
+    schemas.py
   manifests/
 ```
 
@@ -661,7 +695,7 @@ Rules:
 
 - No `src/` wrapper unless the project later has a concrete packaging reason for it.
 - No `rewatch_pipeline/` package layer.
-- Keep the three CLI commands separate instead of hiding them behind one generic command.
+- Keep feature workflows explicit instead of hiding them behind a vague generic generator.
 - Keep prompt strings in Python modules unless there is a concrete reason to split them out.
 - Empty `__init__.py` files should not exist.
 - Prefer naked functions over stateless classes.
@@ -1010,8 +1044,8 @@ Build:
 
 Build:
 
-- `generate_theme.py`
-- `generate_character.py`
+- `essay_generation/generate_theme.py`
+- `essay_generation/generate_character.py`
 - theme and character prompt instructions
 - exports to `themes/` and `characters/`
 - `summary.mdx` generation
@@ -1022,7 +1056,7 @@ Generate a small foundation set before episodes.
 
 Build:
 
-- `generate_episode.py`
+- `essay_generation/generate_episode.py`
 - context loading from theme, character, and previous episode summaries
 - episode draft/rewrite/export
 - `summary.mdx` generation

@@ -5,7 +5,7 @@ from __future__ import annotations
 from typing import TYPE_CHECKING, Any
 
 import cli
-from schemas import EssayKind, Show
+from common.schemas import EssayKind, Show
 
 if TYPE_CHECKING:
     import pytest

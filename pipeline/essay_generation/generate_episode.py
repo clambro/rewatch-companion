@@ -1,6 +1,7 @@
 """CLI entrypoint for episode essay generation."""
 
 from common.manifest import ManifestEpisode, ShowManifest, episode_slug, load_manifest
+from common.schemas import EssayKind, Show
 from essay_generation.agent import run_essay_agent
 from essay_generation.generate_essay import (
     CONTENT_ROOT,
@@ -10,7 +11,6 @@ from essay_generation.generate_essay import (
     write_article,
 )
 from essay_generation.schemas import EssaySource, EssayTarget
-from schemas import EssayKind, Show
 
 
 def generate_episode_essay(*, show: Show, season: int, episode_number: int) -> None:
