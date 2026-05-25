@@ -237,12 +237,36 @@ main {
   color: var(--text);
   display: block;
   min-height: 168px;
-  padding: 15px;
+  overflow: hidden;
   text-decoration: none;
 }
 
 .essay-card:hover {
   border-color: color-mix(in srgb, var(--accent) 45%, var(--border));
+}
+
+.essay-card-content {
+  padding: 15px;
+}
+
+.essay-card-image {
+  aspect-ratio: 16 / 9;
+  background: color-mix(in srgb, var(--border) 52%, transparent);
+  border-bottom: 1px solid var(--border);
+  display: block;
+  object-fit: cover;
+  width: 100%;
+}
+
+.essay-card-image-placeholder {
+  align-items: center;
+  color: var(--faint);
+  display: flex;
+  font-size: 0.7rem;
+  font-weight: 800;
+  justify-content: center;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
 }
 
 .essay-card p {
@@ -474,6 +498,43 @@ h3 {
   font-size: clamp(1.12rem, 1.7vw, 1.28rem);
   line-height: 1.45;
   margin: 15px 0 0;
+}
+
+.article-hero {
+  margin: 0 0 24px;
+}
+
+.article-hero img,
+.article-hero-placeholder div {
+  aspect-ratio: 16 / 9;
+  background: color-mix(in srgb, var(--border) 52%, transparent);
+  border: 1px solid var(--border);
+  display: block;
+  width: 100%;
+}
+
+.article-hero img {
+  object-fit: cover;
+}
+
+.article-hero-placeholder div {
+  align-items: center;
+  color: var(--faint);
+  display: flex;
+  font-size: 0.78rem;
+  font-weight: 800;
+  justify-content: center;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+}
+
+.article-hero figcaption {
+  color: var(--muted);
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  font-size: 0.74rem;
+  margin-top: 7px;
 }
 
 .spoiler-notice {

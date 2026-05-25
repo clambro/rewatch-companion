@@ -11,6 +11,8 @@ from find_hero_image import (
     article_path_for_command,
     image_extension,
     load_completed_article,
+    public_image_path_for_article,
+    public_image_src,
     update_article_metadata,
 )
 from hero_image_agent import image_search_result_from_ddgs_result
@@ -125,11 +127,20 @@ def test_image_search_result_from_ddgs_result_normalizes_known_fields() -> None:
     assert result.height == EXPECTED_HEIGHT
 
 
-def test_update_article_metadata_writes_hero_image_block(tmp_path: Path) -> None:
+def test_update_article_metadata_writes_hero_image_block(
+    tmp_path: Path,
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
     """Hero image selection is recorded in article metadata."""
-    article_path = tmp_path / "index.mdx"
-    image_path = tmp_path / "hero.jpg"
-    (tmp_path / "article.yaml").write_text(
+    content_root = tmp_path / "content" / "shows"
+    public_root = tmp_path / "site" / "public" / "images" / "shows"
+    monkeypatch.setattr(find_hero_image, "CONTENT_SHOWS_ROOT", content_root)
+    monkeypatch.setattr(find_hero_image, "PUBLIC_IMAGE_ROOT", public_root)
+    article_dir = content_root / "succession" / "episodes" / "s02" / "e02-vaulter"
+    article_dir.mkdir(parents=True)
+    article_path = article_dir / "index.mdx"
+    image_path = public_root / "succession" / "episodes" / "s02" / "e02-vaulter" / "hero.jpg"
+    (article_dir / "article.yaml").write_text(
         "show: succession\n"
         'title: "Vaulter"\n'
         'slug: "e02-vaulter"\n'
@@ -152,12 +163,11 @@ def test_update_article_metadata_writes_hero_image_block(tmp_path: Path) -> None
     )
 
     metadata = find_hero_image.yaml.safe_load(
-        (tmp_path / "article.yaml").read_text(encoding="utf-8"),
+        (article_dir / "article.yaml").read_text(encoding="utf-8"),
     )
 
     assert metadata["hero_image"] == {
-        "file": "hero.jpg",
-        "source_url": "https://example.com/article",
+        "src": "/images/shows/succession/episodes/s02/e02-vaulter/hero.jpg",
         "image_url": "https://example.com/image.jpg",
         "credit": "HBO",
         "title": "Succession Vaulter",
@@ -184,3 +194,24 @@ def test_image_extension_prefers_supported_url_extension() -> None:
     )
 
     assert extension == ".jpg"
+
+
+def test_public_image_path_and_src_use_article_content_path(
+    tmp_path: Path,
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    """Hero images export to site/public using the content article path."""
+    content_root = tmp_path / "content" / "shows"
+    public_root = tmp_path / "site" / "public" / "images" / "shows"
+    article_path = content_root / "succession" / "episodes" / "s02" / "e02-vaulter" / "index.mdx"
+    monkeypatch.setattr(find_hero_image, "CONTENT_SHOWS_ROOT", content_root)
+    monkeypatch.setattr(find_hero_image, "PUBLIC_IMAGE_ROOT", public_root)
+
+    image_path = public_image_path_for_article(article_path=article_path, extension=".jpg")
+
+    assert (
+        image_path == public_root / "succession" / "episodes" / "s02" / "e02-vaulter" / "hero.jpg"
+    )
+    assert public_image_src(image_path=image_path) == (
+        "/images/shows/succession/episodes/s02/e02-vaulter/hero.jpg"
+    )

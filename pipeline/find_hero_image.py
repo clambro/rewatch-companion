@@ -18,6 +18,7 @@ from schemas import EssayKind, FoundHeroImage, HeroImageArticle, Show
 
 REPO_ROOT = Path(__file__).resolve().parent.parent
 CONTENT_SHOWS_ROOT = REPO_ROOT / "content" / "shows"
+PUBLIC_IMAGE_ROOT = REPO_ROOT / "site" / "public" / "images" / "shows"
 SUPPORTED_IMAGE_EXTENSIONS = {".jpg", ".jpeg", ".png", ".webp"}
 
 
@@ -133,12 +134,14 @@ def article_body_without_frontmatter(article_mdx: str) -> str:
 
 
 def download_hero_image(*, article_path: Path, hero_image: FoundHeroImage) -> Path:
-    """Download the selected hero image next to the article."""
+    """Download the selected hero image into the static public image tree."""
     response = httpx.get(hero_image.image_url, follow_redirects=True, timeout=30)
     response.raise_for_status()
-    image_path = article_path.with_name(
-        f"hero{image_extension(hero_image=hero_image, response=response)}"
+    image_path = public_image_path_for_article(
+        article_path=article_path,
+        extension=image_extension(hero_image=hero_image, response=response),
     )
+    image_path.parent.mkdir(parents=True, exist_ok=True)
     image_path.write_bytes(response.content)
     return image_path
 
@@ -153,8 +156,7 @@ def update_article_metadata(
     metadata_path = article_path.with_name("article.yaml")
     metadata = yaml.safe_load(metadata_path.read_text(encoding="utf-8"))
     metadata["hero_image"] = {
-        "file": image_path.name,
-        "source_url": hero_image.source_page_url,
+        "src": public_image_src(image_path=image_path),
         "image_url": hero_image.image_url,
         "credit": hero_image.credit,
         "title": hero_image.title,
@@ -175,6 +177,17 @@ def image_extension(*, hero_image: FoundHeroImage, response: httpx.Response) -> 
         return ".jpg" if guessed_extension == ".jpeg" else guessed_extension
 
     raise ValueError(f"Unsupported hero image content type: {content_type or 'unknown'}")
+
+
+def public_image_path_for_article(*, article_path: Path, extension: str) -> Path:
+    """Return the public hero image path for one article."""
+    relative_article_dir = article_path.parent.relative_to(CONTENT_SHOWS_ROOT)
+    return PUBLIC_IMAGE_ROOT / relative_article_dir / f"hero{extension}"
+
+
+def public_image_src(*, image_path: Path) -> str:
+    """Return the site-public URL for an exported hero image."""
+    return f"/images/{image_path.relative_to(PUBLIC_IMAGE_ROOT.parent).as_posix()}"
 
 
 if __name__ == "__main__":

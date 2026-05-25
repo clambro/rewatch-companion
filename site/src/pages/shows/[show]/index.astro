@@ -28,6 +28,7 @@ function cardFor(entry, label) {
   return {
     ...entry,
     description: metadata?.data.seo.description,
+    heroImage: metadata?.data.hero_image,
     label,
   };
 }
@@ -37,6 +38,7 @@ function episodeCardFor(episode) {
   return {
     ...episode,
     description: metadata?.data.seo.description,
+    heroImage: metadata?.data.hero_image,
     label: episode.code,
   };
 }
@@ -111,9 +113,23 @@ const seasonCards = show.data.seasons.map((season) => ({
                   class="essay-card episode-card"
                   href={`/shows/${show.data.slug}/${card.path}/`}
                 >
-                  <p>{card.label}</p>
-                  <h3>{card.title}</h3>
-                  {card.description && <span>{card.description}</span>}
+                  {card.heroImage ? (
+                    <img
+                      class="essay-card-image"
+                      src={card.heroImage.src}
+                      alt=""
+                      loading="lazy"
+                    />
+                  ) : (
+                    <div class="essay-card-image essay-card-image-placeholder">
+                      {card.label}
+                    </div>
+                  )}
+                  <div class="essay-card-content">
+                    <p>{card.label}</p>
+                    <h3>{card.title}</h3>
+                    {card.description && <span>{card.description}</span>}
+                  </div>
                 </a>
               ))}
             </div>
@@ -133,9 +149,23 @@ const seasonCards = show.data.seasons.map((season) => ({
               class="essay-card"
               href={`/shows/${show.data.slug}/${card.path}/`}
             >
-              <p>{card.label}</p>
-              <h3>{card.title}</h3>
-              {card.description && <span>{card.description}</span>}
+              {card.heroImage ? (
+                <img
+                  class="essay-card-image"
+                  src={card.heroImage.src}
+                  alt=""
+                  loading="lazy"
+                />
+              ) : (
+                <div class="essay-card-image essay-card-image-placeholder">
+                  {card.label}
+                </div>
+              )}
+              <div class="essay-card-content">
+                <p>{card.label}</p>
+                <h3>{card.title}</h3>
+                {card.description && <span>{card.description}</span>}
+              </div>
             </a>
           ))
         }
@@ -153,9 +183,23 @@ const seasonCards = show.data.seasons.map((season) => ({
               class="essay-card"
               href={`/shows/${show.data.slug}/${card.path}/`}
             >
-              <p>{card.label}</p>
-              <h3>{card.title}</h3>
-              {card.description && <span>{card.description}</span>}
+              {card.heroImage ? (
+                <img
+                  class="essay-card-image"
+                  src={card.heroImage.src}
+                  alt=""
+                  loading="lazy"
+                />
+              ) : (
+                <div class="essay-card-image essay-card-image-placeholder">
+                  {card.label}
+                </div>
+              )}
+              <div class="essay-card-content">
+                <p>{card.label}</p>
+                <h3>{card.title}</h3>
+                {card.description && <span>{card.description}</span>}
+              </div>
             </a>
           ))
         }
