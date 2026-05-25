@@ -6,7 +6,7 @@ from pathlib import Path
 import yaml
 
 from common.manifest import episode_slug, load_manifest
-from generate_essay import CONTENT_ROOT
+from essay_generation.generate_essay import CONTENT_ROOT
 from hero_images.find_hero_image import HeroImageCommand, find_hero_image
 from schemas import EssayKind, Show
 

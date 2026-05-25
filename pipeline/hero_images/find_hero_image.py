@@ -11,7 +11,7 @@ from PIL import Image, ImageOps
 from pydantic import BaseModel
 
 from common.manifest import episode_slug, load_manifest
-from generate_essay import find_episode, find_slugged_article
+from essay_generation.generate_essay import find_episode, find_slugged_article
 from hero_images.agent import find_hero_image_for_article
 from hero_images.rules import (
     ASPECT_RATIO_TOLERANCE,

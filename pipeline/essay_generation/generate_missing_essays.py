@@ -6,10 +6,10 @@ from typing import TYPE_CHECKING
 from pydantic import BaseModel
 
 from common.manifest import episode_slug, load_manifest
-from generate_character import generate_character_essay
-from generate_episode import generate_episode_essay
-from generate_essay import CONTENT_ROOT
-from generate_theme import generate_theme_essay
+from essay_generation.generate_character import generate_character_essay
+from essay_generation.generate_episode import generate_episode_essay
+from essay_generation.generate_essay import CONTENT_ROOT
+from essay_generation.generate_theme import generate_theme_essay
 from schemas import EssayKind, Show
 
 if TYPE_CHECKING:

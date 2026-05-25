@@ -3,7 +3,6 @@
 import importlib
 from typing import TYPE_CHECKING
 
-import generate_missing_essays
 from common.manifest import ManifestEpisode, ManifestSluggedArticle, ShowManifest
 from schemas import Show
 
@@ -13,6 +12,7 @@ if TYPE_CHECKING:
     import pytest
 
 find_missing_hero_images = importlib.import_module("hero_images.find_missing_hero_images")
+generate_missing_essays = importlib.import_module("essay_generation.generate_missing_essays")
 
 
 def test_missing_manifest_essays_follow_manifest_order(

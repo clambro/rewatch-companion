@@ -6,10 +6,12 @@ import argparse
 from enum import StrEnum
 from typing import TYPE_CHECKING
 
-from generate_character import generate_character_essay
-from generate_episode import generate_episode_essay
-from generate_missing_essays import generate_missing_essays
-from generate_theme import generate_theme_essay
+from essay_generation import (
+    generate_character_essay,
+    generate_episode_essay,
+    generate_missing_essays,
+    generate_theme_essay,
+)
 from hero_images import HeroImageCommand, find_article_hero_image, find_missing_hero_images
 from schemas import EssayKind, Show
 

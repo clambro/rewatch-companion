@@ -9,14 +9,15 @@ import yaml
 from openai import OpenAI
 
 from common.settings import settings
-from prompt import (
+from essay_generation.prompt import (
     CHARACTER_SOURCE_TYPE,
     PREVIOUS_EPISODE_SOURCE_TYPE,
     SUMMARY_INSTRUCTIONS,
     THEME_SOURCE_TYPE,
     build_summary_prompt,
 )
-from schemas import EssayKind, EssaySource, EssayTarget, GeneratedEssay, Show
+from essay_generation.schemas import EssaySource, EssayTarget, GeneratedEssay
+from schemas import EssayKind, Show
 
 if TYPE_CHECKING:
     from common.manifest import ManifestEpisode, ManifestSluggedArticle

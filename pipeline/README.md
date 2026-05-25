@@ -7,17 +7,11 @@ The first pipeline feature is essay generation. It takes a manifest-defined arti
 ## Structure
 
 - `cli.py` - root CLI for essay generation and hero image workflows.
-- `generate_theme.py` - theme essay workflow.
-- `generate_character.py` - character essay workflow.
-- `generate_episode.py` - episode essay workflow.
-- `generate_missing_essays.py` - manifest-driven backfill for missing essays.
-- `generate_essay.py` - shared orchestration, source loading, export, and show index helpers.
-- `agent.py` - Pydantic AI agent definition.
 - `common/` - shared settings, manifest loading, and agent retry plumbing.
+- `essay_generation/` - essay agent, prompts, research fetching, article export, workflows, schemas, and tests.
 - `hero_images/` - hero image search, download, metadata, prompts, rules, schemas, and tests.
 - `manifests/` - fixed article titles, prompts, slugs, and episode titles.
-- `prompt.py` - essay agent prompt strings.
-- `schemas.py` - target and generated essay schemas.
+- `schemas.py` - shared enums used across pipeline features.
 
 ## Commands
 

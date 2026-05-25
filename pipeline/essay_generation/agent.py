@@ -13,18 +13,18 @@ from pydantic_ai.providers.openai import OpenAIProvider
 
 from common.rate_limit_retry import RateLimitRetryCapability
 from common.settings import settings
-from prompt import (
+from essay_generation.prompt import (
     AGENT_INSTRUCTIONS,
     build_essay_prompt,
 )
-from research_fetch import CleanedResearchSource, fetch_research_source
-from research_limits import (
+from essay_generation.research_fetch import CleanedResearchSource, fetch_research_source
+from essay_generation.research_limits import (
     AGENT_USAGE_LIMITS,
     MAX_RESEARCH_FETCHES,
     MAX_RESEARCH_SEARCHES,
     SEARCH_RESULTS_PER_QUERY,
 )
-from schemas import EssaySource, EssayTarget, EssayWorkspace, GeneratedEssay
+from essay_generation.schemas import EssaySource, EssayTarget, EssayWorkspace, GeneratedEssay
 
 MODEL = "gpt-5.4-mini"
 MODEL_SETTINGS: OpenAIResponsesModelSettings = {
