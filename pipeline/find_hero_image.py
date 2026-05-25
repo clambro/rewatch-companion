@@ -55,7 +55,11 @@ def main() -> None:
     episodes_parser.add_argument("--episode", type=int, required=True)
 
     command = HeroImageCommand.model_validate(vars(parser.parse_args()))
+    find_hero_image(command=command)
 
+
+def find_hero_image(*, command: HeroImageCommand) -> Path:
+    """Find, download, and record a hero image for a manifest article reference."""
     article_path = article_path_for_command(command=command)
     article = load_completed_article(article_path=article_path)
     hero_image = find_hero_image_for_article(article=article)
@@ -65,6 +69,7 @@ def main() -> None:
     sys.stdout.write(f"Wrote {image_path}\n")
     sys.stdout.write(f"Updated {article_path.with_name('article.yaml')}\n")
     sys.stdout.write(f"{json.dumps(hero_image.model_dump(mode='json'), indent=2)}\n")
+    return image_path
 
 
 def article_path_for_command(*, command: HeroImageCommand) -> Path:

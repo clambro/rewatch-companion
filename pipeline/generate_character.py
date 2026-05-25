@@ -23,10 +23,15 @@ def generate_character() -> None:
     parser.add_argument("--show", choices=[show.value for show in Show], required=True)
     parser.add_argument("--slug", required=True)
     command = CharacterCommand.model_validate(vars(parser.parse_args()))
-    manifest = load_manifest(show=command.show)
-    character = find_slugged_article(entries=manifest.characters, slug=command.slug)
+    generate_character_essay(show=command.show, slug=command.slug)
+
+
+def generate_character_essay(*, show: Show, slug: str) -> None:
+    """Generate one character essay from the manifest."""
+    manifest = load_manifest(show=show)
+    character = find_slugged_article(entries=manifest.characters, slug=slug)
     target = EssayTarget(
-        show=command.show,
+        show=show,
         kind=EssayKind.CHARACTERS,
         title=character.title,
         prompt=character.prompt,

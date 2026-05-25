@@ -753,9 +753,9 @@ Example:
     succession/
 ```
 
-The final `index.mdx`, `summary.mdx`, and metadata YAML are committed. Raw
-research blobs and intermediate LLM outputs are not. Final selected article
-images may be committed later after an explicit sourcing/export step exists.
+The final `index.mdx`, `summary.mdx`, metadata YAML, and selected local hero
+images are committed. Raw research blobs, intermediate LLM outputs, external
+image URLs, and unselected image candidates are not.
 
 ## 18. Episode Inputs and Subtitles
 
@@ -783,23 +783,46 @@ the writer can verify from the episode or supporting research.
 
 ## 19. Article Image Workflow
 
-Article images are a later workflow, not part of the current essay-generation
-path.
+Article images are a separate workflow from essay generation.
 
-A future image-sourcing agent should find candidate show images for themes,
-characters, and episodes, store provenance metadata, and export only selected
-assets into `content/`. The public site should render local committed assets,
-not hotlink external image URLs.
+The image-sourcing agent reads a completed article, searches for one suitable
+show image, downloads it, normalizes it, and stores the local asset under
+`site/public/images/`. The public site renders local committed assets only. It
+does not hotlink external image URLs.
+
+Committed article metadata should stay publishable and minimal:
+
+```yaml
+hero_image:
+  src: /images/shows/<show>/<section>/<article>/hero.jpg
+  alt: Concise model-written image alt text.
+```
+
+External image URLs, source pages, rationale, and other provenance details are
+pipeline runtime context only. Do not write them into public article YAML.
 
 Images should be:
 
 - fair-use critical images
 - non-decorative
 - limited in number
-- credited with source/provenance metadata
 - stored only after final selection
+- converted to local JPEG assets
+- normalized to the project hero image dimensions
+- described with useful alt text
 
 For MVP, use one hero image per article before revisiting inline images.
+
+Backfill scripts should make manifest-driven generation resumable:
+
+```bash
+uv run python generate_missing_essays.py --show succession
+uv run python find_missing_hero_images.py --show succession
+```
+
+The essay backfill runs themes, then characters, then episodes in manifest
+order. The image backfill only targets generated articles that are missing
+local `hero_image` metadata or the referenced local file.
 
 ## 20. Review Philosophy
 
@@ -899,7 +922,7 @@ Minimum content validation:
 - every published article has metadata YAML
 - every image referenced in `article.yaml` exists
 - every image has alt text
-- every image has credit/provenance metadata
+- every hero image is a local JPEG with the expected dimensions
 - every page has SEO title and description
 - no draft articles are published accidentally
 
@@ -946,7 +969,7 @@ Rules:
 - images must support the article and not substitute for watching the show
 - no decorative galleries
 - no excessive image use
-- credits and provenance should be recorded
+- public metadata should include only local `src` and useful `alt` text
 - avoid using images as mere visual filler
 
 ### Scripts
@@ -1017,8 +1040,8 @@ S01E03 Lifeboats
 Build:
 
 - image search agent for theme, character, and episode hero images
-- candidate provenance metadata
-- final selected image export into `content/`
+- local hero image export into `site/public/images/`
+- minimal `hero_image.src` and `hero_image.alt` metadata
 - image metadata validation
 - article card and hero image rendering
 
@@ -1031,7 +1054,8 @@ The project has three layers:
    Astro renders committed static content.
 
 2. Static content contract
-   Public MDX, summary MDX, YAML, and selected images live in content/.
+   Public MDX, summary MDX, and article YAML live in content/. Local selected
+   images live under site/public/images/.
 
 3. Offline generation pipeline
    Python creates layered critical essays and episode analyses from research,
