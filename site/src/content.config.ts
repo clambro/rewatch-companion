@@ -30,6 +30,7 @@ const shows = defineCollection({
   schema: z.object({
     title: z.string(),
     slug: z.string(),
+    hero_image: heroImage,
     themes: z.array(listedArticle).optional(),
     characters: z.array(listedArticle).optional(),
     seasons: z.array(

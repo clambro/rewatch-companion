@@ -22,6 +22,7 @@ export async function getStaticPaths() {
 }
 
 const { metadataById, show } = Astro.props;
+const showHeroImage = show.data.hero_image;
 
 function cardFor(entry, label) {
   const metadata = metadataById.get(`${show.data.slug}/${entry.path}`);
@@ -60,11 +61,25 @@ const seasonCards = show.data.seasons.map((season) => ({
   description={`Full-series essays for ${show.data.title}.`}
 >
   <section class="show-masthead">
-    <p class="eyebrow">Show Guide</p>
-    <h1>{show.data.title}</h1>
-    <p class="show-dek">
-      Full-series essays written for viewers who already know the ending.
-    </p>
+    <div class="show-masthead-copy">
+      <p class="eyebrow">Show Guide</p>
+      <h1>{show.data.title}</h1>
+      <p class="show-dek">
+        Full-series essays written for viewers who already know the ending.
+      </p>
+    </div>
+
+    <figure
+      class:list={["show-hero", { "show-hero-placeholder": !showHeroImage }]}
+    >
+      {
+        showHeroImage ? (
+          <img src={showHeroImage.src} alt={showHeroImage.alt} />
+        ) : (
+          <div>{show.data.title}</div>
+        )
+      }
+    </figure>
   </section>
 
   <section class="show-catalog" data-show-catalog>
