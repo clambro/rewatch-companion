@@ -14,6 +14,17 @@ const seo = z.object({
   description: z.string(),
 });
 
+const heroImage = z
+  .object({
+    file: z.string(),
+    source_url: z.string(),
+    image_url: z.string(),
+    credit: z.string(),
+    title: z.string(),
+    rationale: z.string(),
+  })
+  .optional();
+
 const shows = defineCollection({
   loader: glob({
     base: contentBase,
@@ -54,6 +65,7 @@ const episodeMetadata = defineCollection({
     title: z.string(),
     slug: z.string(),
     seo,
+    hero_image: heroImage,
   }),
 });
 
@@ -80,6 +92,7 @@ const articleMetadata = defineCollection({
     title: z.string(),
     slug: z.string(),
     seo,
+    hero_image: heroImage,
   }),
 });
 

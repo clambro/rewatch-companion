@@ -580,24 +580,6 @@ in many ways
 this moment encapsulates
 ```
 
-### Prefer
-
-Prefer concrete verbs and mechanisms:
-
-```txt
-converts
-exposes
-literalizes
-rehearses
-disguises
-weaponizes
-withholds
-collapses
-translates
-turns X into Y
-makes X legible as Y
-```
-
 ### Recap Rule
 
 A plot fact may appear only when it supports an interpretive claim.

@@ -1,10 +1,24 @@
 show: succession
 season: 2
 episode: 2
-code: "S02E02"
-title: "Vaulter"
-slug: "e02-vaulter"
-
+code: S02E02
+title: Vaulter
+slug: e02-vaulter
 seo:
-  title: "Vaulter"
-  description: "\u201cRoutine\u201d corporate audit as camouflage: *Vaulter* shows how Succession turns access, timing, and competence performances into a withheld credential for rule."
+  title: Vaulter
+  description:
+    "\u201CRoutine\u201D corporate audit as camouflage: *Vaulter* shows\
+    \ how Succession turns access, timing, and competence performances into a withheld\
+    \ credential for rule."
+hero_image:
+  file: hero.jpg
+  source_url: https://www.esquire.com/entertainment/tv/a28713770/succession-season-2-episode-2-vaulter-explained-media-horror/
+  image_url: https://hips.hearstapps.com/hmg-prod/images/succession-season-2-1565901124.jpg?crop=0.668xw:1.00xh;0.167xw,0&resize=1200:*
+  credit: ""
+  title:
+    "Succession Has Become a Shakespearean Media Horror Story (lead image for\
+    \ \u201CVaulter\u201D episode recap)"
+  rationale:
+    "Uses the Esquire recap\u2019s lead still image for Succession Season\
+    \ 2 Episode 2 (\u201CVaulter\u201D), aligning with the article\u2019s focus on\
+    \ the Vaulter corporate-audit/termination sequence."

@@ -85,13 +85,13 @@ def build_essay_agent() -> Agent[EssayWorkspace, str]:
 
 
 def update_subtitle(ctx: RunContext[EssayWorkspace], subtitle: str) -> str:
-    """Update the article subtitle."""
+    """Update the article subtitle/dek. A good subtitle is a single short sentence."""
     ctx.deps.subtitle = subtitle.strip()
     return "Subtitle updated."
 
 
 def update_draft(ctx: RunContext[EssayWorkspace], body_mdx: str) -> str:
-    """Update the full article draft."""
+    """Rewrite the full article draft."""
     ctx.deps.draft = body_mdx.strip()
     return "Draft updated."
 
