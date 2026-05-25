@@ -5,8 +5,8 @@ import argparse
 from pydantic import BaseModel
 
 from agent import run_essay_agent
+from common.manifest import load_manifest
 from generate_essay import find_slugged_article, write_article
-from manifest import load_manifest
 from schemas import EssayKind, EssayTarget, Show
 
 

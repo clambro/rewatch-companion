@@ -8,6 +8,7 @@ from typing import TYPE_CHECKING, Any
 import yaml
 from openai import OpenAI
 
+from common.settings import settings
 from prompt import (
     CHARACTER_SOURCE_TYPE,
     PREVIOUS_EPISODE_SOURCE_TYPE,
@@ -16,10 +17,9 @@ from prompt import (
     build_summary_prompt,
 )
 from schemas import EssayKind, EssaySource, EssayTarget, GeneratedEssay, Show
-from settings import settings
 
 if TYPE_CHECKING:
-    from manifest import ManifestEpisode, ManifestSluggedArticle
+    from common.manifest import ManifestEpisode, ManifestSluggedArticle
 
 REPO_ROOT = Path(__file__).resolve().parent.parent
 CONTENT_ROOT = REPO_ROOT / "content" / "shows"

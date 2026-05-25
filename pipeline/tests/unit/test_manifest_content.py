@@ -2,7 +2,7 @@
 
 from pathlib import Path
 
-from manifest import (
+from common.manifest import (
     content_episode_titles,
     content_paths,
     load_manifest,

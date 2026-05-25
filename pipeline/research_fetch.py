@@ -8,8 +8,8 @@ from pydantic_ai.common_tools.web_fetch import WebFetchLocalTool
 from pydantic_ai.exceptions import ModelRetry
 from pydantic_ai.messages import BinaryContent
 
+from common.settings import settings
 from prompt import RESEARCH_SOURCE_SUMMARY_INSTRUCTIONS, build_research_source_summary_prompt
-from settings import settings
 
 SUMMARY_MODEL = "gpt-5.4-nano"
 MAX_CLEAN_RESEARCH_CHARS = 20_000

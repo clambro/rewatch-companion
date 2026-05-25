@@ -7,9 +7,9 @@ from pathlib import Path
 import yaml
 from pydantic import BaseModel
 
+from common.manifest import episode_slug, load_manifest
 from find_hero_image import HeroImageCommand, find_hero_image
 from generate_essay import CONTENT_ROOT
-from manifest import episode_slug, load_manifest
 from schemas import EssayKind, Show
 
 REPO_ROOT = Path(__file__).resolve().parent.parent

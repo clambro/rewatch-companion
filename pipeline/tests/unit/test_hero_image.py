@@ -9,6 +9,7 @@ from pydantic_ai import ModelRetry, RunContext
 
 import find_hero_image
 import hero_image_prompt
+from common.manifest import ManifestEpisode, ShowManifest
 from find_hero_image import (
     HeroImageCommand,
     article_body_without_frontmatter,
@@ -27,7 +28,6 @@ from hero_image_agent import (
     selected_hero_image_from_selection,
     validate_selected_image_aspect_ratio,
 )
-from manifest import ManifestEpisode, ShowManifest
 from schemas import (
     EssayKind,
     FoundHeroImage,

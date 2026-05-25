@@ -5,6 +5,7 @@ import argparse
 from pydantic import BaseModel
 
 from agent import run_essay_agent
+from common.manifest import ManifestEpisode, ShowManifest, episode_slug, load_manifest
 from generate_essay import (
     CONTENT_ROOT,
     find_episode,
@@ -12,7 +13,6 @@ from generate_essay import (
     load_article_sources,
     write_article,
 )
-from manifest import ManifestEpisode, ShowManifest, episode_slug, load_manifest
 from schemas import EssayKind, EssaySource, EssayTarget, Show
 
 

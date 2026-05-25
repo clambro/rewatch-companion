@@ -11,11 +11,12 @@ from pydantic_ai.common_tools.duckduckgo import DuckDuckGoResult
 from pydantic_ai.models.openai import OpenAIResponsesModel, OpenAIResponsesModelSettings
 from pydantic_ai.providers.openai import OpenAIProvider
 
+from common.rate_limit_retry import RateLimitRetryCapability
+from common.settings import settings
 from prompt import (
     AGENT_INSTRUCTIONS,
     build_essay_prompt,
 )
-from rate_limit_retry import RateLimitRetryCapability
 from research_fetch import CleanedResearchSource, fetch_research_source
 from research_limits import (
     AGENT_USAGE_LIMITS,
@@ -24,7 +25,6 @@ from research_limits import (
     SEARCH_RESULTS_PER_QUERY,
 )
 from schemas import EssaySource, EssayTarget, EssayWorkspace, GeneratedEssay
-from settings import settings
 
 MODEL = "gpt-5.4-mini"
 MODEL_SETTINGS: OpenAIResponsesModelSettings = {

@@ -4,7 +4,7 @@ from typing import TYPE_CHECKING
 
 import find_missing_hero_images
 import generate_missing_essays
-from manifest import ManifestEpisode, ManifestSluggedArticle, ShowManifest
+from common.manifest import ManifestEpisode, ManifestSluggedArticle, ShowManifest
 from schemas import Show
 
 if TYPE_CHECKING:
