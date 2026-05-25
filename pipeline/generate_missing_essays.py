@@ -1,6 +1,5 @@
 """Generate manifest essays that are missing from content."""
 
-import argparse
 import sys
 from typing import TYPE_CHECKING
 
@@ -17,13 +16,6 @@ if TYPE_CHECKING:
     from pathlib import Path
 
 
-class GenerateMissingEssaysCommand(BaseModel):
-    """Parsed CLI command for missing essay generation."""
-
-    show: Show
-    dry_run: bool = False
-
-
 class MissingEssay(BaseModel):
     """One missing manifest essay target."""
 
@@ -33,23 +25,18 @@ class MissingEssay(BaseModel):
     episode: int | None = None
 
 
-def main() -> None:
+def generate_missing_essays(*, show: Show, dry_run: bool = False) -> None:
     """Generate missing manifest essays in dependency order."""
-    parser = argparse.ArgumentParser(description="Generate missing manifest essays.")
-    parser.add_argument("--show", choices=[show.value for show in Show], required=True)
-    parser.add_argument("--dry-run", action="store_true")
-    command = GenerateMissingEssaysCommand.model_validate(vars(parser.parse_args()))
-
-    missing_essays = missing_manifest_essays(show=command.show)
+    missing_essays = missing_manifest_essays(show=show)
     if not missing_essays:
         sys.stdout.write("No missing essays.\n")
         return
 
     for missing_essay in missing_essays:
-        rendered_command = render_essay_command(show=command.show, essay=missing_essay)
+        rendered_command = render_essay_command(show=show, essay=missing_essay)
         sys.stdout.write(f"Running: {rendered_command}\n")
-        if not command.dry_run:
-            generate_missing_essay(show=command.show, essay=missing_essay)
+        if not dry_run:
+            generate_missing_essay(show=show, essay=missing_essay)
 
 
 def missing_manifest_essays(*, show: Show) -> list[MissingEssay]:
@@ -108,12 +95,12 @@ def render_essay_command(*, show: Show, essay: MissingEssay) -> str:
     """Return the equivalent single-target essay generation command."""
     match essay.kind:
         case EssayKind.THEMES:
-            return f"uv run python generate_theme.py --show {show.value} --slug {essay.slug}"
+            return f"uv run poe rw -- essay theme --show {show.value} --slug {essay.slug}"
         case EssayKind.CHARACTERS:
-            return f"uv run python generate_character.py --show {show.value} --slug {essay.slug}"
+            return f"uv run poe rw -- essay character --show {show.value} --slug {essay.slug}"
         case EssayKind.EPISODES:
             return (
-                f"uv run python generate_episode.py --show {show.value} "
+                f"uv run poe rw -- essay episode --show {show.value} "
                 f"--season {essay.season} --episode {essay.episode}"
             )
 
@@ -124,7 +111,3 @@ def is_missing_essay(*, output_dir: Path) -> bool:
         (output_dir / file_name).is_file()
         for file_name in ("index.mdx", "article.yaml", "summary.mdx")
     )
-
-
-if __name__ == "__main__":
-    main()

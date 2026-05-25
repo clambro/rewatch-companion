@@ -1,11 +1,9 @@
 """Find hero images for generated manifest essays missing local image metadata."""
 
-import argparse
 import sys
 from pathlib import Path
 
 import yaml
-from pydantic import BaseModel
 
 from common.manifest import episode_slug, load_manifest
 from find_hero_image import HeroImageCommand, find_hero_image
@@ -16,28 +14,16 @@ REPO_ROOT = Path(__file__).resolve().parent.parent
 SITE_PUBLIC_ROOT = REPO_ROOT / "site" / "public"
 
 
-class FindMissingHeroImagesCommand(BaseModel):
-    """Parsed CLI command for missing hero image search."""
-
-    show: Show
-    dry_run: bool = False
-
-
-def main() -> None:
+def find_missing_hero_images(*, show: Show, dry_run: bool = False) -> None:
     """Find hero images for generated articles that do not have them yet."""
-    parser = argparse.ArgumentParser(description="Find missing hero images.")
-    parser.add_argument("--show", choices=[show.value for show in Show], required=True)
-    parser.add_argument("--dry-run", action="store_true")
-    command = FindMissingHeroImagesCommand.model_validate(vars(parser.parse_args()))
-
-    missing_images = missing_hero_image_targets(show=command.show)
+    missing_images = missing_hero_image_targets(show=show)
     if not missing_images:
         sys.stdout.write("No missing hero images.\n")
         return
 
     for missing_image in missing_images:
         sys.stdout.write(f"Running: {render_hero_image_command(command=missing_image)}\n")
-        if not command.dry_run:
+        if not dry_run:
             find_hero_image(command=missing_image)
 
 
@@ -88,15 +74,17 @@ def missing_hero_image_targets(*, show: Show) -> list[HeroImageCommand]:
 def render_hero_image_command(*, command: HeroImageCommand) -> str:
     """Return the equivalent single-target hero image command."""
     match command.kind:
-        case EssayKind.THEMES | EssayKind.CHARACTERS:
+        case EssayKind.THEMES:
+            return f"uv run poe rw -- image theme --show {command.show.value} --slug {command.slug}"
+        case EssayKind.CHARACTERS:
             return (
-                f"uv run python find_hero_image.py --show {command.show.value} "
-                f"{command.kind.value} --slug {command.slug}"
+                f"uv run poe rw -- image character --show {command.show.value} "
+                f"--slug {command.slug}"
             )
         case EssayKind.EPISODES:
             return (
-                f"uv run python find_hero_image.py --show {command.show.value} "
-                f"{command.kind.value} --season {command.season} --episode {command.episode}"
+                f"uv run poe rw -- image episode --show {command.show.value} "
+                f"--season {command.season} --episode {command.episode}"
             )
 
 
@@ -125,7 +113,3 @@ def is_missing_hero_image(*, article_dir: Path) -> bool:
 def local_public_path(*, src: str) -> Path:
     """Return the local public file path for a site-root image src."""
     return SITE_PUBLIC_ROOT / src.removeprefix("/")
-
-
-if __name__ == "__main__":
-    main()

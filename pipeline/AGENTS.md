@@ -22,12 +22,17 @@ Expected responsibilities once implemented:
 This project uses `uv` for package management, ruff for linting, and ty for type checking:
 
 ```bash
+uv run poe rw --help                   # inspect pipeline commands
 uv run python -m path.to.module          # run code
 uv run python -m pytest path/to/test     # run specific tests
 uv run python -m pytest .                # run all tests
 uv run ruff check --fix                  # linter (must pass)
 uv run ty check                          # type checker (must pass)
 ```
+
+Use `cli.py` as the user-facing command surface for essay and hero-image
+workflows. Internal workflow modules should expose callable functions rather
+than their own duplicate argparse entrypoints.
 
 Before handing work back, run the relevant checks for the files you changed. For
 Python changes, run at least `uv run ruff check <changed files>` and
