@@ -30,7 +30,7 @@ that later download step.
 
 - Prefer images from the show, episode, character, or scene discussed by the
   article.
-- Prefer pages with clear source context, such as HBO, official press material,
+- Prefer pages with clear source context, such as official press material,
   serious review sites, entertainment magazines, or TV publications.
 - Prefer an image URL that points directly to the image file or a stable CDN
   image.

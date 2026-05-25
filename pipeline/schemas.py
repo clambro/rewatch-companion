@@ -47,6 +47,8 @@ class EssayWorkspace(BaseModel):
     sources: list[EssaySource] = Field(default_factory=list)
     subtitle: str = ""
     draft: str = ""
+    research_searches: int = 0
+    research_fetches: int = 0
 
 
 class GeneratedEssay(BaseModel):

@@ -20,9 +20,9 @@ from rate_limit_retry import RateLimitRetryCapability
 from schemas import FoundHeroImage, HeroImageArticle, HeroImageSearchResult, HeroImageWorkspace
 from settings import settings
 
-MODEL = "gpt-5.4-nano"
+MODEL = "gpt-5.4-mini"
 MODEL_SETTINGS: OpenAIResponsesModelSettings = {
-    "openai_reasoning_effort": "medium",
+    "openai_reasoning_effort": "low",
     "openai_reasoning_summary": "concise",
 }
 MAX_IMAGE_SEARCH_RESULTS = 12
