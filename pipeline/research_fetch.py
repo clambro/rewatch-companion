@@ -1,7 +1,5 @@
 """Cleaned web research fetching for essay generation."""
 
-from __future__ import annotations
-
 import re
 
 from openai import OpenAI

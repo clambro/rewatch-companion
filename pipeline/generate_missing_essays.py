@@ -1,7 +1,5 @@
 """Generate manifest essays that are missing from content."""
 
-from __future__ import annotations
-
 import argparse
 import sys
 from typing import TYPE_CHECKING
