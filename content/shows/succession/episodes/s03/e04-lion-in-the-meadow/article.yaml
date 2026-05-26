@@ -1,0 +1,16 @@
+show: succession
+season: 3
+episode: 4
+code: S03E04
+title: Lion in the Meadow
+slug: e04-lion-in-the-meadow
+seo:
+  title: Lion in the Meadow
+  description:
+    "On Josh Aaronson\u2019s island, the Roys\u2019 private war becomes\
+    \ a market test neither father nor son can pass."
+hero_image:
+  src: /images/shows/succession/episodes/s03/e04-lion-in-the-meadow/hero.jpg
+  alt:
+    "Logan Roy and Kendall Roy stand together outdoors on Josh Aaronson\u2019s\
+    \ island, facing the long walk back in the heat."
