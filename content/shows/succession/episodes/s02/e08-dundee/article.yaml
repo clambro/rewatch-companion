@@ -1,0 +1,16 @@
+show: succession
+season: 2
+episode: 8
+code: S02E08
+title: Dundee
+slug: e08-dundee
+seo:
+  title: Dundee
+  description:
+    "A hometown tribute becomes another failed production, exposing how\
+    \ much Logan\u2019s legend depends on other people agreeing to perform it."
+hero_image:
+  src: /images/shows/succession/episodes/s02/e08-dundee/hero.jpg
+  alt:
+    "Kendall Roy performing his tribute rap at Logan Roy\u2019s 50-year Waystar\
+    \ celebration in Dundee, facing the crowd onstage."

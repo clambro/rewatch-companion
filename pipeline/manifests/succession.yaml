@@ -74,3 +74,33 @@ episodes:
   - season: 1
     episode: 10
     title: "Nobody Is Ever Missing"
+  - season: 2
+    episode: 1
+    title: "The Summer Palace"
+  - season: 2
+    episode: 2
+    title: "Vaulter"
+  - season: 2
+    episode: 3
+    title: "Hunting"
+  - season: 2
+    episode: 4
+    title: "Safe Room"
+  - season: 2
+    episode: 5
+    title: "Tern Haven"
+  - season: 2
+    episode: 6
+    title: "Argestes"
+  - season: 2
+    episode: 7
+    title: "Return"
+  - season: 2
+    episode: 8
+    title: "Dundee"
+  - season: 2
+    episode: 9
+    title: "DC"
+  - season: 2
+    episode: 10
+    title: "This Is Not for Tears"

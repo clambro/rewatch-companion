@@ -1,0 +1,16 @@
+show: succession
+season: 2
+episode: 6
+code: S02E06
+title: Argestes
+slug: e06-argestes
+seo:
+  title: Argestes
+  description:
+    Waystar enters an elite room it cannot bully and learns that succession
+    is also a problem of public belief.
+hero_image:
+  src: /images/shows/succession/episodes/s02/e06-argestes/hero.jpg
+  alt:
+    "A still from Succession\u2019s \u201CArgestes\u201D episode showing a scene\
+    \ at the Argestes summit."
