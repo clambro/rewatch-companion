@@ -1,7 +1,5 @@
 """Prompts for essay generation."""
 
-from __future__ import annotations
-
 from typing import TYPE_CHECKING
 
 from common.schemas import EssayKind
@@ -12,14 +10,16 @@ from essay_generation.research_limits import (
 )
 
 if TYPE_CHECKING:
-    from essay_generation.schemas import EssaySource, EssayWorkspace
+    from essay_generation.schemas import EssayResearchSource, EssaySource, EssayWorkspace
 
-AGENT_INSTRUCTIONS = """
+IDENTITY_CONTEXT = """
 # Identity
 
 You are the writing agent for Rewatch Companion, a static site for serious
 full-series television criticism.
+""".strip()
 
+PRODUCT_CONTEXT = """
 # Product
 
 The reader has already finished the show. Write retrospective criticism, not
@@ -35,7 +35,9 @@ The project is layered:
 1. Theme essays define the show's conceptual vocabulary.
 2. Character essays explain how characters embody and complicate that vocabulary.
 3. Episode essays apply the established framework to individual dramatic units.
+""".strip()
 
+WORKFLOW_INSTRUCTIONS = """
 # Workflow
 
 For every run:
@@ -43,22 +45,25 @@ For every run:
 1. Research the target with the available search and fetch tools.
 2. Decide the article's argument and where the current evidence is weak. Do not
    expose that reasoning in the article.
-3. Call `update_draft` with a complete MDX-compatible draft.
+3. Call `update_draft` with drafting instructions for the full-sized drafting
+   model. Do not write the draft prose yourself.
 4. Reflect on the draft internally: look for weak claims, generic phrasing,
    recap padding, missing evidence, bad structure, style-guide violations, and
    generated-sounding prose patterns such as over-regular paragraph rhythm,
    abstract drift, excessive polish, and too many thesis-like closing moves.
+   Cut unnecessary padding, repeated claims, and examples that merely re-prove
+   a point the essay has already established.
 5. Do targeted follow-up research when reflection exposes factual uncertainty,
    weak examples, or unclear episode/character details.
-6. Rewrite by calling `update_draft` again until the draft is final.
-7. Only after the final draft is done, call `update_subtitle` with the final
-   dek.
-8. Return final output only after the state contains the final subtitle and
-   draft.
+6. Rewrite by calling `update_draft` with specific revision instructions until
+   the draft is final.
+7. Return final output only after the draft is final.
 
 The final model output is only a completion signal. The public article is
 extracted from the final state, not from the final model output.
+""".strip()
 
+RESEARCH_INSTRUCTIONS = """
 # Research Budget
 
 - Do one focused research pass before drafting.
@@ -106,7 +111,9 @@ extracted from the final state, not from the final model output.
 - Do not cite sources in the public article unless the prose genuinely needs it.
 - If a fact cannot be verified, omit it or write around it.
 - Treat plot as evidence for interpretation, not as the article's purpose.
+""".strip()
 
+WRITING_RULES = """
 # Style Guide
 
 - Make specific interpretive claims.
@@ -135,6 +142,12 @@ extracted from the final state, not from the final model output.
   or dramatic action.
 - Avoid padding, duplication, and repeated restatements of the same claim. Once
   a point has landed, move the argument forward.
+- Do not keep re-proving the central thesis after it has been established. Each
+  section should complicate, redirect, sharpen, or deepen the argument rather
+  than supply another interchangeable example.
+- Prefer compression over exhaustive coverage. Use the best evidence for the
+  argument instead of trying to include every major scene, relationship, or
+  turning point.
 - Avoid "not just X; it is Y" constructions.
 - Avoid em dashes.
 - Avoid stock phrases such as "at its core", "serves as", "speaks to",
@@ -181,30 +194,41 @@ extracted from the final state, not from the final model output.
 - Use italics only where the prose conventionally requires them, such as show
   titles.
 - Put episode titles in quotation marks, not italics.
+""".strip()
 
+DRAFT_OUTPUT_CONTRACT = """
+# Output Contract
+
+The manifest title is fixed. Do not change it.
+Do not include frontmatter in the draft.
+""".strip()
+
+CONTROLLER_OUTPUT_CONTRACT = """
 # Output Contract
 
 The manifest title is fixed. Do not change it.
 
-Maintain the essay through the state tools:
+Maintain the essay through the state tool:
 
-- `update_draft`: record or revise the full article body as MDX-compatible
-  Markdown.
-- `update_subtitle`: record the article subtitle after the final draft is done.
-
-Dek rules:
-
-- The dek is the article subtitle shown with the title.
-- A good dek is a single short sentence meant to be read alongside the fixed
-  title.
-- It should work as an adjoint to the title: entice the reader to open the
-  article and tell them what kind of argument they are about to enter, without
-  restating the title.
-- It is plain text only. It does not support Markdown, MDX, HTML, italics, bold,
-  links, code spans, or formatting of any kind.
+- `update_draft`: call the full-sized drafting model to record or revise the
+  full article body as MDX-compatible Markdown.
 
 Do not include frontmatter in the draft. When the final state is complete,
 return `DONE`.
+""".strip()
+
+AGENT_INSTRUCTIONS = f"""
+{IDENTITY_CONTEXT}
+
+{PRODUCT_CONTEXT}
+
+{WORKFLOW_INSTRUCTIONS}
+
+{RESEARCH_INSTRUCTIONS}
+
+{WRITING_RULES}
+
+{CONTROLLER_OUTPUT_CONTRACT}
 """.strip()
 
 ESSAY_PROMPT_TEMPLATE = """
@@ -226,6 +250,14 @@ ESSAY_PROMPT_TEMPLATE = """
 {state}
 """.strip()
 
+WRITING_INSTRUCTIONS = f"""
+{PRODUCT_CONTEXT}
+
+{WRITING_RULES}
+
+{DRAFT_OUTPUT_CONTRACT}
+""".strip()
+
 WORKSPACE_STATE_TEMPLATE = """
 <state>
 <research_budget>
@@ -238,9 +270,6 @@ Fetches used: {research_fetches_used}
 Fetches remaining: {research_fetches_remaining}
 </research_budget>
 {sources}
-<subtitle>
-{subtitle}
-</subtitle>
 <draft>
 {draft}
 </draft>
@@ -274,6 +303,100 @@ PREVIOUS_EPISODE_SOURCE_TYPE = """
 Previous episode essay summary for continuity. Use it to avoid repetition and
 preserve local progression from the prior episode, but do not recap it, quote it,
 or treat it as stronger evidence than the target episode itself.
+""".strip()
+
+DRAFTING_MODEL_INSTRUCTIONS = """
+You are the drafting model for Rewatch Companion, a static site for serious
+full-series television criticism.
+
+Write the public article prose. Follow the product, style, voice, formatting,
+and output-contract rules in the supplied writing instructions. Use the
+controller's request as direction, but produce only the requested draft field.
+
+Return only the MDX article body. Do not include frontmatter.
+""".strip()
+
+DRAFTING_MODEL_PROMPT_TEMPLATE = """
+# Writing Instructions
+
+{writing_instructions}
+
+# Essay Type Instructions
+
+{essay_instructions}
+
+# Controller Request
+
+{request}
+
+# Workspace
+
+{context}
+""".strip()
+
+SUBTITLE_MODEL_INSTRUCTIONS = """
+You write article deks for Rewatch Companion, a static site for serious
+full-series television criticism.
+
+A good dek is a single short sentence meant to be read alongside the fixed
+title. It works as an adjoint to the title: it entices the reader and tells them
+what kind of argument they are about to enter without restating the title.
+
+The dek is plain text only. It does not support Markdown, MDX, HTML, italics,
+bold, links, code spans, or formatting of any kind.
+
+Return only the dek text.
+""".strip()
+
+SUBTITLE_MODEL_PROMPT_TEMPLATE = """
+# Task
+
+Write the final dek for the essay below. Use the fixed manifest title as the
+title the dek will sit beside.
+
+# Manifest
+
+<manifest>
+<show>{show}</show>
+<kind>{kind}</kind>
+<title>{title}</title>
+<brief>{brief}</brief>
+</manifest>
+
+# Essay
+
+<essay>
+{draft}
+</essay>
+""".strip()
+
+DRAFTING_CONTEXT_TEMPLATE = """
+<context>
+{sources}
+{research_sources}
+<current_draft>
+{draft}
+</current_draft>
+</context>
+""".strip()
+
+RESEARCH_SOURCES_TEMPLATE = """
+<research_sources>
+These are fetched web research notes retained from the controller's research
+pass. Treat them as private drafting context, not as public citations.
+
+{research_sources}
+</research_sources>
+""".strip()
+
+RESEARCH_SOURCE_TEMPLATE = """
+<research_source>
+Title: {title}
+URL: {url}
+Summarized: {summarized}
+
+{content}
+</research_source>
 """.strip()
 
 SUMMARY_INSTRUCTIONS = """
@@ -468,14 +591,7 @@ The essay should:
 def build_essay_prompt(*, workspace: EssayWorkspace) -> str:
     """Build the runtime task prompt for an essay target."""
     target = workspace.target
-    match target.kind:
-        case EssayKind.THEMES:
-            instructions = THEME_INSTRUCTIONS
-        case EssayKind.CHARACTERS:
-            instructions = CHARACTER_INSTRUCTIONS
-        case EssayKind.EPISODES:
-            instructions = EPISODE_INSTRUCTIONS
-
+    instructions = essay_instructions(kind=target.kind)
     return ESSAY_PROMPT_TEMPLATE.format(
         instructions=instructions,
         show=target.show,
@@ -484,6 +600,39 @@ def build_essay_prompt(*, workspace: EssayWorkspace) -> str:
         brief=target.prompt,
         state=render_workspace_state(workspace=workspace),
     )
+
+
+def build_drafting_prompt(*, workspace: EssayWorkspace, request: str) -> str:
+    """Build the direct full-model prompt for drafting or revising the essay."""
+    return DRAFTING_MODEL_PROMPT_TEMPLATE.format(
+        writing_instructions=WRITING_INSTRUCTIONS,
+        essay_instructions=essay_instructions(kind=workspace.target.kind),
+        request=request,
+        context=render_drafting_context(workspace=workspace),
+    )
+
+
+def build_subtitle_prompt(*, workspace: EssayWorkspace) -> str:
+    """Build the direct full-model prompt for writing the final dek."""
+    target = workspace.target
+    return SUBTITLE_MODEL_PROMPT_TEMPLATE.format(
+        show=target.show,
+        kind=target.kind,
+        title=target.title,
+        brief=target.prompt,
+        draft=workspace.draft,
+    )
+
+
+def essay_instructions(*, kind: EssayKind) -> str:
+    """Return the essay-type instructions for a target kind."""
+    match kind:
+        case EssayKind.THEMES:
+            return THEME_INSTRUCTIONS
+        case EssayKind.CHARACTERS:
+            return CHARACTER_INSTRUCTIONS
+        case EssayKind.EPISODES:
+            return EPISODE_INSTRUCTIONS
 
 
 def render_workspace_state(*, workspace: EssayWorkspace) -> str:
@@ -501,7 +650,25 @@ def render_workspace_state(*, workspace: EssayWorkspace) -> str:
         research_fetches_used=workspace.research_fetches,
         research_fetches_remaining=max(0, MAX_RESEARCH_FETCHES - workspace.research_fetches),
         sources=sources,
-        subtitle=workspace.subtitle,
+        draft=workspace.draft,
+    )
+
+
+def render_drafting_context(*, workspace: EssayWorkspace) -> str:
+    """Render source and research context for the full-sized drafting model."""
+    sources = ""
+    if workspace.sources:
+        sources = SOURCES_TEMPLATE.format(sources=render_sources(sources=workspace.sources))
+
+    research_sources = ""
+    if workspace.research_sources:
+        research_sources = RESEARCH_SOURCES_TEMPLATE.format(
+            research_sources=render_research_sources(sources=workspace.research_sources),
+        )
+
+    return DRAFTING_CONTEXT_TEMPLATE.format(
+        sources=sources,
+        research_sources=research_sources,
         draft=workspace.draft,
     )
 
@@ -514,6 +681,19 @@ def render_sources(*, sources: list[EssaySource]) -> str:
             title=source.title,
             subtitle=source.subtitle,
             summary_mdx=source.summary_mdx,
+        )
+        for source in sources
+    )
+
+
+def render_research_sources(*, sources: list[EssayResearchSource]) -> str:
+    """Render fetched research sources for the drafting model."""
+    return "\n\n".join(
+        RESEARCH_SOURCE_TEMPLATE.format(
+            title=source.title,
+            url=source.url,
+            summarized=source.summarized,
+            content=source.content,
         )
         for source in sources
     )

@@ -24,7 +24,7 @@ if TYPE_CHECKING:
 
 REPO_ROOT = Path(__file__).resolve().parents[2]
 CONTENT_ROOT = REPO_ROOT / "content" / "shows"
-SUMMARY_MODEL = "gpt-5.4-nano"
+SUMMARY_MODEL = "gpt-5.4-mini"
 
 
 def write_article(*, target: EssayTarget, draft: GeneratedEssay) -> None:

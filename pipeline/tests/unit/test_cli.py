@@ -1,7 +1,5 @@
 """Tests for the root pipeline CLI."""
 
-from __future__ import annotations
-
 from typing import TYPE_CHECKING, Any
 
 import cli

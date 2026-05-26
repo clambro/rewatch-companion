@@ -1,7 +1,5 @@
 """Root command-line interface for pipeline workflows."""
 
-from __future__ import annotations
-
 import argparse
 from enum import StrEnum
 from typing import TYPE_CHECKING

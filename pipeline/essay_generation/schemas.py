@@ -5,6 +5,23 @@ from pydantic import BaseModel, Field
 from common.schemas import EssayKind, Show  # noqa: TC001 - Pydantic needs these enums at runtime.
 
 
+class CleanedResearchSource(BaseModel):
+    """Cleaned research source returned to the essay agent."""
+
+    url: str
+    title: str
+    content: str
+    summarized: bool
+
+
+class ResearchFetchResponse(BaseModel):
+    """Fetched source plus the remaining fetch budget."""
+
+    source: CleanedResearchSource
+    fetches_remaining: int
+    guidance: str
+
+
 class EssayTarget(BaseModel):
     """Minimal user-provided target for an essay run."""
 
@@ -26,11 +43,21 @@ class EssaySource(BaseModel):
     summary_mdx: str
 
 
+class EssayResearchSource(BaseModel):
+    """Fetched research source retained for drafting context."""
+
+    url: str
+    title: str
+    content: str
+    summarized: bool
+
+
 class EssayWorkspace(BaseModel):
     """Mutable state for an essay run."""
 
     target: EssayTarget
     sources: list[EssaySource] = Field(default_factory=list)
+    research_sources: list[EssayResearchSource] = Field(default_factory=list)
     subtitle: str = ""
     draft: str = ""
     research_searches: int = 0

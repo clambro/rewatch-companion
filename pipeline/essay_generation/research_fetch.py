@@ -3,7 +3,6 @@
 import re
 
 from openai import OpenAI
-from pydantic import BaseModel
 from pydantic_ai.common_tools.web_fetch import WebFetchLocalTool
 from pydantic_ai.exceptions import ModelRetry
 from pydantic_ai.messages import BinaryContent
@@ -13,6 +12,7 @@ from essay_generation.prompt import (
     RESEARCH_SOURCE_SUMMARY_INSTRUCTIONS,
     build_research_source_summary_prompt,
 )
+from essay_generation.schemas import CleanedResearchSource
 
 SUMMARY_MODEL = "gpt-5.4-mini"
 MAX_CLEAN_RESEARCH_CHARS = 20_000
@@ -41,15 +41,6 @@ JUNK_LINE_PATTERNS = [
 
 REPEATED_SPACE_RE = re.compile(r"[ \t]{2,}")
 EXCESSIVE_NEWLINES_RE = re.compile(r"\n{3,}")
-
-
-class CleanedResearchSource(BaseModel):
-    """Cleaned research source returned to the essay agent."""
-
-    url: str
-    title: str
-    content: str
-    summarized: bool
 
 
 async def fetch_research_source(url: str) -> CleanedResearchSource:
