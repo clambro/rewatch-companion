@@ -1,7 +1,11 @@
 show: succession
-title: "Roman Roy"
-slug: "roman-roy"
-
+title: Roman Roy
+slug: roman-roy
 seo:
-  title: "Roman Roy"
-  description: "Roman Roy wants to be chosen, until Succession shows him that attention is only another costume"
+  title: Roman Roy
+  description:
+    He knows the family contest is a rigged performance, but he cannot
+    stop needing its verdict.
+hero_image:
+  src: /images/shows/succession/characters/roman-roy/hero.jpg
+  alt: Roman Roy in Succession

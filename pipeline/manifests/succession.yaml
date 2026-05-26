@@ -12,15 +12,27 @@ themes:
     prompt: "This essay is about the way Succession treats love as real but almost never safe. The Roys do love one another, but affection arrives tangled with tests, punishments, bargains, and bids for advantage. Logan turns approval into a scarce resource, and his children learn to treat emotional need as weakness. The same pattern repeats in Shiv and Tom's marriage, Kendall's relationships with his siblings, Roman's attachment to Gerri, and Connor's hunger to be acknowledged. The essay's central tension is that love is not absent from the show; it is present, but continually converted into leverage."
 
 characters:
+  - slug: "logan-roy"
+    title: "Logan Roy"
+    prompt: "A full-series character essay about Logan Roy."
   - slug: "kendall-roy"
     title: "Kendall Roy"
     prompt: "A full-series character essay about Kendall Roy."
-  - slug: "roman-roy"
-    title: "Roman Roy"
-    prompt: "A full-series character essay about Roman Roy."
   - slug: "shiv-roy"
     title: "Shiv Roy"
     prompt: "A full-series character essay about Shiv Roy."
+  - slug: "roman-roy"
+    title: "Roman Roy"
+    prompt: "A full-series character essay about Roman Roy."
+  - slug: "connor-roy"
+    title: "Connor Roy"
+    prompt: "A full-series character essay about Connor Roy."
+  - slug: "tom-wambsgans"
+    title: "Tom Wambsgans"
+    prompt: "A full-series character essay about Tom Wambsgans."
+  - slug: "greg-hirsch"
+    title: "Greg Hirsch"
+    prompt: "A full-series character essay about Greg Hirsch."
 
 episodes:
   - season: 1

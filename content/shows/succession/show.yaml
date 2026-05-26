@@ -4,18 +4,26 @@ slug: "succession"
 themes:
   - title: "Logan's Fractured Inheritance"
     path: "themes/logan-fractured-inheritance"
-  - title: "Love as Leverage"
-    path: "themes/love-as-leverage"
   - title: "Not Serious People"
     path: "themes/not-serious-people"
+  - title: "Love as Leverage"
+    path: "themes/love-as-leverage"
 
 characters:
+  - title: "Logan Roy"
+    path: "characters/logan-roy"
   - title: "Kendall Roy"
     path: "characters/kendall-roy"
-  - title: "Roman Roy"
-    path: "characters/roman-roy"
   - title: "Shiv Roy"
     path: "characters/shiv-roy"
+  - title: "Roman Roy"
+    path: "characters/roman-roy"
+  - title: "Connor Roy"
+    path: "characters/connor-roy"
+  - title: "Tom Wambsgans"
+    path: "characters/tom-wambsgans"
+  - title: "Greg Hirsch"
+    path: "characters/greg-hirsch"
 
 seasons:
   - season: 1
