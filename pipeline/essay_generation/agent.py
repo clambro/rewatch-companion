@@ -7,6 +7,7 @@ from typing import TYPE_CHECKING
 import anyio.to_thread
 import logfire
 from ddgs.ddgs import DDGS
+from ddgs.exceptions import DDGSException
 from openai import OpenAI, RateLimitError
 from pydantic_ai import Agent, ModelRetry, RunContext, Tool
 from pydantic_ai.models.openai import OpenAIResponsesModel, OpenAIResponsesModelSettings
@@ -14,6 +15,7 @@ from pydantic_ai.providers.openai import OpenAIProvider
 
 from common.rate_limit_retry import RateLimitRetryCapability
 from common.settings import settings
+from common.telemetry import configure_logfire
 from essay_generation.prompt import (
     AGENT_INSTRUCTIONS,
     DRAFTING_MODEL_INSTRUCTIONS,
@@ -50,17 +52,6 @@ MODEL_SETTINGS: OpenAIResponsesModelSettings = {
 DIRECT_MODEL_REASONING: Reasoning = {"effort": "medium", "summary": "concise"}
 DIRECT_MODEL_RATE_LIMIT_RETRIES = 5
 DIRECT_MODEL_RATE_LIMIT_SLEEP_SECONDS = 20.0
-LOW_FETCH_BUDGET_THRESHOLD = 2
-
-logfire.configure(
-    service_name="rewatch-pipeline",
-    token=settings.logfire_token,
-    metrics=logfire.MetricsOptions(collect_in_spans=True),
-    scrubbing=False,
-)
-logfire.instrument_pydantic_ai(use_aggregated_usage_attribute_names=True)
-logfire.instrument_openai(version="latest")
-logfire.instrument_httpx(capture_all=True)
 
 
 def run_essay_agent(
@@ -96,6 +87,7 @@ def generated_essay_from_workspace(*, workspace: EssayWorkspace) -> GeneratedEss
 
 def build_essay_agent() -> Agent[EssayWorkspace, str]:
     """Build the essay generation agent."""
+    configure_logfire()
     openai_model = OpenAIResponsesModel(
         CONTROLLER_MODEL,
         provider=OpenAIProvider(api_key=settings.openai_api_key),
@@ -140,25 +132,21 @@ async def search_research_web(
 ) -> str:
     """Search the web for essay research and report the remaining search budget."""
     if ctx.deps.research_searches >= MAX_RESEARCH_SEARCHES:
-        return (
-            "No web searches remain. You may still fetch relevant URLs already found if "
-            "fetch budget remains, or draft from the evidence already gathered."
-        )
+        return "No web searches remain."
 
     ctx.deps.research_searches += 1
     search = functools.partial(DDGS().text, max_results=SEARCH_RESULTS_PER_QUERY)
-    results = await anyio.to_thread.run_sync(search, query)
     searches_remaining = max(0, MAX_RESEARCH_SEARCHES - ctx.deps.research_searches)
-    guidance = (
-        "Inspect these results before deciding whether another search is needed. "
-        "Do not spend the next search on the same angle."
-        if searches_remaining > 1
-        else "Only one search remains. Reserve it for a specific gap after drafting."
-    )
+    try:
+        results = await anyio.to_thread.run_sync(search, query)
+    except DDGSException:
+        return (
+            f"No search results found for query: {query}\nSearches remaining: {searches_remaining}"
+        )
+
     return render_search_results(
         results=results,
         searches_remaining=searches_remaining,
-        guidance=guidance,
     )
 
 
@@ -168,10 +156,7 @@ async def fetch_research_source_for_agent(
 ) -> ResearchFetchResponse | str:
     """Fetch a research source and report the remaining fetch budget."""
     if ctx.deps.research_fetches >= MAX_RESEARCH_FETCHES:
-        return (
-            "No source fetches remain. You may still use search if search budget remains, "
-            "or draft from the evidence already gathered."
-        )
+        return "No source fetches remain."
 
     ctx.deps.research_fetches += 1
     fetches_remaining = max(0, MAX_RESEARCH_FETCHES - ctx.deps.research_fetches)
@@ -187,15 +172,6 @@ async def fetch_research_source_for_agent(
     return ResearchFetchResponse(
         source=source,
         fetches_remaining=fetches_remaining,
-        guidance=(
-            "Use this source before fetching another. Fetch only if this source exposes a "
-            "specific factual or interpretive gap."
-            if fetches_remaining > LOW_FETCH_BUDGET_THRESHOLD
-            else (
-                "Fetch budget is low. Stop fetching unless a concrete factual claim still "
-                "needs verification."
-            )
-        ),
     )
 
 
@@ -211,12 +187,10 @@ def render_search_results(
     *,
     results: list[dict[str, object]],
     searches_remaining: int,
-    guidance: str,
 ) -> str:
     """Render transient search results for the controller agent."""
     lines = [
         f"Searches remaining: {searches_remaining}",
-        f"Guidance: {guidance}",
         "",
         "Results:",
     ]

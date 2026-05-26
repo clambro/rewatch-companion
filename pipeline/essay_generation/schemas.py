@@ -19,7 +19,6 @@ class ResearchFetchResponse(BaseModel):
 
     source: CleanedResearchSource
     fetches_remaining: int
-    guidance: str
 
 
 class EssayTarget(BaseModel):

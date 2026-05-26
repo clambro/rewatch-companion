@@ -2,7 +2,6 @@
 
 from typing import Any
 
-import logfire
 from ddgs import DDGS
 from openai import OpenAI
 from pydantic_ai import Agent, ModelRetry, RunContext
@@ -13,6 +12,7 @@ from pydantic_ai.providers.openai import OpenAIProvider
 
 from common.rate_limit_retry import RateLimitRetryCapability
 from common.settings import settings
+from common.telemetry import configure_logfire
 from hero_images.prompt import (
     HERO_IMAGE_AGENT_INSTRUCTIONS,
     HERO_IMAGE_SELECTION_INSTRUCTIONS,
@@ -41,16 +41,6 @@ MODEL_SETTINGS: OpenAIResponsesModelSettings = {
 MAX_IMAGE_SEARCH_RESULTS = 12
 MIN_HERO_IMAGE_CANDIDATES = 3
 
-logfire.configure(
-    service_name="rewatch-pipeline",
-    token=settings.logfire_token,
-    metrics=logfire.MetricsOptions(collect_in_spans=True),
-    scrubbing=False,
-)
-logfire.instrument_pydantic_ai(use_aggregated_usage_attribute_names=True)
-logfire.instrument_openai(version="latest")
-logfire.instrument_httpx(capture_all=True)
-
 
 def find_hero_image_for_article(*, article: HeroImageArticle) -> FoundHeroImage:
     """Find one online hero image candidate for a completed article."""
@@ -64,6 +54,7 @@ def find_hero_image_for_article(*, article: HeroImageArticle) -> FoundHeroImage:
 
 def build_hero_image_agent() -> Agent[HeroImageWorkspace, str]:
     """Build the hero image search agent."""
+    configure_logfire()
     openai_model = OpenAIResponsesModel(
         MODEL,
         provider=OpenAIProvider(api_key=settings.openai_api_key),
