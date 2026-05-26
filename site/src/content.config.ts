@@ -72,10 +72,7 @@ const episodeArticles = defineCollection({
     pattern: "*/episodes/*/*/index.mdx",
     generateId: ({ entry }) => entry.replace(/\/index\.mdx$/, ""),
   }),
-  schema: z.object({
-    title: z.string(),
-    dek: z.string().optional(),
-  }),
+  schema: z.object({}),
 });
 
 const articleMetadata = defineCollection({
@@ -99,10 +96,7 @@ const articleArticles = defineCollection({
     pattern: `*/{${articleSections.join(",")}}/*/index.mdx`,
     generateId: ({ entry }) => entry.replace(/\/index\.mdx$/, ""),
   }),
-  schema: z.object({
-    title: z.string(),
-    dek: z.string().optional(),
-  }),
+  schema: z.object({}),
 });
 
 export const collections = {

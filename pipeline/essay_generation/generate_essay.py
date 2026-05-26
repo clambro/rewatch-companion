@@ -35,7 +35,7 @@ def write_article(*, target: EssayTarget, draft: GeneratedEssay) -> None:
 
     output_dir.mkdir(parents=True, exist_ok=True)
     (output_dir / "index.mdx").write_text(
-        render_draft(target=target, draft=draft),
+        f"{draft.body_mdx.rstrip()}\n",
         encoding="utf-8",
     )
 
@@ -260,17 +260,6 @@ def load_article_source(
         title=metadata["title"],
         subtitle=metadata["seo"]["description"],
         summary_mdx=path.read_text(encoding="utf-8").strip(),
-    )
-
-
-def render_draft(*, target: EssayTarget, draft: GeneratedEssay) -> str:
-    """Render the generated draft as a simple MDX document."""
-    return (
-        "---\n"
-        f"title: {json.dumps(target.title)}\n"
-        f"dek: {json.dumps(draft.subtitle)}\n"
-        "---\n\n"
-        f"{draft.body_mdx.rstrip()}\n"
     )
 
 
