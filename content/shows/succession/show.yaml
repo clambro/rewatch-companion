@@ -2,12 +2,18 @@ title: "Succession"
 slug: "succession"
 
 themes:
-  - title: "Logan's Fractured Inheritance"
-    path: "themes/logan-fractured-inheritance"
+  - title: "The Myth of Logan Roy"
+    path: "themes/the-myth-of-logan-roy"
+  - title: "Fractured Inheritance"
+    path: "themes/fractured-inheritance"
   - title: "Not Serious People"
     path: "themes/not-serious-people"
+  - title: "Humiliation as Education"
+    path: "themes/humiliation-as-education"
   - title: "Love as Leverage"
     path: "themes/love-as-leverage"
+  - title: "The Theology of Winning"
+    path: "themes/the-theology-of-winning"
 
 characters:
   - title: "Logan Roy"

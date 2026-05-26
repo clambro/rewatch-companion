@@ -1,7 +1,13 @@
 show: succession
-title: "Love as Leverage"
-slug: "love-as-leverage"
-
+title: Love as Leverage
+slug: love-as-leverage
 seo:
-  title: "Love as Leverage"
-  description: "In *Succession*, love is never absent. It is simply the family\u2019s most usable form of leverage."
+  title: Love as Leverage
+  description:
+    "Succession\u2019s tragedy is not the absence of feeling, but a family\
+    \ grammar that turns every tenderness into a test, debt, or claim."
+hero_image:
+  src: /images/shows/succession/themes/love-as-leverage/hero.jpg
+  alt:
+    Tom Wambsgans and Shiv Roy face each other during a tense conversation in a
+    warmly lit room.
