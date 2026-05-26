@@ -4,6 +4,7 @@ from types import SimpleNamespace
 from typing import TYPE_CHECKING, Any, cast
 
 import pytest
+from ddgs.exceptions import DDGSException
 from PIL import Image
 from pydantic_ai import ModelRetry, RunContext
 
@@ -14,6 +15,7 @@ from hero_images import prompt as hero_image_prompt
 from hero_images.agent import (
     add_hero_image_candidate,
     image_search_result_from_ddgs_result,
+    search_show_images,
     selected_hero_image_from_selection,
     validate_selected_image_aspect_ratio,
 )
@@ -141,6 +143,31 @@ def test_image_search_result_from_ddgs_result_normalizes_known_fields() -> None:
     assert result.source_page_url == "https://example.com/article"
     assert result.width == EXPECTED_WIDTH
     assert result.height == EXPECTED_HEIGHT
+
+
+def test_search_show_images_returns_message_when_search_fails(
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    """Image search failures should not crash the agent loop."""
+    workspace = HeroImageWorkspace(
+        article=HeroImageArticle(
+            show=Show.SUCCESSION,
+            title="Shiv Roy",
+            subtitle="Dek.",
+            article_mdx="Article.",
+        ),
+    )
+    ctx = cast("RunContext[HeroImageWorkspace]", SimpleNamespace(deps=workspace))
+
+    class FailingDDGS:
+        def images(self, **_kwargs: object) -> list[dict[str, object]]:
+            raise DDGSException("No results found.")
+
+    monkeypatch.setattr("hero_images.agent.DDGS", FailingDDGS)
+
+    result = search_show_images(ctx=ctx, query="Shiv Roy Succession")
+
+    assert result == "No image search results found for query: Shiv Roy Succession"
 
 
 def test_update_article_metadata_writes_hero_image_block(

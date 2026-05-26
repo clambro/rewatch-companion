@@ -8,6 +8,7 @@ from typing import TYPE_CHECKING, Any
 import yaml
 from openai import OpenAI
 
+from common.manifest import load_manifest
 from common.schemas import EssayKind, Show
 from common.settings import settings
 from essay_generation.prompt import (
@@ -76,17 +77,26 @@ def rebuild_show_index(*, show: Show) -> None:
     show_root = CONTENT_ROOT / show.value
     show_index_path = show_root / "show.yaml"
     current_index = yaml.safe_load(show_index_path.read_text(encoding="utf-8"))
+    manifest = load_manifest(show=show)
 
     show_index: dict[str, Any] = {
         "title": current_index["title"],
         "slug": current_index["slug"],
     }
 
-    themes = load_article_listing(show_root=show_root, section=EssayKind.THEMES)
+    themes = load_article_listing(
+        show_root=show_root,
+        section=EssayKind.THEMES,
+        manifest_entries=manifest.themes,
+    )
     if themes:
         show_index["themes"] = themes
 
-    characters = load_article_listing(show_root=show_root, section=EssayKind.CHARACTERS)
+    characters = load_article_listing(
+        show_root=show_root,
+        section=EssayKind.CHARACTERS,
+        manifest_entries=manifest.characters,
+    )
     if characters:
         show_index["characters"] = characters
 
@@ -113,15 +123,21 @@ def load_article_sources(*, show: Show, sections: list[EssayKind]) -> list[Essay
     return sources
 
 
-def load_article_listing(*, show_root: Path, section: EssayKind) -> list[dict[str, str]]:
+def load_article_listing(
+    *,
+    show_root: Path,
+    section: EssayKind,
+    manifest_entries: list[ManifestSluggedArticle],
+) -> list[dict[str, str]]:
     """Load generated article entries for the frontend show index."""
     article_root = show_root / section.value
     entries = []
-    for metadata_path in sorted(article_root.glob("*/article.yaml")):
-        article_path = metadata_path.with_name("index.mdx")
+    for manifest_entry in manifest_entries:
+        article_path = article_root / manifest_entry.slug / "index.mdx"
         if not article_path.is_file():
             continue
 
+        metadata_path = article_path.with_name("article.yaml")
         metadata = yaml.safe_load(metadata_path.read_text(encoding="utf-8"))
         entries.append(
             {

@@ -3,6 +3,7 @@
 from typing import Any
 
 from ddgs import DDGS
+from ddgs.exceptions import DDGSException
 from openai import OpenAI
 from pydantic_ai import Agent, ModelRetry, RunContext
 from pydantic_ai.common_tools.web_fetch import web_fetch_tool
@@ -79,18 +80,22 @@ def build_hero_image_agent() -> Agent[HeroImageWorkspace, str]:
 def search_show_images(
     ctx: RunContext[HeroImageWorkspace],
     query: str,
-) -> list[HeroImageSearchResult]:
+) -> list[HeroImageSearchResult] | str:
     """Search the web for show-image candidates."""
     search_query = query
     show_slug = ctx.deps.article.show.value
     if show_slug not in query.lower():
         search_query = f"{show_slug} {query}"
 
-    results = DDGS().images(
-        query=search_query,
-        safesearch="moderate",
-        max_results=MAX_IMAGE_SEARCH_RESULTS,
-    )
+    try:
+        results = DDGS().images(
+            query=search_query,
+            safesearch="moderate",
+            max_results=MAX_IMAGE_SEARCH_RESULTS,
+        )
+    except DDGSException:
+        return f"No image search results found for query: {search_query}"
+
     return [image_search_result_from_ddgs_result(result=result) for result in results]
 
 

@@ -4,6 +4,7 @@ from typing import TYPE_CHECKING
 
 import yaml
 
+from common.manifest import ManifestEpisode, ManifestSluggedArticle, ShowManifest
 from common.schemas import EssayKind, Show
 from essay_generation import generate_essay
 from essay_generation.schemas import EssayTarget, GeneratedEssay
@@ -66,3 +67,64 @@ def test_write_article_preserves_existing_metadata_except_dek(
             "alt": "Jeremy Strong as Kendall Roy in Succession",
         },
     }
+
+
+def test_rebuild_show_index_orders_articles_by_manifest(
+    tmp_path: Path,
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    """Show index article lists should follow manifest order."""
+    content_root = tmp_path / "content" / "shows"
+    show_root = content_root / "succession"
+    show_root.mkdir(parents=True)
+    (show_root / "show.yaml").write_text(
+        'title: "Succession"\nslug: "succession"\n',
+        encoding="utf-8",
+    )
+
+    for slug, title in [
+        ("kendall-roy", "Kendall Roy"),
+        ("logan-roy", "Logan Roy"),
+        ("shiv-roy", "Shiv Roy"),
+    ]:
+        article_dir = show_root / "characters" / slug
+        article_dir.mkdir(parents=True)
+        (article_dir / "index.mdx").write_text("Essay.\n", encoding="utf-8")
+        (article_dir / "article.yaml").write_text(
+            f"show: succession\ntitle: {title}\nslug: {slug}\n",
+            encoding="utf-8",
+        )
+
+    manifest = ShowManifest(
+        show="succession",
+        themes=[],
+        characters=[
+            ManifestSluggedArticle(
+                slug="logan-roy",
+                title="Logan Roy",
+                prompt="Prompt.",
+            ),
+            ManifestSluggedArticle(
+                slug="kendall-roy",
+                title="Kendall Roy",
+                prompt="Prompt.",
+            ),
+            ManifestSluggedArticle(
+                slug="shiv-roy",
+                title="Shiv Roy",
+                prompt="Prompt.",
+            ),
+        ],
+        episodes=[ManifestEpisode(season=1, episode=1, title="Celebration")],
+    )
+    monkeypatch.setattr(generate_essay, "CONTENT_ROOT", content_root)
+    monkeypatch.setattr(generate_essay, "load_manifest", lambda **_: manifest)
+
+    generate_essay.rebuild_show_index(show=Show.SUCCESSION)
+
+    show_index = yaml.safe_load((show_root / "show.yaml").read_text(encoding="utf-8"))
+    assert [character["path"] for character in show_index["characters"]] == [
+        "characters/logan-roy",
+        "characters/kendall-roy",
+        "characters/shiv-roy",
+    ]
