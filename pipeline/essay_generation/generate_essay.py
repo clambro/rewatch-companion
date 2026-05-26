@@ -83,6 +83,8 @@ def rebuild_show_index(*, show: Show) -> None:
         "title": current_index["title"],
         "slug": current_index["slug"],
     }
+    if "hero_image" in current_index:
+        show_index["hero_image"] = current_index["hero_image"]
 
     themes = load_article_listing(
         show_root=show_root,
@@ -311,6 +313,14 @@ def render_show_index(*, show_index: dict[str, Any]) -> str:
         f"title: {json.dumps(show_index['title'])}",
         f"slug: {json.dumps(show_index['slug'])}",
     ]
+    if "hero_image" in show_index:
+        lines.extend(
+            [
+                "hero_image:",
+                f"  src: {json.dumps(show_index['hero_image']['src'])}",
+                f"  alt: {json.dumps(show_index['hero_image']['alt'])}",
+            ],
+        )
 
     if "themes" in show_index:
         lines.extend(["", "themes:"])

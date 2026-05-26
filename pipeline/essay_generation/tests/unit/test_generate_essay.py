@@ -78,7 +78,11 @@ def test_rebuild_show_index_orders_articles_by_manifest(
     show_root = content_root / "succession"
     show_root.mkdir(parents=True)
     (show_root / "show.yaml").write_text(
-        'title: "Succession"\nslug: "succession"\n',
+        'title: "Succession"\n'
+        'slug: "succession"\n'
+        "hero_image:\n"
+        "  src: /images/shows/succession/hero.jpg\n"
+        "  alt: Succession cast seated around a dining table.\n",
         encoding="utf-8",
     )
 
@@ -123,6 +127,10 @@ def test_rebuild_show_index_orders_articles_by_manifest(
     generate_essay.rebuild_show_index(show=Show.SUCCESSION)
 
     show_index = yaml.safe_load((show_root / "show.yaml").read_text(encoding="utf-8"))
+    assert show_index["hero_image"] == {
+        "src": "/images/shows/succession/hero.jpg",
+        "alt": "Succession cast seated around a dining table.",
+    }
     assert [character["path"] for character in show_index["characters"]] == [
         "characters/logan-roy",
         "characters/kendall-roy",

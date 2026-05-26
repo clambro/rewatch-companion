@@ -1,15 +1,24 @@
 show: succession
 
 themes:
-  - slug: "logan-fractured-inheritance"
-    title: "Logan's Fractured Inheritance"
-    prompt: "This essay is about the Roy children as partial, damaged reproductions of Logan Roy. Kendall has Logan's appetite for scale and mythic self-belief, Shiv has his tactical cruelty and contempt for weakness, Roman has his instinct for domination and humiliation, and Connor has his fantasy of sovereign importance. Each child contains some fragment of Logan's power, but each fragment is distorted by a fatal weakness and the need for Logan's approval. Taken together, they might form a more complete successor than any one of them alone, yet the same trauma that makes them recognizable as Logan's children also makes lasting unity impossible."
+  - slug: "the-myth-of-logan-roy"
+    title: "The Myth of Logan Roy"
+    prompt: "Logan's greatness in Succession is less a matter of virtue than of force. The essay can glance at Great Man theory, but it should not become an academic essay about Carlyle; the point is Logan's dramatic stature, not intellectual history. Logan has the aura of a man who generates reality around himself. Other characters scheme, posture, negotiate, and perform power, but Logan appears to possess it as an element of nature. Tom's claim that Logan has 'never been fucked' captures the mythology exactly: Logan seems exempt from the ordinary humiliations that define everyone else. The succession crisis is therefore not only about replacing a CEO or father, but about the impossibility of replacing a force. Institutions can name heirs, but they cannot manufacture inevitability."
+  - slug: "fractured-inheritance"
+    title: "Fractured Inheritance"
+    prompt: "The Roy children are partial, damaged reproductions of Logan Roy. Kendall inherits Logan's appetite for scale and mythic self-belief; Shiv inherits his tactical cruelty and contempt for weakness; Roman inherits his instinct for domination, humiliation, and emotional violence; Connor inherits his fantasy of sovereign importance. Each child contains a fragment of Logan's power, but each fragment is distorted by insecurity, dependency, and the need for paternal recognition. Taken together, they might form a complete successor; separately, they prove that Logan's empire can reproduce his wounds but not his authority."
   - slug: "not-serious-people"
     title: "Not Serious People"
-    prompt: 'This essay is about the gap between desiring power and being capable of wielding it. Kendall, Shiv, and Roman all want the throne, and each can perform authority in flashes, but the show repeatedly exposes the difference between theatrical ambition and durable competence. Logan''s phrase "not serious people" becomes more than a father''s insult; it becomes a judgment on inherited entitlement. The Roy children have access, vocabulary, and proximity, but they lack the steadiness, discipline, and institutional fluency that real power demands. The essay asks whether the tragedy is that they were denied power, or that they were never fit for it.'
+    prompt: "The phrase 'serious people' names the show's central standard of judgment. The Roy children can mimic seriousness through boardroom fluency, aggression, strategic cruelty, and the gestures of command, but seriousness in Logan's world requires something colder and more durable: discipline, appetite, timing, and the capacity to absorb humiliation without becoming theatrical. Their tragedy is that they cannot truly leave the contest, but they also cannot master it. Wealth gives them mobility without freedom: they can go anywhere, but they cannot become anyone else. They know the language of power, but not its metabolism."
+  - slug: "humiliation-as-education"
+    title: "Humiliation as Education"
+    prompt: "The world of Succession is organized around humiliation as a method of training. Logan teaches by exposure: he lets people overreach, watches them fail, then brands the failure into their identity. But the clearest students of this system are not only his children; they are Tom and Greg, who turn degradation into apprenticeship. Tom absorbs pain from above and converts it into cruelty below, while Greg learns that abasement can be a career strategy if one is shameless enough to survive it. The show presents humiliation not as a breakdown of order, but as the very mechanism by which order reproduces itself."
   - slug: "love-as-leverage"
     title: "Love as Leverage"
-    prompt: "This essay is about the way Succession treats love as real but almost never safe. The Roys do love one another, but affection arrives tangled with tests, punishments, bargains, and bids for advantage. Logan turns approval into a scarce resource, and his children learn to treat emotional need as weakness. The same pattern repeats in Shiv and Tom's marriage, Kendall's relationships with his siblings, Roman's attachment to Gerri, and Connor's hunger to be acknowledged. The essay's central tension is that love is not absent from the show; it is present, but continually converted into leverage."
+    prompt: "Love in Succession is never absent; it is everywhere, but almost always converted into leverage. Parental love becomes testing, romantic love becomes negotiation, sibling love becomes alliance and betrayal, and friendship becomes patronage. The tragedy is not that the Roys are incapable of love, but that they can only express it through the grammar of power: withholding, humiliation, rescue, possession, and conditional approval. The show's emotional world is built around the question of whether love can survive inside a family that treats vulnerability as a hostile asset."
+  - slug: "the-theology-of-winning"
+    title: "The Theology of Winning"
+    prompt: "Winning in Succession promises proof: proof that the winner was right, chosen, necessary, and real. But the show keeps treating victory as temporary relief rather than resolution. Logan wins repeatedly and remains restless; Kendall wins moments of public triumph that collapse into need; Shiv wins leverage that reroutes her dependence; Roman wins flashes of approval that leave him exposed; Tom wins the title by accepting service. The essay should stay close to concrete contests: board votes, betrayals, election night, the GoJo sale, and the final succession fight. Its central claim is that winning cannot answer the deeper question each character brings to the contest, so every victory curdles into a new form of insecurity."
 
 characters:
   - slug: "logan-roy"
@@ -34,19 +43,4 @@ characters:
     title: "Greg Hirsch"
     prompt: "A full-series character essay about Greg Hirsch."
 
-episodes:
-  - season: 1
-    episode: 1
-    title: "Celebration"
-  - season: 1
-    episode: 2
-    title: "Shit Show at the Fuck Factory"
-  - season: 1
-    episode: 3
-    title: "Lifeboats"
-  - season: 2
-    episode: 1
-    title: "The Summer Palace"
-  - season: 2
-    episode: 2
-    title: "Vaulter"
+episodes: []
