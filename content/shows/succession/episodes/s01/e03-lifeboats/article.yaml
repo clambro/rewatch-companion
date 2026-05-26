@@ -1,10 +1,14 @@
 show: succession
 season: 1
 episode: 3
-code: "S01E03"
-title: "Lifeboats"
-slug: "e03-lifeboats"
-
+code: S01E03
+title: Lifeboats
+slug: e03-lifeboats
 seo:
-  title: "Lifeboats"
-  description: "Kendall and Roman launch \u201clifeboats\u201d that keep the ship afloat, but the episode keeps withholding the credential that would make them real heirs."
+  title: Lifeboats
+  description:
+    With Logan bedridden, every claim to power becomes a temporary shelter
+    from the authority still organizing the room.
+hero_image:
+  src: /images/shows/succession/episodes/s01/e03-lifeboats/hero.jpg
+  alt: "A still from Succession\u2019s \u201CLifeboats\u201D episode."

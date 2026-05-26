@@ -43,4 +43,34 @@ characters:
     title: "Greg Hirsch"
     prompt: "A full-series character essay about Greg Hirsch."
 
-episodes: []
+episodes:
+  - season: 1
+    episode: 1
+    title: "Celebration"
+  - season: 1
+    episode: 2
+    title: "Shit Show at the Fuck Factory"
+  - season: 1
+    episode: 3
+    title: "Lifeboats"
+  - season: 1
+    episode: 4
+    title: "Sad Sack Wasp Trap"
+  - season: 1
+    episode: 5
+    title: "I Went to Market"
+  - season: 1
+    episode: 6
+    title: "Which Side Are You On?"
+  - season: 1
+    episode: 7
+    title: "Austerlitz"
+  - season: 1
+    episode: 8
+    title: "Prague"
+  - season: 1
+    episode: 9
+    title: "Pre-Nuptial"
+  - season: 1
+    episode: 10
+    title: "Nobody Is Ever Missing"
