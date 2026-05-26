@@ -24,13 +24,12 @@ export async function getStaticPaths() {
 const { metadataById, show } = Astro.props;
 const showHeroImage = show.data.hero_image;
 
-function cardFor(entry, label) {
+function cardFor(entry) {
   const metadata = metadataById.get(`${show.data.slug}/${entry.path}`);
   return {
     ...entry,
     description: metadata?.data.seo.description,
     heroImage: metadata?.data.hero_image,
-    label,
   };
 }
 
@@ -44,12 +43,8 @@ function episodeCardFor(episode) {
   };
 }
 
-const themeCards = (show.data.themes ?? []).map((entry) =>
-  cardFor(entry, "Theme"),
-);
-const characterCards = (show.data.characters ?? []).map((entry) =>
-  cardFor(entry, "Character"),
-);
+const themeCards = (show.data.themes ?? []).map(cardFor);
+const characterCards = (show.data.characters ?? []).map(cardFor);
 const seasonCards = show.data.seasons.map((season) => ({
   ...season,
   episodes: season.episodes.map(episodeCardFor),
@@ -173,11 +168,11 @@ const seasonCards = show.data.seasons.map((season) => ({
                 />
               ) : (
                 <div class="essay-card-image essay-card-image-placeholder">
-                  {card.label}
+                  {card.label ?? ""}
                 </div>
               )}
               <div class="essay-card-content">
-                <p>{card.label}</p>
+                {card.label && <p>{card.label}</p>}
                 <h3>{card.title}</h3>
                 {card.description && <span>{card.description}</span>}
               </div>
@@ -207,11 +202,11 @@ const seasonCards = show.data.seasons.map((season) => ({
                 />
               ) : (
                 <div class="essay-card-image essay-card-image-placeholder">
-                  {card.label}
+                  {card.label ?? ""}
                 </div>
               )}
               <div class="essay-card-content">
-                <p>{card.label}</p>
+                {card.label && <p>{card.label}</p>}
                 <h3>{card.title}</h3>
                 {card.description && <span>{card.description}</span>}
               </div>
