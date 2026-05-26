@@ -101,6 +101,8 @@ RESEARCH_INSTRUCTIONS = """
   objects, structural parallels, and ending-state details the essay can use.
 - Use primary or stable sources for factual grounding: official pages, reliable
   episode guides, databases, transcripts, or subtitles when available.
+- Do not include writers, directors, release dates, ratings, awards, acclaim, or
+  reception history unless those facts are genuinely important to the argument.
 - Use secondary criticism as core research material for ideas, context, and
   interpretation. Read it synthetically: compare claims, notice useful
   disagreements, and build an original argument from the evidence.
@@ -155,6 +157,8 @@ WRITING_RULES = """
   "systems of oppression", "liminal", "trauma response", and "found family".
 - Avoid throat-clearing, content-marketing language, and section previews.
 - Avoid plot-summary paragraphs unless they are doing analytical work.
+- Episode summaries should orient the reader to the relevant dramatic situation,
+  not catalog production credits, release history, ratings, or acclaim.
 - Do not invent dialogue, facts, reception history, or intent.
 - The public essay must never mention Rewatch Companion, source context,
   summaries, the pipeline, generation, future essays, later essays, other pages,
