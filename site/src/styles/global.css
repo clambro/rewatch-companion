@@ -113,12 +113,13 @@ main {
 
 .home-masthead {
   display: block;
-  max-width: 760px;
+  max-width: 620px;
 }
 
 .home-masthead h1 {
-  font-size: clamp(2.2rem, 4.2vw, 3.4rem);
-  max-width: 720px;
+  font-size: clamp(1.9rem, 3.2vw, 2.8rem);
+  line-height: 1.15;
+  max-width: 620px;
 }
 
 .not-found {

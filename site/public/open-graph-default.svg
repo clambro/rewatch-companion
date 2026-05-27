@@ -1,0 +1,46 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 630" role="img" aria-label="Rewatch Companion">
+  <rect width="1200" height="630" fill="#f6f5f1" />
+  <rect x="76" y="76" width="1048" height="478" fill="#fffefb" stroke="#d9d4ca" stroke-width="2" />
+  <rect x="116" y="124" width="8" height="382" fill="#7c2633" />
+  <text
+    x="164"
+    y="168"
+    fill="#66615a"
+    font-family="DejaVu Sans, Arial, sans-serif"
+    font-size="25"
+    font-weight="800"
+  >
+    REWATCH COMPANION
+  </text>
+  <text
+    x="164"
+    y="294"
+    fill="#171716"
+    font-family="DejaVu Serif, Georgia, serif"
+    font-size="58"
+    font-weight="400"
+  >
+    Essays for viewers who
+  </text>
+  <text
+    x="164"
+    y="374"
+    fill="#171716"
+    font-family="DejaVu Serif, Georgia, serif"
+    font-size="58"
+    font-weight="400"
+  >
+    already know the ending.
+  </text>
+  <line x1="164" y1="444" x2="684" y2="444" stroke="#d9d4ca" stroke-width="2" />
+  <text
+    x="164"
+    y="492"
+    fill="#66615a"
+    font-family="DejaVu Sans, Arial, sans-serif"
+    font-size="25"
+    font-weight="700"
+  >
+    rewatchcompanion.com
+  </text>
+</svg>

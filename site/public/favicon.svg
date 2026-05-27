@@ -1,0 +1,14 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" role="img" aria-label="Rewatch Companion">
+  <rect width="64" height="64" fill="#f6f5f1" />
+  <rect x="8" y="9" width="7" height="46" fill="#7c2633" />
+  <text
+    x="20"
+    y="51"
+    fill="#171716"
+    font-family="DejaVu Sans, Arial, sans-serif"
+    font-size="48"
+    font-weight="800"
+  >
+    R
+  </text>
+</svg>

@@ -44,7 +44,7 @@ The page is intentionally simple:
 
 ### 4. Baseline SEO Metadata
 
-Expand `site/src/layouts/BaseLayout.astro` beyond title and description:
+Expanded `site/src/layouts/BaseLayout.astro` beyond title and description:
 
 - canonical URL
 - favicon links
@@ -55,10 +55,10 @@ Per-article social cards and richer sharing images are a separate ticket.
 
 ### 5. Public Root Assets
 
-Add the basic public assets needed for launch:
+Added the basic public assets needed for launch:
 
 - `site/public/robots.txt`
-- favicon
+- favicon SVG and ICO
 - apple touch icon
 - default Open Graph image, only enough to support baseline metadata
 
