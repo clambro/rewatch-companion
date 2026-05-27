@@ -14,6 +14,7 @@ from hero_images import prompt as hero_image_prompt
 from hero_images.agent import (
     add_hero_image_candidate,
     image_search_result_from_ddgs_result,
+    infer_image_media_type,
     search_show_images,
     selected_hero_image_from_selection,
 )
@@ -141,9 +142,38 @@ def test_image_search_result_from_ddgs_result_normalizes_known_fields() -> None:
     assert result.title == "Succession Vaulter"
     assert result.image_url == "https://example.com/image.jpg"
     assert result.image.url == "https://example.com/image.jpg"
+    assert result.image.media_type == "image/jpeg"
     assert result.source_page_url == "https://example.com/article"
     assert result.width == EXPECTED_WIDTH
     assert result.height == EXPECTED_HEIGHT
+
+
+def test_infer_image_media_type_uses_url_path() -> None:
+    """Known image extensions are inferred without fetching."""
+    assert (
+        infer_image_media_type(image_url="https://example.com/image.webp?width=1200")
+        == "image/webp"
+    )
+
+
+def test_infer_image_media_type_uses_content_type_for_extensionless_urls(
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    """Extensionless CDN URLs are inferred from response content type."""
+
+    class StubResponse:
+        def __init__(self) -> None:
+            self.headers = {"content-type": "image/png; charset=utf-8"}
+
+        def raise_for_status(self) -> None:
+            return None
+
+    def stub_head(*_args: object, **_kwargs: object) -> StubResponse:
+        return StubResponse()
+
+    monkeypatch.setattr("hero_images.agent.httpx.head", stub_head)
+
+    assert infer_image_media_type(image_url="https://example.com/image?id=123") == "image/png"
 
 
 def test_image_search_result_from_ddgs_result_rejects_small_images() -> None:

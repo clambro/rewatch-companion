@@ -1,8 +1,10 @@
 """Pydantic AI hero image search agent."""
 
 import base64
+import mimetypes
 from io import BytesIO
 from typing import Any
+from urllib.parse import urlparse
 
 import httpx
 from ddgs import DDGS
@@ -46,6 +48,12 @@ MAX_IMAGE_SEARCH_RESULTS = 12
 MAX_FILTERED_IMAGE_SEARCH_RESULTS = 5
 MIN_HERO_IMAGE_CANDIDATES = 3
 SELECTION_IMAGE_MAX_SIZE = (768, 432)
+SUPPORTED_IMAGE_MEDIA_TYPES = {
+    "image/gif",
+    "image/jpeg",
+    "image/png",
+    "image/webp",
+}
 
 
 def find_hero_image_for_article(*, article: HeroImageArticle) -> FoundHeroImage:
@@ -216,8 +224,11 @@ def selected_hero_image_from_selection(
 def image_search_result_from_ddgs_result(*, result: dict[str, Any]) -> HeroImageSearchResult | None:
     """Normalize one sufficiently large DDGS image result for the agent."""
     image_url = str(result.get("image") or "")
+    image_media_type = infer_image_media_type(image_url=image_url)
     width = int(result["width"]) if result.get("width") else None
     height = int(result["height"]) if result.get("height") else None
+    if not image_media_type:
+        return None
     if width is None or height is None:
         return None
     if not image_search_result_has_valid_shape(width=width, height=height):
@@ -226,13 +237,34 @@ def image_search_result_from_ddgs_result(*, result: dict[str, Any]) -> HeroImage
     return HeroImageSearchResult(
         title=str(result.get("title") or ""),
         image_url=image_url,
-        image=ImageUrl(url=image_url, media_type="image/jpeg"),
+        image=ImageUrl(url=image_url, media_type=image_media_type),
         source_page_url=str(result.get("url") or ""),
         thumbnail_url=str(result.get("thumbnail") or ""),
         source_name=str(result.get("source") or ""),
         width=width,
         height=height,
     )
+
+
+def infer_image_media_type(*, image_url: str) -> str | None:
+    """Infer the source image media type for model preview input."""
+    media_type = mimetypes.guess_type(urlparse(image_url).path)[0]
+    if media_type in SUPPORTED_IMAGE_MEDIA_TYPES:
+        return media_type
+
+    try:
+        response = httpx.head(image_url, follow_redirects=True, timeout=10)
+        response.raise_for_status()
+    except httpx.HTTPError:
+        return None
+
+    content_type = (
+        response.headers.get("content-type", "").split(";", maxsplit=1)[0].strip().lower()
+    )
+    if content_type in SUPPORTED_IMAGE_MEDIA_TYPES:
+        return content_type
+
+    return None
 
 
 def image_search_result_has_valid_shape(*, width: int, height: int) -> bool:
