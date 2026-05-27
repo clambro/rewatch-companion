@@ -25,10 +25,10 @@ The GitHub Pages workflow should follow `../clambro.github.io`, adjusted for thi
 
 ### 2. Astro Production Config
 
-Update `site/astro.config.mjs` for production:
+Configured `site/astro.config.mjs` for production:
 
-- set the final `site` URL
-- use a consistent trailing-slash policy, probably `trailingSlash: "never"`
+- set the final `site` URL to `https://rewatchcompanion.com`
+- use `trailingSlash: "never"`
 - add sitemap support
 
 ### 3. 404 Page
