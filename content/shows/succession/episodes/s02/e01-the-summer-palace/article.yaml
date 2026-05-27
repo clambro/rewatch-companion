@@ -1,10 +1,14 @@
 show: succession
 season: 2
 episode: 1
-code: "S02E01"
-title: "The Summer Palace"
-slug: "e01-the-summer-palace"
-
+code: S02E01
+title: The Summer Palace
+slug: e01-the-summer-palace
 seo:
-  title: "The Summer Palace"
-  description: "Succession\u2019s S2 opener turns inheritance into a hygiene ritual: titles circulate, but authorization is withheld, so every heir learns to perform \u201cseriousness\u201d without ever being certified for it."
+  title: The Summer Palace
+  description:
+    Logan turns a rancid family gathering into a private sorting system,
+    making succession feel less like inheritance than controlled exposure.
+hero_image:
+  src: /images/shows/succession/episodes/s02/e01-the-summer-palace/hero.jpg
+  alt: Logan Roy standing behind Kendall Roy in a pale room.

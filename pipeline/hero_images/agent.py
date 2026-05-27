@@ -1,18 +1,24 @@
 """Pydantic AI hero image search agent."""
 
+import base64
+import mimetypes
+from io import BytesIO
 from typing import Any
+from urllib.parse import urlparse
 
-import logfire
+import httpx
 from ddgs import DDGS
+from ddgs.exceptions import DDGSException
 from openai import OpenAI
+from PIL import Image, UnidentifiedImageError
 from pydantic_ai import Agent, ModelRetry, RunContext
-from pydantic_ai.common_tools.web_fetch import web_fetch_tool
 from pydantic_ai.messages import ImageUrl
 from pydantic_ai.models.openai import OpenAIResponsesModel, OpenAIResponsesModelSettings
 from pydantic_ai.providers.openai import OpenAIProvider
 
 from common.rate_limit_retry import RateLimitRetryCapability
 from common.settings import settings
+from common.telemetry import configure_logfire
 from hero_images.prompt import (
     HERO_IMAGE_AGENT_INSTRUCTIONS,
     HERO_IMAGE_SELECTION_INSTRUCTIONS,
@@ -39,17 +45,15 @@ MODEL_SETTINGS: OpenAIResponsesModelSettings = {
     "openai_reasoning_summary": "concise",
 }
 MAX_IMAGE_SEARCH_RESULTS = 12
+MAX_FILTERED_IMAGE_SEARCH_RESULTS = 5
 MIN_HERO_IMAGE_CANDIDATES = 3
-
-logfire.configure(
-    service_name="rewatch-pipeline",
-    token=settings.logfire_token,
-    metrics=logfire.MetricsOptions(collect_in_spans=True),
-    scrubbing=False,
-)
-logfire.instrument_pydantic_ai(use_aggregated_usage_attribute_names=True)
-logfire.instrument_openai(version="latest")
-logfire.instrument_httpx(capture_all=True)
+SELECTION_IMAGE_MAX_SIZE = (768, 432)
+SUPPORTED_IMAGE_MEDIA_TYPES = {
+    "image/gif",
+    "image/jpeg",
+    "image/png",
+    "image/webp",
+}
 
 
 def find_hero_image_for_article(*, article: HeroImageArticle) -> FoundHeroImage:
@@ -59,11 +63,16 @@ def find_hero_image_for_article(*, article: HeroImageArticle) -> FoundHeroImage:
     prompt = build_hero_image_prompt(workspace=workspace)
     agent.run_sync(prompt, deps=workspace)
 
-    return select_hero_image_from_candidates(article=article, candidates=workspace.candidates)
+    return select_hero_image_from_candidates(
+        article=article,
+        candidates=workspace.candidates,
+        image_data_urls=workspace.candidate_image_data_urls,
+    )
 
 
 def build_hero_image_agent() -> Agent[HeroImageWorkspace, str]:
     """Build the hero image search agent."""
+    configure_logfire()
     openai_model = OpenAIResponsesModel(
         MODEL,
         provider=OpenAIProvider(api_key=settings.openai_api_key),
@@ -76,7 +85,6 @@ def build_hero_image_agent() -> Agent[HeroImageWorkspace, str]:
         tools=[
             search_show_images,
             add_hero_image_candidate,
-            web_fetch_tool(),
         ],
         capabilities=[RateLimitRetryCapability[HeroImageWorkspace]()],
         instructions=HERO_IMAGE_AGENT_INSTRUCTIONS,
@@ -88,19 +96,34 @@ def build_hero_image_agent() -> Agent[HeroImageWorkspace, str]:
 def search_show_images(
     ctx: RunContext[HeroImageWorkspace],
     query: str,
-) -> list[HeroImageSearchResult]:
+) -> list[HeroImageSearchResult] | str:
     """Search the web for show-image candidates."""
     search_query = query
     show_slug = ctx.deps.article.show.value
     if show_slug not in query.lower():
         search_query = f"{show_slug} {query}"
 
-    results = DDGS().images(
-        query=search_query,
-        safesearch="moderate",
-        max_results=MAX_IMAGE_SEARCH_RESULTS,
+    try:
+        results = DDGS().images(
+            query=search_query,
+            safesearch="moderate",
+            max_results=MAX_IMAGE_SEARCH_RESULTS,
+        )
+    except DDGSException:
+        return f"No image search results found for query: {search_query}"
+
+    filtered_results = [
+        image_search_result
+        for result in results
+        if (image_search_result := image_search_result_from_ddgs_result(result=result)) is not None
+    ][:MAX_FILTERED_IMAGE_SEARCH_RESULTS]
+    if filtered_results:
+        return filtered_results
+
+    return (
+        f"No image search results found for query: {search_query} "
+        f"at or above {HERO_IMAGE_WIDTH}x{HERO_IMAGE_HEIGHT} and near 16:9."
     )
-    return [image_search_result_from_ddgs_result(result=result) for result in results]
 
 
 def add_hero_image_candidate(
@@ -108,14 +131,21 @@ def add_hero_image_candidate(
     image: FoundHeroImage,
 ) -> str:
     """Add one plausible hero image candidate before final selection."""
-    rejection_message = hero_image_rejection_message(image=image)
-    if rejection_message:
-        return (
-            f"Candidate rejected: {rejection_message} "
-            "Choose another image-search result and call add_hero_image_candidate again."
-        )
+    try:
+        image_data_url = selection_image_data_url(candidate=image)
+    except (httpx.HTTPError, OSError, UnidentifiedImageError, ValueError) as error:
+        return f"Candidate rejected: image URL did not download as a valid image: {error}"
 
-    ctx.deps.candidates.append(normalized_hero_image(image=image))
+    ctx.deps.candidates.append(
+        FoundHeroImage(
+            image_url=image.image_url.strip(),
+            source_page_url=image.source_page_url.strip(),
+            alt=image.alt.strip(),
+            width=image.width,
+            height=image.height,
+        ),
+    )
+    ctx.deps.candidate_image_data_urls.append(image_data_url)
     return (
         f"Candidate added. Current candidate count: {len(ctx.deps.candidates)}. "
         f"Collect at least {MIN_HERO_IMAGE_CANDIDATES} viable candidates before choosing, "
@@ -131,38 +161,11 @@ def validate_final_state(ctx: RunContext[HeroImageWorkspace], output: str) -> st
     return output
 
 
-def validate_selected_image_aspect_ratio(*, image: FoundHeroImage) -> None:
-    """Reject selected image dimensions that cannot produce the standard hero image."""
-    rejection_message = hero_image_rejection_message(image=image)
-    if rejection_message:
-        raise ModelRetry(rejection_message)
-
-
-def hero_image_rejection_message(*, image: FoundHeroImage) -> str:
-    """Return why a candidate image should be rejected, or an empty string."""
-    if image.width is None or image.height is None:
-        return ""
-
-    if image.width < HERO_IMAGE_WIDTH or image.height < HERO_IMAGE_HEIGHT:
-        return (
-            f"Choose a hero image at least {HERO_IMAGE_WIDTH}x{HERO_IMAGE_HEIGHT}. "
-            f"The selected image is {image.width}x{image.height}."
-        )
-
-    ratio = image.width / image.height
-    if abs(ratio - TARGET_ASPECT_RATIO) <= ASPECT_RATIO_TOLERANCE:
-        return ""
-
-    return (
-        f"Choose a hero image closer to 16:9. The selected image is "
-        f"{image.width}x{image.height} ({ratio:.2f}:1)."
-    )
-
-
 def select_hero_image_from_candidates(
     *,
     article: HeroImageArticle,
     candidates: list[FoundHeroImage],
+    image_data_urls: list[str],
 ) -> FoundHeroImage:
     """Choose the final hero image with a direct non-agent model call."""
     if not candidates:
@@ -172,7 +175,11 @@ def select_hero_image_from_candidates(
     response = client.responses.parse(
         model=MODEL,
         instructions=HERO_IMAGE_SELECTION_INSTRUCTIONS,
-        input=build_hero_image_selection_input(article=article, candidates=candidates),
+        input=build_hero_image_selection_input(
+            article=article,
+            candidates=candidates,
+            image_data_urls=image_data_urls,
+        ),
         text_format=HeroImageSelection,
     )
     if response.output_parsed is None:
@@ -182,6 +189,21 @@ def select_hero_image_from_candidates(
         candidates=candidates,
         selection=response.output_parsed,
     )
+
+
+def selection_image_data_url(*, candidate: FoundHeroImage) -> str:
+    """Return a normalized JPEG data URL for one candidate image."""
+    response = httpx.get(candidate.image_url, follow_redirects=True, timeout=30)
+    response.raise_for_status()
+    with Image.open(BytesIO(response.content)) as source_image:
+        selection_image = source_image.convert("RGB")
+        selection_image.thumbnail(SELECTION_IMAGE_MAX_SIZE)
+
+        buffer = BytesIO()
+        selection_image.save(buffer, format="JPEG", quality=85, optimize=True)
+
+    encoded_image = base64.b64encode(buffer.getvalue()).decode("ascii")
+    return f"data:image/jpeg;base64,{encoded_image}"
 
 
 def selected_hero_image_from_selection(
@@ -196,33 +218,59 @@ def selected_hero_image_from_selection(
             f"{selection.candidate_index}. Candidate count: {len(candidates)}.",
         )
 
-    return candidates[selection.candidate_index].model_copy(
-        update={"rationale": selection.rationale.strip()},
-    )
+    return candidates[selection.candidate_index]
 
 
-def normalized_hero_image(*, image: FoundHeroImage) -> FoundHeroImage:
-    """Return a selected image with normalized string fields."""
-    return image.model_copy(
-        update={
-            "image_url": image.image_url.strip(),
-            "source_page_url": image.source_page_url.strip(),
-            "alt": image.alt.strip(),
-            "rationale": image.rationale.strip(),
-        },
-    )
-
-
-def image_search_result_from_ddgs_result(*, result: dict[str, Any]) -> HeroImageSearchResult:
-    """Normalize one DDGS image result for the agent."""
+def image_search_result_from_ddgs_result(*, result: dict[str, Any]) -> HeroImageSearchResult | None:
+    """Normalize one sufficiently large DDGS image result for the agent."""
     image_url = str(result.get("image") or "")
+    image_media_type = infer_image_media_type(image_url=image_url)
+    width = int(result["width"]) if result.get("width") else None
+    height = int(result["height"]) if result.get("height") else None
+    if not image_media_type:
+        return None
+    if width is None or height is None:
+        return None
+    if not image_search_result_has_valid_shape(width=width, height=height):
+        return None
+
     return HeroImageSearchResult(
         title=str(result.get("title") or ""),
         image_url=image_url,
-        image=ImageUrl(url=image_url, media_type="image/jpeg"),
+        image=ImageUrl(url=image_url, media_type=image_media_type),
         source_page_url=str(result.get("url") or ""),
         thumbnail_url=str(result.get("thumbnail") or ""),
         source_name=str(result.get("source") or ""),
-        width=int(result["width"]) if result.get("width") else None,
-        height=int(result["height"]) if result.get("height") else None,
+        width=width,
+        height=height,
     )
+
+
+def infer_image_media_type(*, image_url: str) -> str | None:
+    """Infer the source image media type for model preview input."""
+    media_type = mimetypes.guess_type(urlparse(image_url).path)[0]
+    if media_type in SUPPORTED_IMAGE_MEDIA_TYPES:
+        return media_type
+
+    try:
+        response = httpx.head(image_url, follow_redirects=True, timeout=10)
+        response.raise_for_status()
+    except httpx.HTTPError:
+        return None
+
+    content_type = (
+        response.headers.get("content-type", "").split(";", maxsplit=1)[0].strip().lower()
+    )
+    if content_type in SUPPORTED_IMAGE_MEDIA_TYPES:
+        return content_type
+
+    return None
+
+
+def image_search_result_has_valid_shape(*, width: int, height: int) -> bool:
+    """Return whether image dimensions are large enough and close to 16:9."""
+    if width < HERO_IMAGE_WIDTH or height < HERO_IMAGE_HEIGHT:
+        return False
+
+    ratio = width / height
+    return abs(ratio - TARGET_ASPECT_RATIO) <= ASPECT_RATIO_TOLERANCE

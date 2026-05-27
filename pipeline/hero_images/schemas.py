@@ -30,12 +30,11 @@ class HeroImageSearchResult(BaseModel):
 
 
 class FoundHeroImage(BaseModel):
-    """Selected online image result for a completed article."""
+    """Online image candidate selected by the search agent."""
 
     image_url: str
     source_page_url: str
     alt: str
-    rationale: str
     width: int | None = None
     height: int | None = None
 
@@ -52,3 +51,4 @@ class HeroImageWorkspace(BaseModel):
 
     article: HeroImageArticle
     candidates: list[FoundHeroImage] = Field(default_factory=list)
+    candidate_image_data_urls: list[str] = Field(default_factory=list)

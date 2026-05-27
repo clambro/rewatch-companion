@@ -1,10 +1,12 @@
 show: succession
 season: 1
 episode: 1
-code: "S01E01"
-title: "Celebration"
-slug: "e01-celebration"
-
+code: S01E01
+title: Celebration
+slug: e01-celebration
 seo:
-  title: "Celebration"
-  description: "*A birthday staged like a board meeting, where legitimacy is decided by procedure, not performance.*"
+  title: Celebration
+  description: Logan’s birthday exposes inheritance as a ritual his children can perform but not complete.
+hero_image:
+  src: /images/shows/succession/episodes/s01/e01-celebration/hero.jpg
+  alt: Kendall Roy speaking to an older man holding a folder.

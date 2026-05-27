@@ -1,0 +1,14 @@
+show: succession
+season: 4
+episode: 1
+code: S04E01
+title: The Munsters
+slug: e01-the-munsters
+seo:
+  title: The Munsters
+  description:
+    The children try to leave Logan’s game, then buy their way straight
+    back into it.
+hero_image:
+  src: /images/shows/succession/episodes/s04/e01-the-munsters/hero.jpg
+  alt: Logan Roy seated in a dark room, gesturing with both hands.

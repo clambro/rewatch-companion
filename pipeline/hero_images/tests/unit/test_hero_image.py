@@ -4,8 +4,8 @@ from types import SimpleNamespace
 from typing import TYPE_CHECKING, Any, cast
 
 import pytest
+from ddgs.exceptions import DDGSException
 from PIL import Image
-from pydantic_ai import ModelRetry, RunContext
 
 from common.manifest import ManifestEpisode, ShowManifest
 from common.schemas import EssayKind, Show
@@ -14,8 +14,9 @@ from hero_images import prompt as hero_image_prompt
 from hero_images.agent import (
     add_hero_image_candidate,
     image_search_result_from_ddgs_result,
+    infer_image_media_type,
+    search_show_images,
     selected_hero_image_from_selection,
-    validate_selected_image_aspect_ratio,
 )
 from hero_images.find_hero_image import (
     HeroImageCommand,
@@ -38,6 +39,8 @@ from hero_images.schemas import (
 
 if TYPE_CHECKING:
     from pathlib import Path
+
+    from pydantic_ai import RunContext
 
 EXPECTED_WIDTH = 1200
 EXPECTED_HEIGHT = 675
@@ -135,12 +138,136 @@ def test_image_search_result_from_ddgs_result_normalizes_known_fields() -> None:
         },
     )
 
+    assert result is not None
     assert result.title == "Succession Vaulter"
     assert result.image_url == "https://example.com/image.jpg"
     assert result.image.url == "https://example.com/image.jpg"
+    assert result.image.media_type == "image/jpeg"
     assert result.source_page_url == "https://example.com/article"
     assert result.width == EXPECTED_WIDTH
     assert result.height == EXPECTED_HEIGHT
+
+
+def test_infer_image_media_type_uses_url_path() -> None:
+    """Known image extensions are inferred without fetching."""
+    assert (
+        infer_image_media_type(image_url="https://example.com/image.webp?width=1200")
+        == "image/webp"
+    )
+
+
+def test_infer_image_media_type_uses_content_type_for_extensionless_urls(
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    """Extensionless CDN URLs are inferred from response content type."""
+
+    class StubResponse:
+        def __init__(self) -> None:
+            self.headers = {"content-type": "image/png; charset=utf-8"}
+
+        def raise_for_status(self) -> None:
+            return None
+
+    def stub_head(*_args: object, **_kwargs: object) -> StubResponse:
+        return StubResponse()
+
+    monkeypatch.setattr("hero_images.agent.httpx.head", stub_head)
+
+    assert infer_image_media_type(image_url="https://example.com/image?id=123") == "image/png"
+
+
+def test_image_search_result_from_ddgs_result_rejects_small_images() -> None:
+    """Image search results below the hero size are filtered out."""
+    result = image_search_result_from_ddgs_result(
+        result={
+            "title": "Small Succession Image",
+            "image": "https://example.com/small.jpg",
+            "url": "https://example.com/article",
+            "width": "800",
+            "height": "450",
+        },
+    )
+
+    assert result is None
+
+
+def test_image_search_result_from_ddgs_result_rejects_wrong_shape() -> None:
+    """Image search results far from 16:9 are filtered out."""
+    result = image_search_result_from_ddgs_result(
+        result={
+            "title": "Tall Succession Image",
+            "image": "https://example.com/tall.jpg",
+            "url": "https://example.com/article",
+            "width": "1200",
+            "height": "1200",
+        },
+    )
+
+    assert result is None
+
+
+def test_search_show_images_returns_top_five_valid_images(monkeypatch: pytest.MonkeyPatch) -> None:
+    """The search tool should expose only the first five large 16:9-ish image results."""
+    workspace = HeroImageWorkspace(
+        article=HeroImageArticle(
+            show=Show.SUCCESSION,
+            title="Shiv Roy",
+            subtitle="Dek.",
+            article_mdx="Article.",
+        ),
+    )
+    ctx = cast("RunContext[HeroImageWorkspace]", SimpleNamespace(deps=workspace))
+
+    class StubDDGS:
+        def images(self, **_kwargs: object) -> list[dict[str, object]]:
+            return [
+                {
+                    "title": f"Image {index}",
+                    "image": f"https://example.com/image-{index}.jpg",
+                    "url": "https://example.com/article",
+                    "width": str(EXPECTED_WIDTH),
+                    "height": str(EXPECTED_HEIGHT),
+                }
+                for index in range(7)
+            ]
+
+    monkeypatch.setattr("hero_images.agent.DDGS", StubDDGS)
+
+    result = search_show_images(ctx=ctx, query="Shiv Roy Succession")
+
+    assert isinstance(result, list)
+    assert [image.image_url for image in result] == [
+        "https://example.com/image-0.jpg",
+        "https://example.com/image-1.jpg",
+        "https://example.com/image-2.jpg",
+        "https://example.com/image-3.jpg",
+        "https://example.com/image-4.jpg",
+    ]
+
+
+def test_search_show_images_returns_message_when_search_fails(
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    """Image search failures should not crash the agent loop."""
+    workspace = HeroImageWorkspace(
+        article=HeroImageArticle(
+            show=Show.SUCCESSION,
+            title="Shiv Roy",
+            subtitle="Dek.",
+            article_mdx="Article.",
+        ),
+    )
+    ctx = cast("RunContext[HeroImageWorkspace]", SimpleNamespace(deps=workspace))
+
+    class FailingDDGS:
+        def images(self, **_kwargs: object) -> list[dict[str, object]]:
+            raise DDGSException("No results found.")
+
+    monkeypatch.setattr("hero_images.agent.DDGS", FailingDDGS)
+
+    result = search_show_images(ctx=ctx, query="Shiv Roy Succession")
+
+    assert result == "No image search results found for query: Shiv Roy Succession"
 
 
 def test_update_article_metadata_writes_hero_image_block(
@@ -173,7 +300,6 @@ def test_update_article_metadata_writes_hero_image_block(
             image_url="https://example.com/image.jpg",
             source_page_url="https://example.com/article",
             alt="Roman Roy standing in the Vaulter office.",
-            rationale="Matches the article.",
         ),
     )
 
@@ -187,22 +313,7 @@ def test_update_article_metadata_writes_hero_image_block(
     }
 
 
-def test_selected_image_aspect_ratio_rejects_square_images() -> None:
-    """The agent gets an early retry when it selects a non-16:9 image."""
-    with pytest.raises(ModelRetry, match="closer to 16:9"):
-        validate_selected_image_aspect_ratio(
-            image=FoundHeroImage(
-                image_url="https://example.com/image.jpg",
-                source_page_url="https://example.com/article",
-                alt="A square image.",
-                rationale="Good image.",
-                width=1200,
-                height=1200,
-            ),
-        )
-
-
-def test_add_hero_image_candidate_collects_candidate() -> None:
+def test_add_hero_image_candidate_collects_candidate(monkeypatch: pytest.MonkeyPatch) -> None:
     """The agent should collect candidates before separate final selection."""
     workspace = HeroImageWorkspace(
         article=HeroImageArticle(
@@ -216,20 +327,27 @@ def test_add_hero_image_candidate_collects_candidate() -> None:
     image = FoundHeroImage(
         image_url="https://example.com/image.jpg",
         source_page_url="https://example.com/article",
-        alt="Shiv Roy standing in an office.",
-        rationale="Relevant image.",
+        alt="Shiv Roy.",
         width=EXPECTED_WIDTH,
         height=EXPECTED_HEIGHT,
+    )
+    monkeypatch.setattr(
+        "hero_images.agent.selection_image_data_url",
+        lambda **_: "data:image/jpeg;base64,abc123",
     )
 
     add_hero_image_candidate(ctx=ctx, image=image)
 
     assert len(workspace.candidates) == 1
     assert workspace.candidates[0].image_url == "https://example.com/image.jpg"
+    assert workspace.candidates[0].alt == "Shiv Roy."
+    assert workspace.candidate_image_data_urls == ["data:image/jpeg;base64,abc123"]
 
 
-def test_add_hero_image_candidate_returns_rejection_without_retry() -> None:
-    """Bad image candidates should not exhaust tool retry limits."""
+def test_add_hero_image_candidate_returns_rejection_for_invalid_download(
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    """Candidate download failures should not exhaust tool retry limits."""
     workspace = HeroImageWorkspace(
         article=HeroImageArticle(
             show=Show.SUCCESSION,
@@ -240,15 +358,19 @@ def test_add_hero_image_candidate_returns_rejection_without_retry() -> None:
     )
     ctx = cast("RunContext[HeroImageWorkspace]", SimpleNamespace(deps=workspace))
 
+    def reject_image(**_kwargs: object) -> str:
+        raise ValueError("Not an image.")
+
+    monkeypatch.setattr("hero_images.agent.selection_image_data_url", reject_image)
+
     result = add_hero_image_candidate(
         ctx=ctx,
         image=FoundHeroImage(
-            image_url="https://example.com/small.jpg",
+            image_url="https://example.com/not-image.jpg",
             source_page_url="https://example.com/article",
-            alt="Small image.",
-            rationale="Too small.",
-            width=800,
-            height=450,
+            alt="Not an image.",
+            width=EXPECTED_WIDTH,
+            height=EXPECTED_HEIGHT,
         ),
     )
 
@@ -263,7 +385,6 @@ def test_selected_hero_image_from_selection_uses_candidate_index() -> None:
             image_url="https://example.com/generic-office.jpg",
             source_page_url="https://example.com/gallery",
             alt="A generic office.",
-            rationale="Usable dimensions.",
             width=EXPECTED_WIDTH,
             height=EXPECTED_HEIGHT,
         ),
@@ -271,7 +392,6 @@ def test_selected_hero_image_from_selection_uses_candidate_index() -> None:
             image_url="https://assets.example.com/shiv-roy-succession.jpg",
             source_page_url="https://variety.com/tv/recaps/succession-shiv-roy",
             alt="Shiv Roy in Succession.",
-            rationale="Directly matches Shiv Roy and the article.",
             width=EXPECTED_WIDTH,
             height=EXPECTED_HEIGHT,
         ),
@@ -279,7 +399,6 @@ def test_selected_hero_image_from_selection_uses_candidate_index() -> None:
             image_url="https://example.com/latest-bad-choice.jpg",
             source_page_url="https://example.com/gallery",
             alt="A vague image.",
-            rationale="Most recent candidate.",
             width=EXPECTED_WIDTH,
             height=EXPECTED_HEIGHT,
         ),
@@ -291,7 +410,7 @@ def test_selected_hero_image_from_selection_uses_candidate_index() -> None:
     )
 
     assert selected.image_url == "https://assets.example.com/shiv-roy-succession.jpg"
-    assert selected.rationale == "Best fit."
+    assert selected.alt == "Shiv Roy in Succession."
 
 
 def test_hero_image_selection_input_includes_images() -> None:
@@ -307,7 +426,6 @@ def test_hero_image_selection_input_includes_images() -> None:
             image_url="https://example.com/shiv.jpg",
             source_page_url="https://example.com/article",
             alt="Shiv Roy.",
-            rationale="Relevant image.",
             width=EXPECTED_WIDTH,
             height=EXPECTED_HEIGHT,
         ),
@@ -316,13 +434,14 @@ def test_hero_image_selection_input_includes_images() -> None:
     selection_input = hero_image_prompt.build_hero_image_selection_input(
         article=article,
         candidates=candidates,
+        image_data_urls=["data:image/jpeg;base64,abc123"],
     )
 
     raw_selection_input = cast("list[dict[str, Any]]", selection_input)
     content = raw_selection_input[0]["content"]
     assert {
         "type": "input_image",
-        "image_url": "https://example.com/shiv.jpg",
+        "image_url": "data:image/jpeg;base64,abc123",
         "detail": "low",
     } in content
 
@@ -413,7 +532,6 @@ def test_download_hero_image_preserves_existing_file_when_validation_fails(
                 image_url="https://example.com/square.png",
                 source_page_url="https://example.com/article",
                 alt="A square image.",
-                rationale="Wrong shape.",
             ),
         )
 

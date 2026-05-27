@@ -8,6 +8,7 @@ from typing import TYPE_CHECKING, Any
 import yaml
 from openai import OpenAI
 
+from common.manifest import load_manifest
 from common.schemas import EssayKind, Show
 from common.settings import settings
 from essay_generation.prompt import (
@@ -22,9 +23,9 @@ from essay_generation.schemas import EssaySource, EssayTarget, GeneratedEssay
 if TYPE_CHECKING:
     from common.manifest import ManifestEpisode, ManifestSluggedArticle
 
-REPO_ROOT = Path(__file__).resolve().parent.parent
+REPO_ROOT = Path(__file__).resolve().parents[2]
 CONTENT_ROOT = REPO_ROOT / "content" / "shows"
-SUMMARY_MODEL = "gpt-5.4-nano"
+SUMMARY_MODEL = "gpt-5.4-mini"
 
 
 def write_article(*, target: EssayTarget, draft: GeneratedEssay) -> None:
@@ -34,7 +35,7 @@ def write_article(*, target: EssayTarget, draft: GeneratedEssay) -> None:
 
     output_dir.mkdir(parents=True, exist_ok=True)
     (output_dir / "index.mdx").write_text(
-        render_draft(target=target, draft=draft),
+        f"{draft.body_mdx.rstrip()}\n",
         encoding="utf-8",
     )
 
@@ -76,17 +77,28 @@ def rebuild_show_index(*, show: Show) -> None:
     show_root = CONTENT_ROOT / show.value
     show_index_path = show_root / "show.yaml"
     current_index = yaml.safe_load(show_index_path.read_text(encoding="utf-8"))
+    manifest = load_manifest(show=show)
 
     show_index: dict[str, Any] = {
         "title": current_index["title"],
         "slug": current_index["slug"],
     }
+    if "hero_image" in current_index:
+        show_index["hero_image"] = current_index["hero_image"]
 
-    themes = load_article_listing(show_root=show_root, section=EssayKind.THEMES)
+    themes = load_article_listing(
+        show_root=show_root,
+        section=EssayKind.THEMES,
+        manifest_entries=manifest.themes,
+    )
     if themes:
         show_index["themes"] = themes
 
-    characters = load_article_listing(show_root=show_root, section=EssayKind.CHARACTERS)
+    characters = load_article_listing(
+        show_root=show_root,
+        section=EssayKind.CHARACTERS,
+        manifest_entries=manifest.characters,
+    )
     if characters:
         show_index["characters"] = characters
 
@@ -113,15 +125,21 @@ def load_article_sources(*, show: Show, sections: list[EssayKind]) -> list[Essay
     return sources
 
 
-def load_article_listing(*, show_root: Path, section: EssayKind) -> list[dict[str, str]]:
+def load_article_listing(
+    *,
+    show_root: Path,
+    section: EssayKind,
+    manifest_entries: list[ManifestSluggedArticle],
+) -> list[dict[str, str]]:
     """Load generated article entries for the frontend show index."""
     article_root = show_root / section.value
     entries = []
-    for metadata_path in sorted(article_root.glob("*/article.yaml")):
-        article_path = metadata_path.with_name("index.mdx")
+    for manifest_entry in manifest_entries:
+        article_path = article_root / manifest_entry.slug / "index.mdx"
         if not article_path.is_file():
             continue
 
+        metadata_path = article_path.with_name("article.yaml")
         metadata = yaml.safe_load(metadata_path.read_text(encoding="utf-8"))
         entries.append(
             {
@@ -245,17 +263,6 @@ def load_article_source(
     )
 
 
-def render_draft(*, target: EssayTarget, draft: GeneratedEssay) -> str:
-    """Render the generated draft as a simple MDX document."""
-    return (
-        "---\n"
-        f"title: {json.dumps(target.title)}\n"
-        f"dek: {json.dumps(draft.subtitle)}\n"
-        "---\n\n"
-        f"{draft.body_mdx.rstrip()}\n"
-    )
-
-
 def render_article_metadata(*, target: EssayTarget, draft: GeneratedEssay) -> str:
     """Render article metadata for the static site content collection."""
     return (
@@ -295,6 +302,14 @@ def render_show_index(*, show_index: dict[str, Any]) -> str:
         f"title: {json.dumps(show_index['title'])}",
         f"slug: {json.dumps(show_index['slug'])}",
     ]
+    if "hero_image" in show_index:
+        lines.extend(
+            [
+                "hero_image:",
+                f"  src: {json.dumps(show_index['hero_image']['src'])}",
+                f"  alt: {json.dumps(show_index['hero_image']['alt'])}",
+            ],
+        )
 
     if "themes" in show_index:
         lines.extend(["", "themes:"])

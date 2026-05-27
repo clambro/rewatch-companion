@@ -1,7 +1,11 @@
 show: succession
-title: "Not Serious People"
-slug: "not-serious-people"
-
+title: Not Serious People
+slug: not-serious-people
 seo:
-  title: "Not Serious People"
-  description: "\u201cI love you, but you are not serious people\u201d becomes Succession\u2019s measure of competence: the Roys want the throne as performance, but durable power belongs to the operators who can follow through when the institution stops applauding."
+  title: Not Serious People
+  description:
+    Succession measures the Roy children by the cold discipline they can
+    imitate but never endure.
+hero_image:
+  src: /images/shows/succession/themes/not-serious-people/hero.jpg
+  alt: Logan Roy seated under blue and purple studio lights.
