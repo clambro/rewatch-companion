@@ -131,3 +131,33 @@ episodes:
   - season: 3
     episode: 9
     title: "All the Bells Say"
+  - season: 4
+    episode: 1
+    title: "The Munsters"
+  - season: 4
+    episode: 2
+    title: "Rehearsal"
+  - season: 4
+    episode: 3
+    title: "Connor's Wedding"
+  - season: 4
+    episode: 4
+    title: "Honeymoon States"
+  - season: 4
+    episode: 5
+    title: "Kill List"
+  - season: 4
+    episode: 6
+    title: "Living+"
+  - season: 4
+    episode: 7
+    title: "Tailgate Party"
+  - season: 4
+    episode: 8
+    title: "America Decides"
+  - season: 4
+    episode: 9
+    title: "Church and State"
+  - season: 4
+    episode: 10
+    title: "With Open Eyes"
