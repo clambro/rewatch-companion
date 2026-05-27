@@ -135,10 +135,6 @@ main {
   text-transform: uppercase;
 }
 
-.show-catalog {
-  max-width: 980px;
-}
-
 .catalog-tabs,
 .season-tabs {
   display: flex;
