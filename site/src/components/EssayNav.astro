@@ -2,7 +2,7 @@
 const { previous, next, showSlug, showTitle, variant = "rail" } = Astro.props;
 
 function hrefFor(essay) {
-  return `/shows/${showSlug}/${essay.path}/`;
+  return `/shows/${showSlug}/${essay.path}`;
 }
 ---
 
@@ -23,7 +23,7 @@ function hrefFor(essay) {
   {
     variant === "footer" && (
       <div>
-        <a class="essay-nav-link essay-nav-home" href={`/shows/${showSlug}/`}>
+        <a class="essay-nav-link essay-nav-home" href={`/shows/${showSlug}`}>
           <span>Show guide</span>
           {showTitle}
         </a>
