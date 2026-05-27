@@ -121,6 +121,35 @@ main {
   max-width: 720px;
 }
 
+.not-found {
+  max-width: 620px;
+  padding-top: 34px;
+}
+
+.not-found p:not(.eyebrow) {
+  color: var(--muted);
+  font-family: Georgia, "Times New Roman", serif;
+  font-size: clamp(1.08rem, 1.6vw, 1.24rem);
+  line-height: 1.5;
+  margin: 16px 0 22px;
+  max-width: 540px;
+}
+
+.not-found a {
+  border: 1px solid var(--border);
+  color: var(--text);
+  display: inline-block;
+  font-size: 0.78rem;
+  font-weight: 750;
+  padding: 7px 10px;
+  text-decoration: none;
+}
+
+.not-found a:hover {
+  border-color: color-mix(in srgb, var(--accent) 45%, var(--border));
+  color: var(--accent);
+}
+
 .show-section {
   margin-top: 36px;
 }

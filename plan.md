@@ -33,9 +33,9 @@ Configured `site/astro.config.mjs` for production:
 
 ### 3. 404 Page
 
-Add `site/src/pages/404.astro`.
+Added `site/src/pages/404.astro`.
 
-Keep it simple:
+The page is intentionally simple:
 
 - clear "Page not found" message
 - short explanation
