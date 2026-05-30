@@ -16,7 +16,7 @@ function isCurrentSeason(season) {
 ---
 
 <aside class="essay-sidebar" aria-label={`${show.data.title} essay navigation`}>
-  <a class="show-link" href={`/shows/${show.data.slug}/`}>
+  <a class="show-link" href={`/shows/${show.data.slug}`}>
     <span aria-hidden="true">←</span>
     <strong>{show.data.title}</strong>
     <small>Show guide</small>
@@ -31,7 +31,7 @@ function isCurrentSeason(season) {
             <a
               aria-current={isCurrent(theme.path) ? "page" : undefined}
               class:list={{ current: isCurrent(theme.path) }}
-              href={`/shows/${show.data.slug}/${theme.path}/`}
+              href={`/shows/${show.data.slug}/${theme.path}`}
             >
               {theme.title}
             </a>
@@ -50,7 +50,7 @@ function isCurrentSeason(season) {
             <a
               aria-current={isCurrent(character.path) ? "page" : undefined}
               class:list={{ current: isCurrent(character.path) }}
-              href={`/shows/${show.data.slug}/${character.path}/`}
+              href={`/shows/${show.data.slug}/${character.path}`}
             >
               {character.title}
             </a>
@@ -72,7 +72,7 @@ function isCurrentSeason(season) {
             <a
               aria-current={isCurrent(episode.path) ? "page" : undefined}
               class:list={{ current: isCurrent(episode.path) }}
-              href={`/shows/${show.data.slug}/${episode.path}/`}
+              href={`/shows/${show.data.slug}/${episode.path}`}
             >
               <span class="episode-code">{episode.code}</span>
               {episode.title}

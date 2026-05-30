@@ -28,7 +28,7 @@ function countsFor(show) {
         shows.map((show) => {
           const counts = countsFor(show);
           return (
-            <a class="show-card" href={`/shows/${show.data.slug}/`}>
+            <a class="show-card" href={`/shows/${show.data.slug}`}>
               {show.data.hero_image ? (
                 <img
                   class="show-card-image"
