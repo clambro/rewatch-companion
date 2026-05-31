@@ -1,6 +1,8 @@
 ---
 import BaseLayout from "../layouts/BaseLayout.astro";
 import { getCollection } from "astro:content";
+import { Image } from "astro:assets";
+import { imageAssetFor } from "../lib/imageAssets";
 
 const shows = await getCollection("shows");
 
@@ -30,11 +32,17 @@ function countsFor(show) {
           return (
             <a class="show-card" href={`/shows/${show.data.slug}`}>
               {show.data.hero_image ? (
-                <img
-                  class="show-card-image"
-                  src={show.data.hero_image.src}
-                  alt={show.data.hero_image.alt}
-                />
+                <div class="show-card-image-frame">
+                  <Image
+                    class="show-card-image"
+                    src={imageAssetFor(show.data.hero_image.src)}
+                    alt={show.data.hero_image.alt}
+                    width={480}
+                    loading="eager"
+                    fetchpriority="high"
+                    decoding="async"
+                  />
+                </div>
               ) : (
                 <div class="show-card-image show-card-image-placeholder">
                   {show.data.title}

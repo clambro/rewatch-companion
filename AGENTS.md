@@ -26,7 +26,7 @@ Committed content should be safe to publish:
 - `content/shows/<show>/**/article.yaml`
 - `content/shows/<show>/episodes/<season>/<episode>/index.mdx`
 - `content/shows/<show>/**/summary.mdx` files used as compact pipeline reference context
-- `hero_image` metadata that references committed local images under `site/public/images/`
+- `hero_image` metadata that references committed local images under `site/src/assets/images/`
 
 Do not commit raw subtitles, research blobs, intermediate drafts, image candidates, video files, external image source URLs, or local media references.
 

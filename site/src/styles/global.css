@@ -84,15 +84,17 @@ main {
 }
 
 .show-hero {
+  aspect-ratio: 16 / 9;
+  background: color-mix(in srgb, var(--border) 52%, transparent);
+  border: 1px solid var(--border);
   margin: 0;
+  overflow: hidden;
 }
 
 .show-hero img,
 .show-hero-placeholder div {
-  aspect-ratio: 16 / 9;
-  background: color-mix(in srgb, var(--border) 52%, transparent);
-  border: 1px solid var(--border);
   display: block;
+  height: 100%;
   width: 100%;
 }
 
@@ -271,13 +273,20 @@ main {
   margin: 14px 17px 17px;
 }
 
-.show-card-image {
+.show-card-image,
+.show-card-image-frame {
   aspect-ratio: 16 / 9;
   background: color-mix(in srgb, var(--border) 52%, transparent);
   border-bottom: 1px solid var(--border);
   display: block;
-  object-fit: cover;
+  overflow: hidden;
   width: 100%;
+}
+
+img.show-card-image {
+  border-bottom: 0;
+  height: 100%;
+  object-fit: cover;
 }
 
 .show-card-image-placeholder {
@@ -341,13 +350,20 @@ main {
   padding: 15px;
 }
 
-.essay-card-image {
+.essay-card-image,
+.essay-card-image-frame {
   aspect-ratio: 16 / 9;
   background: color-mix(in srgb, var(--border) 52%, transparent);
   border-bottom: 1px solid var(--border);
   display: block;
-  object-fit: cover;
+  overflow: hidden;
   width: 100%;
+}
+
+img.essay-card-image {
+  border-bottom: 0;
+  height: 100%;
+  object-fit: cover;
 }
 
 .essay-card-image-placeholder {
@@ -593,15 +609,17 @@ h3 {
 }
 
 .article-hero {
+  aspect-ratio: 16 / 9;
+  background: color-mix(in srgb, var(--border) 52%, transparent);
+  border: 1px solid var(--border);
   margin: 0 0 24px;
+  overflow: hidden;
 }
 
 .article-hero img,
 .article-hero-placeholder div {
-  aspect-ratio: 16 / 9;
-  background: color-mix(in srgb, var(--border) 52%, transparent);
-  border: 1px solid var(--border);
   display: block;
+  height: 100%;
   width: 100%;
 }
 

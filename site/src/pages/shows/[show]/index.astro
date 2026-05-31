@@ -1,6 +1,8 @@
 ---
 import BaseLayout from "../../../layouts/BaseLayout.astro";
 import { getCollection } from "astro:content";
+import { Image } from "astro:assets";
+import { imageAssetFor } from "../../../lib/imageAssets";
 
 export async function getStaticPaths() {
   const shows = await getCollection("shows");
@@ -67,7 +69,14 @@ const seasonCards = show.data.seasons.map((season) => ({
     >
       {
         showHeroImage ? (
-          <img src={showHeroImage.src} alt={showHeroImage.alt} />
+          <Image
+            src={imageAssetFor(showHeroImage.src)}
+            alt={showHeroImage.alt}
+            width={480}
+            loading="eager"
+            fetchpriority="high"
+            decoding="async"
+          />
         ) : (
           <div>{show.data.title}</div>
         )
@@ -122,12 +131,16 @@ const seasonCards = show.data.seasons.map((season) => ({
                   href={`/shows/${show.data.slug}/${card.path}`}
                 >
                   {card.heroImage ? (
-                    <img
-                      class="essay-card-image"
-                      src={card.heroImage.src}
-                      alt={card.heroImage.alt}
-                      loading="lazy"
-                    />
+                    <div class="essay-card-image-frame">
+                      <Image
+                        class="essay-card-image"
+                        src={imageAssetFor(card.heroImage.src)}
+                        alt={card.heroImage.alt}
+                        width={480}
+                        loading="lazy"
+                        decoding="async"
+                      />
+                    </div>
                   ) : (
                     <div class="essay-card-image essay-card-image-placeholder">
                       {card.label}
@@ -158,12 +171,16 @@ const seasonCards = show.data.seasons.map((season) => ({
               href={`/shows/${show.data.slug}/${card.path}`}
             >
               {card.heroImage ? (
-                <img
-                  class="essay-card-image"
-                  src={card.heroImage.src}
-                  alt={card.heroImage.alt}
-                  loading="lazy"
-                />
+                <div class="essay-card-image-frame">
+                  <Image
+                    class="essay-card-image"
+                    src={imageAssetFor(card.heroImage.src)}
+                    alt={card.heroImage.alt}
+                    width={480}
+                    loading="lazy"
+                    decoding="async"
+                  />
+                </div>
               ) : (
                 <div class="essay-card-image essay-card-image-placeholder">
                   {card.label ?? ""}
@@ -192,12 +209,16 @@ const seasonCards = show.data.seasons.map((season) => ({
               href={`/shows/${show.data.slug}/${card.path}`}
             >
               {card.heroImage ? (
-                <img
-                  class="essay-card-image"
-                  src={card.heroImage.src}
-                  alt={card.heroImage.alt}
-                  loading="lazy"
-                />
+                <div class="essay-card-image-frame">
+                  <Image
+                    class="essay-card-image"
+                    src={imageAssetFor(card.heroImage.src)}
+                    alt={card.heroImage.alt}
+                    width={480}
+                    loading="lazy"
+                    decoding="async"
+                  />
+                </div>
               ) : (
                 <div class="essay-card-image essay-card-image-placeholder">
                   {card.label ?? ""}

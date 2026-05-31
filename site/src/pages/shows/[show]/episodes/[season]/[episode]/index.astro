@@ -4,6 +4,8 @@ import EssayNav from "../../../../../../components/EssayNav.astro";
 import EssaySidebar from "../../../../../../components/EssaySidebar.astro";
 import SpoilerNotice from "../../../../../../components/SpoilerNotice.astro";
 import { getCollection, render } from "astro:content";
+import { Image } from "astro:assets";
+import { imageAssetFor } from "../../../../../../lib/imageAssets";
 
 export async function getStaticPaths() {
   function flattenEpisodes(show) {
@@ -82,7 +84,14 @@ const placeholderLabel = `${show.data.title} / ${metadata.data.code}`;
         {
           heroImage ? (
             <>
-              <img src={heroImage.src} alt={heroImage.alt} />
+              <Image
+                src={imageAssetFor(heroImage.src)}
+                alt={heroImage.alt}
+                width={768}
+                loading="eager"
+                fetchpriority="high"
+                decoding="async"
+              />
             </>
           ) : (
             <div>{placeholderLabel}</div>

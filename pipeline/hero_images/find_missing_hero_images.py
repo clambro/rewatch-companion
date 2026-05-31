@@ -1,17 +1,17 @@
 """Find hero images for generated manifest essays missing local image metadata."""
 
 import sys
-from pathlib import Path
+from typing import TYPE_CHECKING
 
 import yaml
 
 from common.manifest import episode_slug, load_manifest
 from common.schemas import EssayKind, Show
 from essay_generation.generate_essay import CONTENT_ROOT
-from hero_images.find_hero_image import HeroImageCommand, find_hero_image
+from hero_images.find_hero_image import ASSET_IMAGE_ROOT, HeroImageCommand, find_hero_image
 
-REPO_ROOT = Path(__file__).resolve().parents[2]
-SITE_PUBLIC_ROOT = REPO_ROOT / "site" / "public"
+if TYPE_CHECKING:
+    from pathlib import Path
 
 
 def find_missing_hero_images(*, show: Show, dry_run: bool = False) -> None:
@@ -107,9 +107,9 @@ def is_missing_hero_image(*, article_dir: Path) -> bool:
     if not isinstance(alt, str) or not alt.strip():
         return True
 
-    return not local_public_path(src=src).is_file()
+    return not local_asset_path(src=src).is_file()
 
 
-def local_public_path(*, src: str) -> Path:
-    """Return the local public file path for a site-root image src."""
-    return SITE_PUBLIC_ROOT / src.removeprefix("/")
+def local_asset_path(*, src: str) -> Path:
+    """Return the local asset file path for a content image src."""
+    return ASSET_IMAGE_ROOT.parent / src.removeprefix("/")

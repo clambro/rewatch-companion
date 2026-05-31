@@ -276,13 +276,13 @@ def test_update_article_metadata_writes_hero_image_block(
 ) -> None:
     """Hero image selection is recorded in article metadata."""
     content_root = tmp_path / "content" / "shows"
-    public_root = tmp_path / "site" / "public" / "images" / "shows"
+    asset_root = tmp_path / "site" / "src" / "assets" / "images" / "shows"
     monkeypatch.setattr(find_hero_image, "CONTENT_SHOWS_ROOT", content_root)
-    monkeypatch.setattr(find_hero_image, "PUBLIC_IMAGE_ROOT", public_root)
+    monkeypatch.setattr(find_hero_image, "ASSET_IMAGE_ROOT", asset_root)
     article_dir = content_root / "succession" / "episodes" / "s02" / "e02-vaulter"
     article_dir.mkdir(parents=True)
     article_path = article_dir / "index.mdx"
-    image_path = public_root / "succession" / "episodes" / "s02" / "e02-vaulter" / "hero.jpg"
+    image_path = asset_root / "succession" / "episodes" / "s02" / "e02-vaulter" / "hero.jpg"
     (article_dir / "article.yaml").write_text(
         "show: succession\n"
         'title: "Vaulter"\n'
@@ -459,18 +459,16 @@ def test_public_image_path_and_src_use_article_content_path(
     tmp_path: Path,
     monkeypatch: pytest.MonkeyPatch,
 ) -> None:
-    """Hero images export to site/public using the content article path."""
+    """Hero images export to site assets using the content article path."""
     content_root = tmp_path / "content" / "shows"
-    public_root = tmp_path / "site" / "public" / "images" / "shows"
+    asset_root = tmp_path / "site" / "src" / "assets" / "images" / "shows"
     article_path = content_root / "succession" / "episodes" / "s02" / "e02-vaulter" / "index.mdx"
     monkeypatch.setattr(find_hero_image, "CONTENT_SHOWS_ROOT", content_root)
-    monkeypatch.setattr(find_hero_image, "PUBLIC_IMAGE_ROOT", public_root)
+    monkeypatch.setattr(find_hero_image, "ASSET_IMAGE_ROOT", asset_root)
 
     image_path = public_image_path_for_article(article_path=article_path)
 
-    assert (
-        image_path == public_root / "succession" / "episodes" / "s02" / "e02-vaulter" / "hero.jpg"
-    )
+    assert image_path == asset_root / "succession" / "episodes" / "s02" / "e02-vaulter" / "hero.jpg"
     assert public_image_src(image_path=image_path) == (
         "/images/shows/succession/episodes/s02/e02-vaulter/hero.jpg"
     )
@@ -505,16 +503,16 @@ def test_download_hero_image_preserves_existing_file_when_validation_fails(
 ) -> None:
     """A rejected replacement should not delete an existing hero image."""
     content_root = tmp_path / "content" / "shows"
-    public_root = tmp_path / "site" / "public" / "images" / "shows"
+    asset_root = tmp_path / "site" / "src" / "assets" / "images" / "shows"
     article_path = content_root / "succession" / "episodes" / "s02" / "e02-vaulter" / "index.mdx"
-    image_path = public_root / "succession" / "episodes" / "s02" / "e02-vaulter" / "hero.jpg"
+    image_path = asset_root / "succession" / "episodes" / "s02" / "e02-vaulter" / "hero.jpg"
     image_path.parent.mkdir(parents=True)
     Image.new("RGB", (EXPECTED_WIDTH, EXPECTED_HEIGHT), color=(10, 20, 30)).save(image_path)
 
     square_source_path = tmp_path / "square.png"
     Image.new("RGB", (EXPECTED_WIDTH, EXPECTED_WIDTH), color=(200, 10, 10)).save(square_source_path)
     monkeypatch.setattr(find_hero_image, "CONTENT_SHOWS_ROOT", content_root)
-    monkeypatch.setattr(find_hero_image, "PUBLIC_IMAGE_ROOT", public_root)
+    monkeypatch.setattr(find_hero_image, "ASSET_IMAGE_ROOT", asset_root)
 
     def fake_get(*_args: object, **_kwargs: object) -> find_hero_image.httpx.Response:
         return find_hero_image.httpx.Response(
