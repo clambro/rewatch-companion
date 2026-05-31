@@ -2,10 +2,9 @@
 import BaseLayout from "../../../../../layouts/BaseLayout.astro";
 import EssayNav from "../../../../../components/EssayNav.astro";
 import EssaySidebar from "../../../../../components/EssaySidebar.astro";
+import HeroImage from "../../../../../components/HeroImage.astro";
 import SpoilerNotice from "../../../../../components/SpoilerNotice.astro";
 import { getCollection, render } from "astro:content";
-import { Image } from "astro:assets";
-import { imageAssetFor } from "../../../../../lib/imageAssets";
 
 export async function getStaticPaths() {
   function sectionEntries(show, section) {
@@ -102,14 +101,7 @@ const placeholderLabel = `${show.data.title} / ${label}`;
         {
           heroImage ? (
             <>
-              <Image
-                src={imageAssetFor(heroImage.src)}
-                alt={heroImage.alt}
-                width={768}
-                loading="eager"
-                fetchpriority="high"
-                decoding="async"
-              />
+              <HeroImage image={heroImage} variant="article" priority />
             </>
           ) : (
             <div>{placeholderLabel}</div>
