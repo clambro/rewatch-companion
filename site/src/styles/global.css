@@ -417,32 +417,30 @@ img.essay-card-image {
   top: 24px;
 }
 
-.show-link {
+.show-back-link {
+  border: 1px solid var(--border);
   color: var(--text);
-  display: grid;
-  gap: 0 7px;
-  grid-template-columns: auto 1fr;
+  display: block;
+  font-size: 0.76rem;
+  font-weight: 750;
   line-height: 1.25;
-  margin-bottom: 12px;
+  margin-bottom: 14px;
+  padding: 9px 10px;
   text-decoration: none;
 }
 
-.show-link span {
+.show-back-link span {
   color: var(--accent);
   font-weight: 750;
-  grid-row: 1 / span 2;
+  margin-right: 4px;
 }
 
-.show-link strong {
-  color: var(--text);
-  font-size: 0.88rem;
-}
-
-.show-link small {
+.sidebar-label {
   color: var(--faint);
-  font-size: 0.66rem;
+  font-size: 0.68rem;
   font-weight: 800;
-  letter-spacing: 0.08em;
+  letter-spacing: 0.1em;
+  margin: 0 0 10px;
   text-transform: uppercase;
 }
 
@@ -518,9 +516,13 @@ img.essay-card-image {
 
 .sidebar-drawer nav a:hover,
 .season-drawer nav a:hover,
-.show-link:hover,
+.show-back-link:hover,
 .essay-nav a:hover {
   color: var(--accent);
+}
+
+.show-back-link:hover {
+  border-color: var(--accent);
 }
 
 .season-drawer {
