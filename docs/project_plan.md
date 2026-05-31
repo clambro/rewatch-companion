@@ -821,7 +821,7 @@ Article images are a separate workflow from essay generation.
 
 The image-sourcing agent reads a completed article, searches for one suitable
 show image, downloads it, normalizes it, and stores the local asset under
-`site/public/images/`. The public site renders local committed assets only. It
+`site/src/assets/images/`. The public site renders local committed assets only. It
 does not hotlink external image URLs.
 
 Committed article metadata should stay publishable and minimal:
@@ -1074,7 +1074,7 @@ S01E03 Lifeboats
 Build:
 
 - image search agent for theme, character, and episode hero images
-- local hero image export into `site/public/images/`
+- local hero image export into `site/src/assets/images/`
 - minimal `hero_image.src` and `hero_image.alt` metadata
 - image metadata validation
 - article card and hero image rendering
@@ -1089,7 +1089,7 @@ The project has three layers:
 
 2. Static content contract
    Public MDX, summary MDX, and article YAML live in content/. Local selected
-   images live under site/public/images/.
+   images live under site/src/assets/images/.
 
 3. Offline generation pipeline
    Python creates layered critical essays and episode analyses from research,

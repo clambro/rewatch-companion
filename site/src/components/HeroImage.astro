@@ -1,0 +1,29 @@
+---
+import { Image } from "astro:assets";
+import { imageAssetFor } from "../lib/imageAssets";
+
+type HeroImageVariant = "article" | "card";
+
+interface Props {
+  class?: string;
+  image: {
+    alt: string;
+    src: string;
+  };
+  priority?: boolean;
+  variant: HeroImageVariant;
+}
+
+const { class: className, image, priority = false, variant } = Astro.props;
+const width = variant === "article" ? 768 : 480;
+---
+
+<Image
+  class={className}
+  src={imageAssetFor(image.src)}
+  alt={image.alt}
+  width={width}
+  loading={priority ? "eager" : "lazy"}
+  fetchpriority={priority ? "high" : undefined}
+  decoding="async"
+/>

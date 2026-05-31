@@ -44,5 +44,5 @@ first one requires the previous episode's `summary.mdx` as continuity context.
 
 Hero image search is separate from essay generation. It reads a completed
 article, searches online for one reasonable show image, downloads it into
-`site/public/images/`, normalizes it to the project JPEG dimensions, and writes
+`site/src/assets/images/`, normalizes it to the project JPEG dimensions, and writes
 only local `src` plus model-written `alt` metadata into the article's YAML.

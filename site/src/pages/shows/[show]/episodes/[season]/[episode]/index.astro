@@ -2,12 +2,29 @@
 import BaseLayout from "../../../../../../layouts/BaseLayout.astro";
 import EssayNav from "../../../../../../components/EssayNav.astro";
 import EssaySidebar from "../../../../../../components/EssaySidebar.astro";
+import HeroImage from "../../../../../../components/HeroImage.astro";
 import SpoilerNotice from "../../../../../../components/SpoilerNotice.astro";
 import { getCollection, render } from "astro:content";
+import type { CollectionEntry } from "astro:content";
+
+type ShowEntry = CollectionEntry<"shows">;
+type EpisodeArticle = CollectionEntry<"episodeArticles">;
+type EpisodeMetadata = CollectionEntry<"episodeMetadata">;
+type Season = ShowEntry["data"]["seasons"][number];
+type Episode = Season["episodes"][number];
+
+interface Props {
+  article: EpisodeArticle;
+  currentPath: string;
+  metadata: EpisodeMetadata;
+  next: Episode | null;
+  previous: Episode | null;
+  show: ShowEntry;
+}
 
 export async function getStaticPaths() {
-  function flattenEpisodes(show) {
-    return show.data.seasons.flatMap((season) => season.episodes);
+  function flattenEpisodes(show: ShowEntry) {
+    return show.data.seasons.flatMap((season: Season) => season.episodes);
   }
 
   const shows = await getCollection("shows");
@@ -25,7 +42,7 @@ export async function getStaticPaths() {
 
     const episodes = flattenEpisodes(show);
     const currentIndex = episodes.findIndex(
-      (item) => item.path === `episodes/${season}/${episode}`,
+      (item: Episode) => item.path === `episodes/${season}/${episode}`,
     );
 
     return {
@@ -45,7 +62,8 @@ export async function getStaticPaths() {
   });
 }
 
-const { article, currentPath, metadata, show, previous, next } = Astro.props;
+const { article, currentPath, metadata, show, previous, next } =
+  Astro.props as Props;
 const { Content } = await render(article);
 const title = metadata.data.seo.title;
 const description = metadata.data.seo.description;
@@ -82,7 +100,7 @@ const placeholderLabel = `${show.data.title} / ${metadata.data.code}`;
         {
           heroImage ? (
             <>
-              <img src={heroImage.src} alt={heroImage.alt} />
+              <HeroImage image={heroImage} variant="article" priority />
             </>
           ) : (
             <div>{placeholderLabel}</div>

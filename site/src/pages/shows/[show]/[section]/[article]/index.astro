@@ -2,11 +2,29 @@
 import BaseLayout from "../../../../../layouts/BaseLayout.astro";
 import EssayNav from "../../../../../components/EssayNav.astro";
 import EssaySidebar from "../../../../../components/EssaySidebar.astro";
+import HeroImage from "../../../../../components/HeroImage.astro";
 import SpoilerNotice from "../../../../../components/SpoilerNotice.astro";
 import { getCollection, render } from "astro:content";
+import type { CollectionEntry } from "astro:content";
+
+type ShowEntry = CollectionEntry<"shows">;
+type ArticleEntry = CollectionEntry<"articleArticles">;
+type ArticleMetadata = CollectionEntry<"articleMetadata">;
+type ArticleSection = "themes" | "characters";
+type ListedArticle = NonNullable<ShowEntry["data"]["themes"]>[number];
+
+interface Props {
+  article: ArticleEntry;
+  currentPath: string;
+  metadata: ArticleMetadata;
+  next: ListedArticle | null;
+  previous: ListedArticle | null;
+  section: ArticleSection;
+  show: ShowEntry;
+}
 
 export async function getStaticPaths() {
-  function sectionEntries(show, section) {
+  function sectionEntries(show: ShowEntry, section: ArticleSection) {
     if (section === "themes") {
       return show.data.themes ?? [];
     }
@@ -30,14 +48,19 @@ export async function getStaticPaths() {
       throw new Error(`Missing show or article metadata for ${article.id}`);
     }
 
-    if (!section || !articleSlug || !allowedSections.has(section)) {
+    if (
+      !section ||
+      !articleSlug ||
+      !allowedSections.has(section as ArticleSection)
+    ) {
       throw new Error(`Unsupported article section for ${article.id}`);
     }
 
-    const entries = sectionEntries(show, section);
+    const typedSection = section as ArticleSection;
+    const entries = sectionEntries(show, typedSection);
     const currentPath = `${section}/${articleSlug}`;
     const currentIndex = entries.findIndex(
-      (entry) => entry.path === currentPath,
+      (entry: ListedArticle) => entry.path === currentPath,
     );
 
     return {
@@ -59,12 +82,12 @@ export async function getStaticPaths() {
 }
 
 const { article, currentPath, metadata, next, previous, show, section } =
-  Astro.props;
+  Astro.props as Props;
 const { Content } = await render(article);
 const title = metadata.data.seo.title;
 const description = metadata.data.seo.description;
 const heroImage = metadata.data.hero_image;
-const sectionLabels = {
+const sectionLabels: Record<ArticleSection, string> = {
   themes: "Themes",
   characters: "Characters",
 };
@@ -100,7 +123,7 @@ const placeholderLabel = `${show.data.title} / ${label}`;
         {
           heroImage ? (
             <>
-              <img src={heroImage.src} alt={heroImage.alt} />
+              <HeroImage image={heroImage} variant="article" priority />
             </>
           ) : (
             <div>{placeholderLabel}</div>

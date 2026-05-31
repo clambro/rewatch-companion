@@ -24,7 +24,7 @@ from hero_images.schemas import FoundHeroImage, HeroImageArticle
 
 REPO_ROOT = Path(__file__).resolve().parents[2]
 CONTENT_SHOWS_ROOT = REPO_ROOT / "content" / "shows"
-PUBLIC_IMAGE_ROOT = REPO_ROOT / "site" / "public" / "images" / "shows"
+ASSET_IMAGE_ROOT = REPO_ROOT / "site" / "src" / "assets" / "images" / "shows"
 HERO_IMAGE_FILENAME = "hero.jpg"
 
 
@@ -125,7 +125,7 @@ def article_body_without_frontmatter(article_mdx: str) -> str:
 
 
 def download_hero_image(*, article_path: Path, hero_image: FoundHeroImage) -> Path:
-    """Download the selected hero image into the static public image tree."""
+    """Download the selected hero image into the Astro asset image tree."""
     response = httpx.get(hero_image.image_url, follow_redirects=True, timeout=30)
     response.raise_for_status()
     image_path = public_image_path_for_article(article_path=article_path)
@@ -159,14 +159,14 @@ def update_article_metadata(
 
 
 def public_image_path_for_article(*, article_path: Path) -> Path:
-    """Return the public hero image path for one article."""
+    """Return the local hero image asset path for one article."""
     relative_article_dir = article_path.parent.relative_to(CONTENT_SHOWS_ROOT)
-    return PUBLIC_IMAGE_ROOT / relative_article_dir / HERO_IMAGE_FILENAME
+    return ASSET_IMAGE_ROOT / relative_article_dir / HERO_IMAGE_FILENAME
 
 
 def public_image_src(*, image_path: Path) -> str:
-    """Return the site-public URL for an exported hero image."""
-    return f"/images/{image_path.relative_to(PUBLIC_IMAGE_ROOT.parent).as_posix()}"
+    """Return the stable content image reference for an exported hero image."""
+    return f"/images/{image_path.relative_to(ASSET_IMAGE_ROOT.parent).as_posix()}"
 
 
 def validate_hero_image_aspect_ratio(*, image_path: Path) -> None:

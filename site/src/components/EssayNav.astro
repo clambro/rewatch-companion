@@ -1,7 +1,27 @@
 ---
-const { previous, next, showSlug, showTitle, variant = "rail" } = Astro.props;
+interface ListedEssay {
+  code?: string;
+  path: string;
+  title: string;
+}
 
-function hrefFor(essay) {
+interface Props {
+  next?: ListedEssay | null;
+  previous?: ListedEssay | null;
+  showSlug: string;
+  showTitle: string;
+  variant?: "footer" | "rail";
+}
+
+const {
+  previous,
+  next,
+  showSlug,
+  showTitle,
+  variant = "rail",
+} = Astro.props as Props;
+
+function hrefFor(essay: ListedEssay) {
   return `/shows/${showSlug}/${essay.path}`;
 }
 ---

@@ -84,15 +84,17 @@ main {
 }
 
 .show-hero {
+  aspect-ratio: 16 / 9;
+  background: color-mix(in srgb, var(--border) 52%, transparent);
+  border: 1px solid var(--border);
   margin: 0;
+  overflow: hidden;
 }
 
 .show-hero img,
 .show-hero-placeholder div {
-  aspect-ratio: 16 / 9;
-  background: color-mix(in srgb, var(--border) 52%, transparent);
-  border: 1px solid var(--border);
   display: block;
+  height: 100%;
   width: 100%;
 }
 
@@ -271,13 +273,20 @@ main {
   margin: 14px 17px 17px;
 }
 
-.show-card-image {
+.show-card-image,
+.show-card-image-frame {
   aspect-ratio: 16 / 9;
   background: color-mix(in srgb, var(--border) 52%, transparent);
   border-bottom: 1px solid var(--border);
   display: block;
-  object-fit: cover;
+  overflow: hidden;
   width: 100%;
+}
+
+img.show-card-image {
+  border-bottom: 0;
+  height: 100%;
+  object-fit: cover;
 }
 
 .show-card-image-placeholder {
@@ -341,13 +350,20 @@ main {
   padding: 15px;
 }
 
-.essay-card-image {
+.essay-card-image,
+.essay-card-image-frame {
   aspect-ratio: 16 / 9;
   background: color-mix(in srgb, var(--border) 52%, transparent);
   border-bottom: 1px solid var(--border);
   display: block;
-  object-fit: cover;
+  overflow: hidden;
   width: 100%;
+}
+
+img.essay-card-image {
+  border-bottom: 0;
+  height: 100%;
+  object-fit: cover;
 }
 
 .essay-card-image-placeholder {
@@ -401,32 +417,30 @@ main {
   top: 24px;
 }
 
-.show-link {
+.show-back-link {
+  border: 1px solid var(--border);
   color: var(--text);
-  display: grid;
-  gap: 0 7px;
-  grid-template-columns: auto 1fr;
+  display: block;
+  font-size: 0.76rem;
+  font-weight: 750;
   line-height: 1.25;
-  margin-bottom: 12px;
+  margin-bottom: 14px;
+  padding: 9px 10px;
   text-decoration: none;
 }
 
-.show-link span {
+.show-back-link span {
   color: var(--accent);
   font-weight: 750;
-  grid-row: 1 / span 2;
+  margin-right: 4px;
 }
 
-.show-link strong {
-  color: var(--text);
-  font-size: 0.88rem;
-}
-
-.show-link small {
+.sidebar-label {
   color: var(--faint);
-  font-size: 0.66rem;
+  font-size: 0.68rem;
   font-weight: 800;
-  letter-spacing: 0.08em;
+  letter-spacing: 0.1em;
+  margin: 0 0 10px;
   text-transform: uppercase;
 }
 
@@ -502,9 +516,13 @@ main {
 
 .sidebar-drawer nav a:hover,
 .season-drawer nav a:hover,
-.show-link:hover,
+.show-back-link:hover,
 .essay-nav a:hover {
   color: var(--accent);
+}
+
+.show-back-link:hover {
+  border-color: var(--accent);
 }
 
 .season-drawer {
@@ -593,15 +611,17 @@ h3 {
 }
 
 .article-hero {
+  aspect-ratio: 16 / 9;
+  background: color-mix(in srgb, var(--border) 52%, transparent);
+  border: 1px solid var(--border);
   margin: 0 0 24px;
+  overflow: hidden;
 }
 
 .article-hero img,
 .article-hero-placeholder div {
-  aspect-ratio: 16 / 9;
-  background: color-mix(in srgb, var(--border) 52%, transparent);
-  border: 1px solid var(--border);
   display: block;
+  height: 100%;
   width: 100%;
 }
 
