@@ -2,14 +2,17 @@
 import BaseLayout from "../layouts/BaseLayout.astro";
 import HeroImage from "../components/HeroImage.astro";
 import { getCollection } from "astro:content";
+import type { CollectionEntry } from "astro:content";
 
 const shows = await getCollection("shows");
 
-function countsFor(show) {
+type ShowEntry = CollectionEntry<"shows">;
+
+function countsFor(show: ShowEntry) {
   return {
     characters: show.data.characters?.length ?? 0,
     episodes: show.data.seasons.reduce(
-      (total, season) => total + season.episodes.length,
+      (total: number, season) => total + season.episodes.length,
       0,
     ),
     themes: show.data.themes?.length ?? 0,

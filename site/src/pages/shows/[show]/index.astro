@@ -2,6 +2,21 @@
 import BaseLayout from "../../../layouts/BaseLayout.astro";
 import HeroImage from "../../../components/HeroImage.astro";
 import { getCollection } from "astro:content";
+import type { CollectionEntry } from "astro:content";
+
+type ShowEntry = CollectionEntry<"shows">;
+type MetadataEntry =
+  | CollectionEntry<"articleMetadata">
+  | CollectionEntry<"episodeMetadata">;
+type ListedArticle = NonNullable<ShowEntry["data"]["themes"]>[number];
+type Season = ShowEntry["data"]["seasons"][number];
+type Episode = Season["episodes"][number];
+type MetadataById = Map<string, MetadataEntry>;
+
+interface Props {
+  metadataById: MetadataById;
+  show: ShowEntry;
+}
 
 export async function getStaticPaths() {
   const shows = await getCollection("shows");
@@ -22,10 +37,10 @@ export async function getStaticPaths() {
   });
 }
 
-const { metadataById, show } = Astro.props;
+const { metadataById, show } = Astro.props as Props;
 const showHeroImage = show.data.hero_image;
 
-function cardFor(entry) {
+function cardFor(entry: ListedArticle) {
   const metadata = metadataById.get(`${show.data.slug}/${entry.path}`);
   return {
     ...entry,
@@ -34,7 +49,7 @@ function cardFor(entry) {
   };
 }
 
-function episodeCardFor(episode) {
+function episodeCardFor(episode: Episode) {
   const metadata = metadataById.get(`${show.data.slug}/${episode.path}`);
   return {
     ...episode,
@@ -169,11 +184,10 @@ const seasonCards = show.data.seasons.map((season) => ({
                 </div>
               ) : (
                 <div class="essay-card-image essay-card-image-placeholder">
-                  {card.label ?? ""}
+                  {card.title}
                 </div>
               )}
               <div class="essay-card-content">
-                {card.label && <p>{card.label}</p>}
                 <h3>{card.title}</h3>
                 {card.description && <span>{card.description}</span>}
               </div>
@@ -204,11 +218,10 @@ const seasonCards = show.data.seasons.map((season) => ({
                 </div>
               ) : (
                 <div class="essay-card-image essay-card-image-placeholder">
-                  {card.label ?? ""}
+                  {card.title}
                 </div>
               )}
               <div class="essay-card-content">
-                {card.label && <p>{card.label}</p>}
                 <h3>{card.title}</h3>
                 {card.description && <span>{card.description}</span>}
               </div>

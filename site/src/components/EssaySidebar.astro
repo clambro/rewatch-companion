@@ -1,16 +1,31 @@
 ---
-const { show, currentPath } = Astro.props;
-const themes = show.data.themes ?? [];
-const characters = show.data.characters ?? [];
-const seasons = show.data.seasons ?? [];
+import type { CollectionEntry } from "astro:content";
+
+type ShowEntry = CollectionEntry<"shows">;
+type ListedArticle = NonNullable<ShowEntry["data"]["themes"]>[number];
+type Season = ShowEntry["data"]["seasons"][number];
+type Episode = Season["episodes"][number];
+
+interface Props {
+  currentPath?: string;
+  next?: unknown;
+  previous?: unknown;
+  show: ShowEntry;
+}
+
+const { show, currentPath } = Astro.props as Props;
 const currentSection = currentPath?.split("/")[0];
 const currentSeason = currentPath?.split("/")[1];
 
-function isCurrent(path) {
+const themes: ListedArticle[] = show.data.themes ?? [];
+const characters: ListedArticle[] = show.data.characters ?? [];
+const seasons: Season[] = show.data.seasons ?? [];
+
+function isCurrent(path: string) {
   return path === currentPath;
 }
 
-function isCurrentSeason(season) {
+function isCurrentSeason(season: Season) {
   return currentSeason === `s${String(season.season).padStart(2, "0")}`;
 }
 ---
@@ -69,7 +84,7 @@ function isCurrentSeason(season) {
       >
         <summary>Season {season.season}</summary>
         <nav aria-label={`Season ${season.season} episodes`}>
-          {season.episodes.map((episode) => (
+          {season.episodes.map((episode: Episode) => (
             <a
               aria-current={isCurrent(episode.path) ? "page" : undefined}
               class:list={{ current: isCurrent(episode.path) }}
