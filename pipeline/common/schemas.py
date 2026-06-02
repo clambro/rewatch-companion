@@ -6,6 +6,7 @@ from enum import StrEnum
 class Show(StrEnum):
     """Supported show slugs."""
 
+    BREAKING_BAD = "breaking-bad"
     SUCCESSION = "succession"
 
 
