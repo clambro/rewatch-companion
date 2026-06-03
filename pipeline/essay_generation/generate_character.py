@@ -15,7 +15,7 @@ def generate_character_essay(*, show: Show, slug: str) -> None:
         show=show,
         kind=EssayKind.CHARACTERS,
         title=character.title,
-        prompt=character.prompt,
+        prompt=f"A full-series character essay about {character.title}.",
         slug=character.slug,
     )
 

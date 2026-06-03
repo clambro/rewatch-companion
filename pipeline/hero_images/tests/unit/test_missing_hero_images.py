@@ -3,7 +3,7 @@
 import importlib
 from typing import TYPE_CHECKING
 
-from common.manifest import ManifestSluggedArticle, ShowManifest
+from common.manifest import ManifestPromptedArticle, ShowManifest
 from common.schemas import Show
 
 if TYPE_CHECKING:
@@ -38,7 +38,7 @@ def test_missing_hero_image_targets_skip_missing_articles(
     manifest = ShowManifest(
         show="succession",
         themes=[
-            ManifestSluggedArticle(
+            ManifestPromptedArticle(
                 slug="love-as-leverage",
                 title="Love as Leverage",
                 prompt="Theme prompt.",
@@ -61,7 +61,7 @@ def test_missing_hero_image_targets_target_articles_without_local_images(
     manifest = ShowManifest(
         show="succession",
         themes=[
-            ManifestSluggedArticle(
+            ManifestPromptedArticle(
                 slug="love-as-leverage",
                 title="Love as Leverage",
                 prompt="Theme prompt.",
