@@ -1,0 +1,16 @@
+show: breaking-bad
+season: 1
+episode: 1
+code: S01E01
+title: Pilot
+slug: e01-pilot
+seo:
+  title: Pilot
+  description:
+    "Walt\u2019s first cook begins as a fantasy of clean separation, and\
+    \ ends by proving the lie has already come home."
+hero_image:
+  src: /images/shows/breaking-bad/episodes/s01/e01-pilot/hero.jpg
+  alt:
+    Walter White in white underwear standing in the desert, wearing a gas mask
+    and holding a pistol

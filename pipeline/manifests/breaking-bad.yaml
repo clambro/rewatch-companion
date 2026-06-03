@@ -29,4 +29,25 @@ characters:
   - slug: "gus-fring"
     title: "Gus Fring"
 
-episodes: []
+episodes:
+  - season: 1
+    episode: 1
+    title: "Pilot"
+  - season: 1
+    episode: 2
+    title: "Cat's in the Bag..."
+  - season: 1
+    episode: 3
+    title: "...And the Bag's in the River"
+  - season: 1
+    episode: 4
+    title: "Cancer Man"
+  - season: 1
+    episode: 5
+    title: "Gray Matter"
+  - season: 1
+    episode: 6
+    title: "Crazy Handful of Nothin'"
+  - season: 1
+    episode: 7
+    title: "A No-Rough-Stuff-Type Deal"

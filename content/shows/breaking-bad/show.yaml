@@ -28,4 +28,27 @@ characters:
   - title: "Gus Fring"
     path: "characters/gus-fring"
 
-seasons: []
+seasons:
+  - season: 1
+    episodes:
+      - code: "S01E01"
+        title: "Pilot"
+        path: "episodes/s01/e01-pilot"
+      - code: "S01E02"
+        title: "Cat's in the Bag..."
+        path: "episodes/s01/e02-cat-s-in-the-bag"
+      - code: "S01E03"
+        title: "...And the Bag's in the River"
+        path: "episodes/s01/e03-and-the-bag-s-in-the-river"
+      - code: "S01E04"
+        title: "Cancer Man"
+        path: "episodes/s01/e04-cancer-man"
+      - code: "S01E05"
+        title: "Gray Matter"
+        path: "episodes/s01/e05-gray-matter"
+      - code: "S01E06"
+        title: "Crazy Handful of Nothin'"
+        path: "episodes/s01/e06-crazy-handful-of-nothin"
+      - code: "S01E07"
+        title: "A No-Rough-Stuff-Type Deal"
+        path: "episodes/s01/e07-a-no-rough-stuff-type-deal"

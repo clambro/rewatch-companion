@@ -1,0 +1,16 @@
+show: breaking-bad
+season: 1
+episode: 5
+code: S01E05
+title: Gray Matter
+slug: e05-gray-matter
+seo:
+  title: Gray Matter
+  description:
+    Walt gets his cleanest rescue and turns it into proof that he would
+    rather be powerful than saved.
+hero_image:
+  src: /images/shows/breaking-bad/episodes/s01/e05-gray-matter/hero.jpg
+  alt:
+    A Breaking Bad scene from the Gray Matter episode showing Walt and Skyler in
+    a formal indoor setting
