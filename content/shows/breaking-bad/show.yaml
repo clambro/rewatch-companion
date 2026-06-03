@@ -16,4 +16,16 @@ themes:
   - title: "Colour Theory"
     path: "themes/colour-theory"
 
+characters:
+  - title: "Walter White"
+    path: "characters/walter-white"
+  - title: "Jesse Pinkman"
+    path: "characters/jesse-pinkman"
+  - title: "Skyler White"
+    path: "characters/skyler-white"
+  - title: "Hank Schrader"
+    path: "characters/hank-schrader"
+  - title: "Gus Fring"
+    path: "characters/gus-fring"
+
 seasons: []

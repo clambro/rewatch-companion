@@ -17,6 +17,16 @@ themes:
     title: "Colour Theory"
     prompt: "Colour in Breaking Bad is not a symbolic decoder ring, where blue means one thing, green another, purple another. It is a visual system for tracking pressure, contamination, aspiration, denial, and drift. The show's colours gather meaning through repetition and context: the blue meth is pure, artificial, beautiful, and poisonous; the pink teddy bear turns childhood colour into an image of catastrophe; institutional greens suggest sickness, money, chemistry, and fluorescent rot; white begins as blandness and becomes ironic; purple becomes not merely eccentricity but self-enclosure, compulsion, and control. This essay should treat colour as a form of visible residue. Costumes, interiors, lighting, product design, and landscape all participate in the show's moral atmosphere, making transformation legible before characters themselves can fully name it."
 
-characters: []
+characters:
+  - slug: "walter-white"
+    title: "Walter White"
+  - slug: "jesse-pinkman"
+    title: "Jesse Pinkman"
+  - slug: "skyler-white"
+    title: "Skyler White"
+  - slug: "hank-schrader"
+    title: "Hank Schrader"
+  - slug: "gus-fring"
+    title: "Gus Fring"
 
 episodes: []
