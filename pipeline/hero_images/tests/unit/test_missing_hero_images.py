@@ -14,6 +14,22 @@ if TYPE_CHECKING:
 find_missing_hero_images = importlib.import_module("hero_images.find_missing_hero_images")
 
 
+def test_local_asset_path_maps_public_image_src_to_asset_tree(
+    tmp_path: Path,
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    """Public image paths should resolve to the committed Astro asset tree."""
+    asset_root = tmp_path / "site" / "src" / "assets" / "images" / "shows"
+    monkeypatch.setattr(find_missing_hero_images, "ASSET_IMAGE_ROOT", asset_root)
+
+    assert (
+        find_missing_hero_images.local_asset_path(
+            src="/images/shows/succession/themes/love-as-leverage/hero.jpg",
+        )
+        == asset_root / "succession" / "themes" / "love-as-leverage" / "hero.jpg"
+    )
+
+
 def test_missing_hero_image_targets_skip_missing_articles(
     tmp_path: Path,
     monkeypatch: pytest.MonkeyPatch,

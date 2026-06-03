@@ -4,8 +4,16 @@ hero_image:
   src: "/images/shows/breaking-bad/hero.jpg"
   alt: "Walter White and Jesse Pinkman against a yellow Breaking Bad title backdrop."
 
-themes: []
-
-characters: []
+themes:
+  - title: "Consequences"
+    path: "themes/consequences"
+  - title: "The Provider Myth"
+    path: "themes/the-provider-myth"
+  - title: "Purity"
+    path: "themes/purity-and-contamination"
+  - title: "Say My Name"
+    path: "themes/say-my-name"
+  - title: "Colour Theory"
+    path: "themes/colour-theory"
 
 seasons: []
