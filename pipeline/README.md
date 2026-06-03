@@ -52,6 +52,15 @@ Requires Python 3.14.
 Copy `.env.example` to `.env` and set `OPENAI_API_KEY` before running
 generation.
 
+Before running essay or image generation, save a no-VPN network baseline. The
+pipeline checks that baseline before web-dependent runs so a VPN does not break
+search and retrieval:
+
+```bash
+uv run poe rw -- network baseline
+uv run poe rw -- network check
+```
+
 Agent runs are instrumented with Logfire. To send traces to Logfire, authenticate
 and select a project from `pipeline/`:
 
@@ -67,6 +76,7 @@ uv run poe rw -- essay episode --show succession --season 1 --episode 1
 uv run poe rw -- essay missing --show succession
 uv run poe rw -- image episode --show succession --season 2 --episode 2
 uv run poe rw -- image missing --show succession
+uv run poe rw -- network check
 uv run python -m pytest tests/unit/test_manifest_content.py
 uv run ruff check
 uv run ty check
