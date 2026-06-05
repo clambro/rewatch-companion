@@ -90,3 +90,42 @@ episodes:
   - season: 2
     episode: 13
     title: "ABQ"
+  - season: 3
+    episode: 1
+    title: "No Más"
+  - season: 3
+    episode: 2
+    title: "Caballo sin Nombre"
+  - season: 3
+    episode: 3
+    title: "I.F.T."
+  - season: 3
+    episode: 4
+    title: "Green Light"
+  - season: 3
+    episode: 5
+    title: "Más"
+  - season: 3
+    episode: 6
+    title: "Sunset"
+  - season: 3
+    episode: 7
+    title: "One Minute"
+  - season: 3
+    episode: 8
+    title: "I See You"
+  - season: 3
+    episode: 9
+    title: "Kafkaesque"
+  - season: 3
+    episode: 10
+    title: "Fly"
+  - season: 3
+    episode: 11
+    title: "Abiquiu"
+  - season: 3
+    episode: 12
+    title: "Half Measures"
+  - season: 3
+    episode: 13
+    title: "Full Measure"

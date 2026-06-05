@@ -1,0 +1,16 @@
+show: breaking-bad
+season: 3
+episode: 5
+code: S03E05
+title: "M\xE1s"
+slug: e05-m-s
+seo:
+  title: "M\xE1s"
+  description:
+    "Gus\u2019s superlab turns scale into seduction, but Jesse\u2019s fury\
+    \ and Hank\u2019s trail expose the mess a cleaner empire cannot erase."
+hero_image:
+  src: /images/shows/breaking-bad/episodes/s03/e05-m-s/hero.jpg
+  alt:
+    "Walter White in the industrial laundry setting that fronts Gus Fring\u2019\
+    s meth operation, surrounded by the machinery and open floor of the facility."

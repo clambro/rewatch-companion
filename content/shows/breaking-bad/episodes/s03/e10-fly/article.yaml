@@ -1,0 +1,14 @@
+show: breaking-bad
+season: 3
+episode: 10
+code: S03E10
+title: Fly
+slug: e10-fly
+seo:
+  title: Fly
+  description:
+    "A sealed lab turns Walt\u2019s obsession with contamination into a\
+    \ study of guilt he can neither confess nor contain."
+hero_image:
+  src: /images/shows/breaking-bad/episodes/s03/e10-fly/hero.jpg
+  alt: Walter White and Jesse Pinkman in the superlab during the fly hunt.
