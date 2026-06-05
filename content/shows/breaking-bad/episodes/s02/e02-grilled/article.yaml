@@ -1,0 +1,16 @@
+show: breaking-bad
+season: 2
+episode: 2
+code: S02E02
+title: Grilled
+slug: e02-grilled
+seo:
+  title: Grilled
+  description:
+    "A desert house, a ringing bell, and a missing-person flyer show how\
+    \ quickly Walt\u2019s lies become public evidence."
+hero_image:
+  src: /images/shows/breaking-bad/episodes/s02/e02-grilled/hero.jpg
+  alt:
+    Hector Salamanca sits in his wheelchair with the bell at hand, his expression
+    tense and watchful.

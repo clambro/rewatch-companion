@@ -1,0 +1,14 @@
+show: breaking-bad
+season: 2
+episode: 6
+code: S02E06
+title: Peekaboo
+slug: e06-peekaboo
+seo:
+  title: Peekaboo
+  description:
+    Jesse inherits the burden of noticing what everyone else steps over,
+    while Walt turns concealment into self-defense.
+hero_image:
+  src: /images/shows/breaking-bad/episodes/s02/e06-peekaboo/hero.jpg
+  alt: "Jesse Pinkman in a tense scene from Breaking Bad\u2019s \u201CPeekaboo\u201D"
