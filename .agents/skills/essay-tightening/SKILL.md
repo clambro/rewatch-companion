@@ -44,6 +44,7 @@ For AI-voice, de-AI, or collection-tightening requests, read [references/ai-writ
 5. Check for AI voice.
    - Watch for smooth but mechanical paragraphs: setup, explanation, polished takeaway, repeated across the essay.
    - Watch for strings of similarly sized paragraphs with the same internal movement.
+   - Watch for episode summaries that open with catalog metadata such as “In Season X, Episode Y,” “Season X, Episode Y,” or “S03E11.” Start with the episode title and what happens instead.
    - Watch for generic critical vocabulary that could apply to any show.
    - Watch for over-balanced constructions that keep saying a thing is “not just X but Y.”
    - Watch for conclusions that restate the essay instead of earning a final turn.
