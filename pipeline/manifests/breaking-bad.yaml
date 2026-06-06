@@ -129,3 +129,42 @@ episodes:
   - season: 3
     episode: 13
     title: "Full Measure"
+  - season: 4
+    episode: 1
+    title: "Box Cutter"
+  - season: 4
+    episode: 2
+    title: "Thirty-Eight Snub"
+  - season: 4
+    episode: 3
+    title: "Open House"
+  - season: 4
+    episode: 4
+    title: "Bullet Points"
+  - season: 4
+    episode: 5
+    title: "Shotgun"
+  - season: 4
+    episode: 6
+    title: "Cornered"
+  - season: 4
+    episode: 7
+    title: "Problem Dog"
+  - season: 4
+    episode: 8
+    title: "Hermanos"
+  - season: 4
+    episode: 9
+    title: "Bug"
+  - season: 4
+    episode: 10
+    title: "Salud"
+  - season: 4
+    episode: 11
+    title: "Crawl Space"
+  - season: 4
+    episode: 12
+    title: "End Times"
+  - season: 4
+    episode: 13
+    title: "Face Off"
