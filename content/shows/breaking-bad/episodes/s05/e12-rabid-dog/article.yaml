@@ -1,0 +1,14 @@
+show: breaking-bad
+season: 5
+episode: 12
+code: S05E12
+title: Rabid Dog
+slug: e12-rabid-dog
+seo:
+  title: Rabid Dog
+  description:
+    Jesse survives the fire only to become the evidence, leverage, and
+    prey everyone else mistakes for a problem to solve.
+hero_image:
+  src: /images/shows/breaking-bad/episodes/s05/e12-rabid-dog/hero.jpg
+  alt: Walter White sits alone beside a lit backyard pool.

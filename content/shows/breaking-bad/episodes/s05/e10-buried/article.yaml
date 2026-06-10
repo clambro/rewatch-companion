@@ -1,0 +1,16 @@
+show: breaking-bad
+season: 5
+episode: 10
+code: S05E10
+title: Buried
+slug: e10-buried
+seo:
+  title: Buried
+  description:
+    The garage confrontation sends everyone scrambling to turn dangerous
+    knowledge into usable proof.
+hero_image:
+  src: /images/shows/breaking-bad/episodes/s05/e10-buried/hero.jpg
+  alt:
+    "A wide desert shot from Breaking Bad with Walt\u2019s van near the buried\
+    \ cash site."

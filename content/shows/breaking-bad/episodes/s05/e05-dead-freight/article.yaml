@@ -1,0 +1,16 @@
+show: breaking-bad
+season: 5
+episode: 5
+code: S05E05
+title: Dead Freight
+slug: e05-dead-freight
+seo:
+  title: Dead Freight
+  description:
+    "A perfect robbery reveals how Walt\u2019s cleanest systems make their\
+    \ human remainders easier to erase."
+hero_image:
+  src: /images/shows/breaking-bad/episodes/s05/e05-dead-freight/hero.jpg
+  alt:
+    "Jesse Pinkman crouches beside equipment in the desert during the train robbery\
+    \ in Breaking Bad's \u201CDead Freight.\u201D"
