@@ -10,7 +10,7 @@ Rewatch Companion is a static publishing project for full-series, episode-by-epi
 
 ## Repository Map
 
-- `docs/project_plan.md` - product and architecture background. Use it as context, not as an immutable spec.
+- `README.md` - project structure, content boundary, and deployment background.
 - `site/` - Astro static site. Read `site/AGENTS.md` before changing site code.
 - `content/` - publishable show metadata, episode metadata, and MDX articles.
 - `pipeline/` - offline Python pipeline. Read `pipeline/AGENTS.md` before adding pipeline code.

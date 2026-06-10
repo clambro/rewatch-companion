@@ -23,25 +23,18 @@ themes:
 characters:
   - slug: "logan-roy"
     title: "Logan Roy"
-    prompt: "A full-series character essay about Logan Roy."
   - slug: "kendall-roy"
     title: "Kendall Roy"
-    prompt: "A full-series character essay about Kendall Roy."
   - slug: "shiv-roy"
     title: "Shiv Roy"
-    prompt: "A full-series character essay about Shiv Roy."
   - slug: "roman-roy"
     title: "Roman Roy"
-    prompt: "A full-series character essay about Roman Roy."
   - slug: "connor-roy"
     title: "Connor Roy"
-    prompt: "A full-series character essay about Connor Roy."
   - slug: "tom-wambsgans"
     title: "Tom Wambsgans"
-    prompt: "A full-series character essay about Tom Wambsgans."
   - slug: "greg-hirsch"
     title: "Greg Hirsch"
-    prompt: "A full-series character essay about Greg Hirsch."
 
 episodes:
   - season: 1

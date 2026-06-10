@@ -1,0 +1,218 @@
+show: breaking-bad
+
+themes:
+  - slug: "consequences"
+    title: "Consequences"
+    prompt: "Breaking Bad gives its own governing language in the pilot: chemistry is the study of change - growth, decay, transformation. But the series is not interested in transformation as self-discovery alone. It is interested in what change leaves behind. Every act alters the world that must then be lived in. A lie becomes a structure that needs maintenance. A murder becomes memory, leverage, trauma, and future violence. Money solves one emergency while producing new forms of exposure. The meth moves outward through bodies, families, markets, institutions, and myths. This essay should frame Breaking Bad as a drama of irreversible change, where transformation and consequence are inseparable: to become someone new is also to create a world shaped by that becoming. The show's moral force comes from its refusal to let anything vanish. Nothing is cleanly over; everything remains active in altered form."
+  - slug: "the-provider-myth"
+    title: "The Provider Myth"
+    prompt: "'For the family' is Breaking Bad's most powerful moral technology. The show begins with a provider fantasy that is materially persuasive: illness, debt, underinsurance, masculine failure, a pregnant wife, a disabled son, and the fear of leaving nothing behind. That plausibility is what makes the excuse so dangerous. Provision becomes a language through which pride can present itself as sacrifice, secrecy as protection, control as care, and money as love. But the show steadily turns children against the provider myth. Children begin as the reason for the crime and become the evidence against it. Walt Jr., Holly, Tomas, Brock, Drew Sharp, Spooge's child, and the pink teddy bear all expose the same reversal: the family that is invoked as justification becomes one of the first things endangered by the world built in its name. This essay should examine family not as sentimental refuge, but as the sacred language through which corruption makes itself sound necessary."
+  - slug: "purity-and-contamination"
+    title: "Purity"
+    prompt: "Purity is one of Breaking Bad's great ironies. Walt's meth is valuable because it is chemically pure, but the show measures that purity by the contamination it creates everywhere else. Technical excellence gives Walt a fantasy of separation: he is not a street dealer, not a junkie, not an amateur, not a thug. He makes something superior. Yet that superiority is exactly what allows harm to scale. The cleaner the product, the dirtier the world becomes. Purity creates demand, demand creates distribution, distribution creates empire, and empire produces bodies. This essay should treat the blue meth not just as a plot object, but as the show's central moral contradiction: a beautiful, refined, almost abstract thing whose consequences are intimate, bodily, and grotesque. In Breaking Bad, purity is not the opposite of corruption. It is corruption made efficient."
+  - slug: "say-my-name"
+    title: "Say My Name"
+    prompt: "Breaking Bad is obsessed with names: personal names, aliases, product names, business names, fronts, brands, legends, and reputations. 'Say my name' crystallizes the show's deeper hunger for recognition. The desire is not merely to survive, profit, or win, but to be acknowledged as the author of the thing others fear, buy, repeat, or obey. Names in the show are social instruments. They create distance, legitimacy, intimidation, deniability, and myth. Heisenberg begins as a disguise and becomes a brand; Blue Sky turns chemistry into reputation; Los Pollos Hermanos makes criminal power look wholesome; Better Call Saul converts legal corruption into advertising; Gray Matter preserves an old wound around authorship and erasure. This essay should explore naming as power only when it circulates through other people. A name is not identity. It is a claim on the world's attention, and the tragedy of Breaking Bad is how much destruction can follow from the need to hear that claim confirmed."
+  - slug: "colour-theory"
+    title: "Colour Theory"
+    prompt: "Colour in Breaking Bad is not a symbolic decoder ring, where blue means one thing, green another, purple another. It is a visual system for tracking pressure, contamination, aspiration, denial, and drift. The show's colours gather meaning through repetition and context: the blue meth is pure, artificial, beautiful, and poisonous; the pink teddy bear turns childhood colour into an image of catastrophe; institutional greens suggest sickness, money, chemistry, and fluorescent rot; white begins as blandness and becomes ironic; purple becomes not merely eccentricity but self-enclosure, compulsion, and control. This essay should treat colour as a form of visible residue. Costumes, interiors, lighting, product design, and landscape all participate in the show's moral atmosphere, making transformation legible before characters themselves can fully name it."
+
+characters:
+  - slug: "walter-white"
+    title: "Walter White"
+  - slug: "jesse-pinkman"
+    title: "Jesse Pinkman"
+  - slug: "skyler-white"
+    title: "Skyler White"
+  - slug: "hank-schrader"
+    title: "Hank Schrader"
+  - slug: "gus-fring"
+    title: "Gus Fring"
+
+episodes:
+  - season: 1
+    episode: 1
+    title: "Pilot"
+  - season: 1
+    episode: 2
+    title: "Cat's in the Bag..."
+  - season: 1
+    episode: 3
+    title: "...And the Bag's in the River"
+  - season: 1
+    episode: 4
+    title: "Cancer Man"
+  - season: 1
+    episode: 5
+    title: "Gray Matter"
+  - season: 1
+    episode: 6
+    title: "Crazy Handful of Nothin'"
+  - season: 1
+    episode: 7
+    title: "A No-Rough-Stuff-Type Deal"
+  - season: 2
+    episode: 1
+    title: "Seven Thirty-Seven"
+  - season: 2
+    episode: 2
+    title: "Grilled"
+  - season: 2
+    episode: 3
+    title: "Bit by a Dead Bee"
+  - season: 2
+    episode: 4
+    title: "Down"
+  - season: 2
+    episode: 5
+    title: "Breakage"
+  - season: 2
+    episode: 6
+    title: "Peekaboo"
+  - season: 2
+    episode: 7
+    title: "Negro y Azul"
+  - season: 2
+    episode: 8
+    title: "Better Call Saul"
+  - season: 2
+    episode: 9
+    title: "4 Days Out"
+  - season: 2
+    episode: 10
+    title: "Over"
+  - season: 2
+    episode: 11
+    title: "Mandala"
+  - season: 2
+    episode: 12
+    title: "Phoenix"
+  - season: 2
+    episode: 13
+    title: "ABQ"
+  - season: 3
+    episode: 1
+    title: "No Más"
+  - season: 3
+    episode: 2
+    title: "Caballo sin Nombre"
+  - season: 3
+    episode: 3
+    title: "I.F.T."
+  - season: 3
+    episode: 4
+    title: "Green Light"
+  - season: 3
+    episode: 5
+    title: "Más"
+  - season: 3
+    episode: 6
+    title: "Sunset"
+  - season: 3
+    episode: 7
+    title: "One Minute"
+  - season: 3
+    episode: 8
+    title: "I See You"
+  - season: 3
+    episode: 9
+    title: "Kafkaesque"
+  - season: 3
+    episode: 10
+    title: "Fly"
+  - season: 3
+    episode: 11
+    title: "Abiquiu"
+  - season: 3
+    episode: 12
+    title: "Half Measures"
+  - season: 3
+    episode: 13
+    title: "Full Measure"
+  - season: 4
+    episode: 1
+    title: "Box Cutter"
+  - season: 4
+    episode: 2
+    title: "Thirty-Eight Snub"
+  - season: 4
+    episode: 3
+    title: "Open House"
+  - season: 4
+    episode: 4
+    title: "Bullet Points"
+  - season: 4
+    episode: 5
+    title: "Shotgun"
+  - season: 4
+    episode: 6
+    title: "Cornered"
+  - season: 4
+    episode: 7
+    title: "Problem Dog"
+  - season: 4
+    episode: 8
+    title: "Hermanos"
+  - season: 4
+    episode: 9
+    title: "Bug"
+  - season: 4
+    episode: 10
+    title: "Salud"
+  - season: 4
+    episode: 11
+    title: "Crawl Space"
+  - season: 4
+    episode: 12
+    title: "End Times"
+  - season: 4
+    episode: 13
+    title: "Face Off"
+  - season: 5
+    episode: 1
+    title: "Live Free or Die"
+  - season: 5
+    episode: 2
+    title: "Madrigal"
+  - season: 5
+    episode: 3
+    title: "Hazard Pay"
+  - season: 5
+    episode: 4
+    title: "Fifty-One"
+  - season: 5
+    episode: 5
+    title: "Dead Freight"
+  - season: 5
+    episode: 6
+    title: "Buyout"
+  - season: 5
+    episode: 7
+    title: "Say My Name"
+  - season: 5
+    episode: 8
+    title: "Gliding Over All"
+  - season: 5
+    episode: 9
+    title: "Blood Money"
+  - season: 5
+    episode: 10
+    title: "Buried"
+  - season: 5
+    episode: 11
+    title: "Confessions"
+  - season: 5
+    episode: 12
+    title: "Rabid Dog"
+  - season: 5
+    episode: 13
+    title: "To'hajiilee"
+  - season: 5
+    episode: 14
+    title: "Ozymandias"
+  - season: 5
+    episode: 15
+    title: "Granite State"
+  - season: 5
+    episode: 16
+    title: "Felina"

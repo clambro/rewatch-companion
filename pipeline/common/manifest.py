@@ -13,17 +13,17 @@ if TYPE_CHECKING:
 MANIFEST_ROOT = Path(__file__).resolve().parents[1] / "manifests"
 
 
-class ManifestArticle(BaseModel):
-    """A manifest entry for one generated article."""
-
-    title: str
-    prompt: str
-
-
-class ManifestSluggedArticle(ManifestArticle):
+class ManifestSluggedArticle(BaseModel):
     """A manifest entry for one slugged generated article."""
 
     slug: str
+    title: str
+
+
+class ManifestPromptedArticle(ManifestSluggedArticle):
+    """A manifest entry for one generated article with a custom prompt."""
+
+    prompt: str
 
 
 class ManifestEpisode(BaseModel):
@@ -38,7 +38,7 @@ class ShowManifest(BaseModel):
     """Generation manifest for one show."""
 
     show: str
-    themes: list[ManifestSluggedArticle]
+    themes: list[ManifestPromptedArticle]
     characters: list[ManifestSluggedArticle]
     episodes: list[ManifestEpisode]
 

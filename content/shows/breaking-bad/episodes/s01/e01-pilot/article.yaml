@@ -1,0 +1,12 @@
+show: breaking-bad
+season: 1
+episode: 1
+code: S01E01
+title: Pilot
+slug: e01-pilot
+seo:
+  title: Pilot
+  description: Walt’s first cook turns a fantasy of clean separation into a lie that follows him home.
+hero_image:
+  src: /images/shows/breaking-bad/episodes/s01/e01-pilot/hero.jpg
+  alt: Walt stands beside the RV in the desert with his shirt open and his underwear exposed.

@@ -1,0 +1,12 @@
+show: breaking-bad
+season: 4
+episode: 10
+code: S04E10
+title: Salud
+slug: e10-salud
+seo:
+  title: Salud
+  description: Gus turns hospitality into a trap, and Jesse learns what competence costs.
+hero_image:
+  src: /images/shows/breaking-bad/episodes/s04/e10-salud/hero.jpg
+  alt: Gus Fring stands by Don Eladio’s poolside table during the tequila toast.

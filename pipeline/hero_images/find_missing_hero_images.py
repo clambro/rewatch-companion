@@ -112,4 +112,4 @@ def is_missing_hero_image(*, article_dir: Path) -> bool:
 
 def local_asset_path(*, src: str) -> Path:
     """Return the local asset file path for a content image src."""
-    return ASSET_IMAGE_ROOT.parent / src.removeprefix("/")
+    return ASSET_IMAGE_ROOT.parent / src.removeprefix("/images/")

@@ -12,6 +12,7 @@ if TYPE_CHECKING:
 def test_cli_dispatches_theme_essay(monkeypatch: pytest.MonkeyPatch) -> None:
     """Root CLI should dispatch theme essay generation."""
     calls: list[dict[str, Any]] = []
+    monkeypatch.setattr(cli, "assert_network_baseline", lambda: None)
     monkeypatch.setattr(
         cli,
         "generate_theme_essay",
@@ -26,6 +27,7 @@ def test_cli_dispatches_theme_essay(monkeypatch: pytest.MonkeyPatch) -> None:
 def test_cli_dispatches_episode_essay(monkeypatch: pytest.MonkeyPatch) -> None:
     """Root CLI should dispatch episode essay generation."""
     calls: list[dict[str, Any]] = []
+    monkeypatch.setattr(cli, "assert_network_baseline", lambda: None)
     monkeypatch.setattr(
         cli,
         "generate_episode_essay",
@@ -54,6 +56,7 @@ def test_cli_dispatches_missing_essay_dry_run(monkeypatch: pytest.MonkeyPatch) -
 def test_cli_dispatches_character_image(monkeypatch: pytest.MonkeyPatch) -> None:
     """Root CLI should dispatch single-article hero image search."""
     calls: list[dict[str, Any]] = []
+    monkeypatch.setattr(cli, "assert_network_baseline", lambda: None)
     monkeypatch.setattr(
         cli,
         "find_article_hero_image",

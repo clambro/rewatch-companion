@@ -106,17 +106,14 @@ def test_rebuild_show_index_orders_articles_by_manifest(
             ManifestSluggedArticle(
                 slug="logan-roy",
                 title="Logan Roy",
-                prompt="Prompt.",
             ),
             ManifestSluggedArticle(
                 slug="kendall-roy",
                 title="Kendall Roy",
-                prompt="Prompt.",
             ),
             ManifestSluggedArticle(
                 slug="shiv-roy",
                 title="Shiv Roy",
-                prompt="Prompt.",
             ),
         ],
         episodes=[ManifestEpisode(season=1, episode=1, title="Celebration")],

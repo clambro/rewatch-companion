@@ -8,7 +8,7 @@ from typing import TYPE_CHECKING, Any
 import yaml
 from openai import OpenAI
 
-from common.manifest import load_manifest
+from common.manifest import ManifestSluggedArticle, load_manifest
 from common.schemas import EssayKind, Show
 from common.settings import settings
 from essay_generation.prompt import (
@@ -21,7 +21,9 @@ from essay_generation.prompt import (
 from essay_generation.schemas import EssaySource, EssayTarget, GeneratedEssay
 
 if TYPE_CHECKING:
-    from common.manifest import ManifestEpisode, ManifestSluggedArticle
+    from collections.abc import Sequence
+
+    from common.manifest import ManifestEpisode
 
 REPO_ROOT = Path(__file__).resolve().parents[2]
 CONTENT_ROOT = REPO_ROOT / "content" / "shows"
@@ -129,7 +131,7 @@ def load_article_listing(
     *,
     show_root: Path,
     section: EssayKind,
-    manifest_entries: list[ManifestSluggedArticle],
+    manifest_entries: Sequence[ManifestSluggedArticle],
 ) -> list[dict[str, str]]:
     """Load generated article entries for the frontend show index."""
     article_root = show_root / section.value
@@ -209,11 +211,11 @@ def output_path(*, target: EssayTarget) -> Path:
     raise ValueError(f"Unsupported essay kind: {target.kind.value}")
 
 
-def find_slugged_article(
+def find_slugged_article[ManifestEntryT: ManifestSluggedArticle](
     *,
-    entries: list[ManifestSluggedArticle],
+    entries: Sequence[ManifestEntryT],
     slug: str,
-) -> ManifestSluggedArticle:
+) -> ManifestEntryT:
     """Find a slugged manifest article."""
     for entry in entries:
         if entry.slug == slug:

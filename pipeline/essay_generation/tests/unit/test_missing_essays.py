@@ -3,7 +3,12 @@
 import importlib
 from typing import TYPE_CHECKING
 
-from common.manifest import ManifestEpisode, ManifestSluggedArticle, ShowManifest
+from common.manifest import (
+    ManifestEpisode,
+    ManifestPromptedArticle,
+    ManifestSluggedArticle,
+    ShowManifest,
+)
 from common.schemas import Show
 
 if TYPE_CHECKING:
@@ -22,7 +27,7 @@ def test_missing_manifest_essays_follow_manifest_order(
     manifest = ShowManifest(
         show="succession",
         themes=[
-            ManifestSluggedArticle(
+            ManifestPromptedArticle(
                 slug="love-as-leverage",
                 title="Love as Leverage",
                 prompt="Theme prompt.",
@@ -32,7 +37,6 @@ def test_missing_manifest_essays_follow_manifest_order(
             ManifestSluggedArticle(
                 slug="kendall-roy",
                 title="Kendall Roy",
-                prompt="Character prompt.",
             ),
         ],
         episodes=[

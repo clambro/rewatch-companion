@@ -3,7 +3,7 @@
 import importlib
 from typing import TYPE_CHECKING
 
-from common.manifest import ManifestSluggedArticle, ShowManifest
+from common.manifest import ManifestPromptedArticle, ShowManifest
 from common.schemas import Show
 
 if TYPE_CHECKING:
@@ -14,6 +14,22 @@ if TYPE_CHECKING:
 find_missing_hero_images = importlib.import_module("hero_images.find_missing_hero_images")
 
 
+def test_local_asset_path_maps_public_image_src_to_asset_tree(
+    tmp_path: Path,
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    """Public image paths should resolve to the committed Astro asset tree."""
+    asset_root = tmp_path / "site" / "src" / "assets" / "images" / "shows"
+    monkeypatch.setattr(find_missing_hero_images, "ASSET_IMAGE_ROOT", asset_root)
+
+    assert (
+        find_missing_hero_images.local_asset_path(
+            src="/images/shows/succession/themes/love-as-leverage/hero.jpg",
+        )
+        == asset_root / "succession" / "themes" / "love-as-leverage" / "hero.jpg"
+    )
+
+
 def test_missing_hero_image_targets_skip_missing_articles(
     tmp_path: Path,
     monkeypatch: pytest.MonkeyPatch,
@@ -22,7 +38,7 @@ def test_missing_hero_image_targets_skip_missing_articles(
     manifest = ShowManifest(
         show="succession",
         themes=[
-            ManifestSluggedArticle(
+            ManifestPromptedArticle(
                 slug="love-as-leverage",
                 title="Love as Leverage",
                 prompt="Theme prompt.",
@@ -45,7 +61,7 @@ def test_missing_hero_image_targets_target_articles_without_local_images(
     manifest = ShowManifest(
         show="succession",
         themes=[
-            ManifestSluggedArticle(
+            ManifestPromptedArticle(
                 slug="love-as-leverage",
                 title="Love as Leverage",
                 prompt="Theme prompt.",

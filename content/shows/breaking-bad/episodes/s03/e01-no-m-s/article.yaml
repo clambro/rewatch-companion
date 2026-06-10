@@ -1,0 +1,14 @@
+show: breaking-bad
+season: 3
+episode: 1
+code: S03E01
+title: "No M\xE1s"
+slug: e01-no-m-s
+seo:
+  title: "No M\xE1s"
+  description:
+    Walt, Skyler, and Jesse all try to step away from the damage they helped
+    create.
+hero_image:
+  src: /images/shows/breaking-bad/episodes/s03/e01-no-m-s/hero.jpg
+  alt: Walter White stands with a pool skimmer beside the backyard pool in daylight.
