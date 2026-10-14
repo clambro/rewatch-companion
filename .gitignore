@@ -34,6 +34,7 @@ yarn-error.log*
 pnpm-debug.log*
 
 # Deployment tool output
+.wrangler/
 .netlify/
 site/.netlify/
 .vercel/
