@@ -56,25 +56,11 @@ npm run preview
 
 ## Deployment
 
-The site is intended to publish from a public GitHub repository using GitHub
-Pages, with Cloudflare handling DNS for the custom domain.
+Cloudflare Workers configuration is in `site/wrangler.jsonc`.
+Build from `site/` with `npm run build`, then deploy with `npx wrangler deploy`.
+For Cloudflare Git integration, use branch `main` and root directory `site`.
 
-Deployment runs from `.github/workflows/deploy.yml` on pushes to `main` and can
-also be triggered manually from GitHub Actions. The workflow:
-
-- checks out the repository
-- installs Node 22
-- runs `npm ci` from `site/`
-- builds the Astro site from `site/`
-- uploads `site/dist` to GitHub Pages
-
-The custom domain is `rewatchcompanion.com` and is tracked in
-`site/public/CNAME` so it is included in the deployed Pages artifact. Configure
-the same domain in GitHub Pages and point Cloudflare DNS at GitHub Pages.
-
-The sitemap entry advertised in `site/public/robots.txt` is
-`https://rewatchcompanion.com/sitemap-index.xml`, which is the default
-`@astrojs/sitemap` output.
+The site URL is `https://rewatchcompanion.com`.
 
 ## Hooks
 
